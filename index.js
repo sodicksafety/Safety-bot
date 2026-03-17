@@ -26,6 +26,14 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  // ⭐⭐ ดึง userId ของไก่ (เฉพาะแชทส่วนตัว) ⭐⭐
+  if (event.source.type === "user") {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "Your userId is: " + event.source.userId
+    });
+  }
+
   const msg = event.message.text
   .toLowerCase()
   .trim()
