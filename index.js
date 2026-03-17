@@ -25,15 +25,6 @@ function handleEvent(event) {
   if (event.type !== "message" || event.message.type !== "text") {
     return Promise.resolve(null);
   }
-
-  // ⭐⭐ ดึง userId ของไก่ (เฉพาะแชทส่วนตัว) ⭐⭐
-  if (event.source.type === "user") {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "Your userId is: " + event.source.userId
-    });
-  }
-
   const msg = event.message.text
   .toLowerCase()
   .trim()
@@ -247,15 +238,18 @@ AI Sodick Safety always misses you and cares for you 💙
   });
 }
 
-// 13) Default (ไทย + อังกฤษ)
 return client.replyMessage(event.replyToken, {
-  type: 'text',
-  text: 
-`สวัสดีครับ ผมคือ Safety Bot ของ Sodick ครับ  
-Hello! I am the Sodick Safety Bot.  
-ข้อความของคุณคือ: ${event.message.text}  
-Your message is: ${event.message.text}  
-ถ้ามีอะไรให้ช่วยเรื่องความปลอดภัย บอกผมได้เลยนะครับ 🙂`
+  type: "text",
+  text:
+"ระบบยังไม่มีข้อมูลคำถามนี้\nแจ้งผู้พัฒนาระบบ: @Trerasak_K\nเพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/tk.2023",
+  mention: {
+    mentionees: [
+      {
+        index: 33, // ตำแหน่งตัวอักษรที่ @Trerasak_K เริ่ม
+        userId: "U4a74c3933c0ecf9d2062768696ba3df8"
+      }
+    ]
+  }
 });
 }
 
