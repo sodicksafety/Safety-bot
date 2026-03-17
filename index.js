@@ -241,11 +241,16 @@ AI Sodick Safety always misses you and cares for you 💙
 return client.replyMessage(event.replyToken, {
   type: "text",
   text:
-"ระบบยังไม่มีข้อมูลคำถามนี้\nแจ้งผู้พัฒนาระบบ: @Trerasak_K\nเพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/_T4H-3TKUa",
+`ระบบยังไม่มีข้อมูลคำถามนี้
+แจ้งผู้พัฒนาระบบ: @Trerasak_K
+เพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/_T4H-3TKUa
+
+ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
   mention: {
     mentionees: [
       {
-        index: 33, // ตำแหน่งตัวอักษรที่ @Trerasak_K เริ่ม
+        index: 27, // ตำแหน่งตัวอักษรที่ @Trerasak_K เริ่ม (พี่คำนวณให้ใหม่แล้ว)
         userId: "U4a74c3933c0ecf9d2062768696ba3df8"
       }
     ]
