@@ -3,9 +3,10 @@ const line = require("@line/bot-sdk");
 
 const app = express();
 
+// ใช้ชื่อ ENV ให้ตรงกับ Render
 const config = {
-  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-  channelSecret: process.env.LINE_CHANNEL_SECRET,
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.CHANNEL_SECRET,
 };
 
 const client = new line.Client(config);
@@ -30,6 +31,9 @@ function handleEvent(event) {
   });
 }
 
-app.listen(3000, () => {
-  console.log("LINE Bot server running on port 3000");
+// Render จะใช้ PORT จาก ENV
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("LINE Bot server running on port " + PORT);
 });
