@@ -241,7 +241,7 @@ AI Sodick Safety always misses you and cares for you 💙
 return client.replyMessage(event.replyToken, {
   type: "text",
   text:
-"ระบบยังไม่มีข้อมูลคำถามนี้\nแจ้งผู้พัฒนาระบบ: @Trerasak_K\nเพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/tk.2023",
+"ระบบยังไม่มีข้อมูลคำถามนี้\nแจ้งผู้พัฒนาระบบ: @Trerasak_K\nเพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/_T4H-3TKUa",
   mention: {
     mentionees: [
       {
