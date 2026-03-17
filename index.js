@@ -1342,18 +1342,21 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
-// ⭐⭐⭐ ตรงนี้เลย! วางโค้ดเช็ค @บอท ⭐⭐⭐
-  // ถ้าอยู่ในกลุ่ม ต้อง @บอท ก่อนถึงจะตอบ
+  // ⭐⭐⭐ เงื่อนไขใหม่สำหรับกลุ่ม ⭐⭐⭐
   if (event.source.type === "group") {
-    const mention = event.message.mention;
-    const botId = event.destination; // LINE bot ID
 
-    // ถ้าไม่มีการ mention บอท → ไม่ต้องตอบ
-    if (!mention || !mention.mentionees.some(m => m.userId === botId)) {
+    // 3 คำที่ต้องมีในข้อความ
+    const triggers = ["บอท", "bot", "Bot"];
+
+    const text = event.message.text;
+
+    // ถ้าไม่มีคำว่า บอท / bot / Bot → ไม่ตอบ
+    const hasTrigger = triggers.some(word => text.includes(word));
+    if (!hasTrigger) {
       return Promise.resolve(null);
     }
   }
-  // ⭐⭐⭐ จบส่วนที่ต้องแทรก ⭐⭐⭐
+  // ⭐⭐⭐ จบส่วนที่แก้ ⭐⭐⭐
 
   const msg = event.message.text
     .toLowerCase()
