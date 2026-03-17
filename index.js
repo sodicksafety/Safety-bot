@@ -27,7 +27,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องแลกบัตร contractor",
+  question: "ทำไมต้องแลกบัตร",
   answer: `เพื่อยืนยันตัวตนและให้ รปภ. ตรวจสอบว่าใครเข้ามาทำงานในพื้นที่บริษัท
 
 To verify identity and allow security staff to check who enters the company premises.
@@ -57,7 +57,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องขอใบ work permit",
+  question: "ทำไมต้องขอใบwork",
   answer: `เพราะงานบางประเภทเสี่ยง เช่น งานเชื่อม งานที่สูง งานอับอากาศ ต้องมีการตรวจสอบความปลอดภัยก่อนเริ่มงาน
 
 Because certain jobs are high-risk, such as welding, working at height, or confined space work, and require safety checks before starting.
@@ -87,7 +87,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องแจ้งจปถ้าเกิดอุบัติเหตุ",
+  question: "ทำไมต้องแจ้งจป.ถ้าเกิดอุบัติเหตุ",
   answer: `เพื่อให้เจ้าหน้าที่เข้ามาช่วยเหลือ ตรวจสอบ และป้องกันไม่ให้เกิดซ้ำ
 
 So that safety officers can assist, investigate, and prevent the incident from happening again.
@@ -433,7 +433,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องติดบัตรตลอดเวลา",
+  question: "ทำไมต้องติดบัตร",
   answer: `เพื่อให้รู้ว่าเป็นผู้รับเหมาที่ได้รับอนุญาตและสามารถตรวจสอบตัวตนได้ทันที
 
 To identify you as an authorized contractor and allow quick verification of your identity.
@@ -443,7 +443,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องแลกบัตรกับรปภ",
+  question: "ทำไมต้องแลกบัตร",
   answer: `เพื่อความปลอดภัยและควบคุมการเข้าออกของบุคคลภายนอก
 
 To ensure safety and control the entry and exit of external personnel.
@@ -931,7 +931,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องตรวจ PPE ก่อนใช้",
+  question: "ทำไมต้องตรวจPPE",
   answer: `เพื่อให้มั่นใจว่าอุปกรณ์ยังใช้งานได้และป้องกันอันตรายได้จริง
 
 To ensure PPE is functional and provides proper protection.
@@ -1040,7 +1040,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ห้ามวิ่งทำไม",
+  question: "ทำไมห้ามวิ่ง",
   answer: `เพราะอาจลื่น หกล้ม หรือชนของในพื้นที่ทำงาน
 
 Because running can cause slips, falls, or collisions.
@@ -1050,7 +1050,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ห้ามปีนโต๊ะทำไม",
+  question: "ทำไมห้ามปีนโต๊ะ",
   answer: `เพราะโต๊ะไม่ได้ออกแบบให้รับน้ำหนัก อาจล้มและบาดเจ็บได้
 
 Because tables are not designed to support weight and may collapse.
@@ -1060,7 +1060,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ห้ามเล่นมือถือทำไม",
+  question: "ทำไมห้ามเล่นมือถือ",
   answer: `เพราะทำให้เสียสมาธิและอาจเกิดอุบัติเหตุในพื้นที่เสี่ยง
 
 Because using a phone reduces awareness and increases accident risks.
@@ -1070,7 +1070,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่ PPE ทำไม",
+  question: "ทำไมต้องใส่PPE",
   answer: `เพื่อป้องกันอันตรายจากงาน เช่น ของตก ของมีคม หรือสารเคมี
 
 To protect yourself from hazards such as falling objects, sharp items, or chemicals.
@@ -1080,7 +1080,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่หมวกทำไม",
+  question: "ทำไมต้องใส่หมวก",
   answer: `เพื่อกันของตกใส่หัวและลดการบาดเจ็บ
 
 To protect your head from falling objects and impacts.
@@ -1090,7 +1090,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่แว่นทำไม",
+  question: "ทำไมต้องใส่แว่น",
   answer: `เพื่อกันฝุ่น เศษวัสดุ หรือสารเคมีกระเด็นเข้าตา
 
 To protect your eyes from dust, debris, or chemical splashes.
@@ -1100,7 +1100,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่ถุงมือทำไม",
+  question: "ทำไมต้องใส่ถุงมือ",
   answer: `เพื่อป้องกันมือจากของมีคม ของร้อน หรือสารเคมี
 
 To protect your hands from sharp edges, heat, or chemicals.
@@ -1110,7 +1110,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่รองเท้าเซฟตี้ทำไม",
+  question: "ทำไมต้องใส่รองเท้าเซฟตี้",
   answer: `เพื่อกันของตกใส่เท้าและป้องกันการลื่น
 
 To protect your feet from falling objects and slipping hazards.
@@ -1120,7 +1120,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ห้ามเข้าเขตกั้นทำไม",
+  question: "ทำไมห้ามเข้าเขตกั้น",
   answer: `เพราะเป็นพื้นที่เสี่ยง เช่น งานเชื่อม งานไฟฟ้า หรือของตกจากที่สูง
 
 Because barricaded areas contain hazards such as welding, electrical work, or falling objects.
@@ -1150,7 +1150,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่หมวกทำไม",
+  question: "ทำไมต้องใส่หมวก",
   answer: `เพื่อกันของตกใส่หัว
 
 To protect your head from falling objects.
@@ -1160,7 +1160,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่แว่นทำไม",
+  question: "ทำไมต้องใส่แว่น",
   answer: `เพื่อกันเศษวัสดุเข้าตา
 
 To protect your eyes from debris.
@@ -1170,7 +1170,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่ถุงมือทำไม",
+  question: "ทำไมต้องใส่ถุงมือ",
   answer: `เพื่อป้องกันมือจากของมีคม
 
 To protect your hands from sharp objects.
@@ -1180,7 +1180,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องใส่รองเท้าเซฟตี้ทำไม",
+  question: "ทำไมต้องใส่รองเท้า",
   answer: `เพื่อกันของตกใส่เท้า
 
 To protect your feet from falling objects.
@@ -1200,7 +1200,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องรายงานอุบัติเหตุทำไม",
+  question: "ทำไมต้องรายงานอุบัติเหตุ",
   answer: `เพื่อให้ช่วยเหลือและแก้ไขได้ทันที
 
 To ensure quick assistance and correction.
@@ -1210,7 +1210,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องปิดเครื่องก่อนซ่อมทำไม",
+  question: "ทำไมต้องปิดเครื่องก่อนซ่อม",
   answer: `เพื่อกันเครื่องทำงานเองและเกิดอุบัติเหตุ
 
 To prevent accidental machine startup.
@@ -1220,7 +1220,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องแจ้งก่อนเริ่มงานทำไม",
+  question: "ทำไมต้องแจ้งจป.ก่อนเริ่มงาน",
   answer: `เพื่อให้คนอื่นรู้และหลีกเลี่ยงพื้นที่เสี่ยง
 
 To inform others and avoid hazards.
@@ -1230,7 +1230,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ต้องรายงานอันตรายทำไม",
+  question: "ทำไมต้องรายงานอันตราย",
   answer: `เพื่อให้แก้ไขได้ทันทีและป้องกันอุบัติเหตุ
 
 To ensure hazards are fixed quickly and prevent accidents.
@@ -1307,6 +1307,29 @@ To prevent chemical splashes from entering your eyes, which can cause severe inj
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
+},
+
+{
+    question: "จุดสูบบุหรี่",
+    answer: `📍 จุดสูบบุหรี่ของบริษัท
+
+🏭 โรงงาน 1  
+• บริเวณสนามฟุตบอล  
+• หลังอาคาร 4  
+
+🏭 โรงงาน 2  
+• บริเวณข้างโรงขยะ`
+},
+
+{
+    question: "ขยะมีกี่ประเภท",
+    answer: `♻️ ขยะในบริษัทมีทั้งหมด **5 ประเภท** ได้แก่:
+
+1) ขยะทั่วไป  
+2) ขยะจากการผลิต  
+3) ขยะอันตราย  
+4) ขยะติดเชื้อ  
+5) Scrap`
 },
 
 {
