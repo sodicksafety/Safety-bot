@@ -525,26 +525,15 @@ To protect your feet from falling objects, sharp items, and slippery surfaces in
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
   },
-
-  {
-    question: "ทำไมห้ามใส่รองเท้าแตะ",
-    answer: `เพราะรองเท้าแตะไม่ป้องกันอันตราย เช่น ของตก ของมีคม หรือไฟฟ้ารั่ว
+{
+  question: "ทำไมห้ามใส่รองเท้าแตะ",
+  answer: `เพราะรองเท้าแตะไม่ป้องกันอันตราย เช่น ของตก ของมีคม หรือไฟฟ้ารั่ว
 
 Flip‑flops do not protect against hazards such as falling objects, sharp items, or electrical risks.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
-  },
-
-  {
-    question: "ทำไมต้องใส่แว่นตอนใช้สารเคมี",
-    answer: `เพื่อกันสารเคมีกระเด็นเข้าตา ซึ่งอาจทำให้ตาบอดหรือบาดเจ็บรุนแรง
-
-To prevent chemical splashes from entering your eyes, which can cause severe injury or blindness.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
-  },
+},
 
 {
   question: "ทำไมต้องใส่แว่นตอนใช้สารเคมี",
@@ -553,7 +542,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 To prevent chemical splashes from entering your eyes, which can cause severe injury or blindness.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
 },
 {
 question: "ทำไมต้องคัดแยกขยะ",
@@ -975,6 +964,10 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
 5) Scrapค่ะ`,
   },
 
+  /* ------------------------------
+   SAFETY QA DATABASE
+------------------------------ */
+const safetyQA = [
   {
     question: "PPEคืออะไร",
     answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ
@@ -1169,34 +1162,11 @@ Tax ID: 0105531085736`,
 - น้องพิน: 083-237-4357  
 - น้องกี้: 094-938-0425`,
   },
-
-  {
-    question: "เบอร์โทร",
-    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
-
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุช: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`,
-  },
 ];
 
-// --------------------------------------------------
-//  LOGIC ทั้งหมดของบอท
-// --------------------------------------------------
-
-// ------------------------------
-//  LINE WEBHOOK
-// ------------------------------
+/* ------------------------------
+   LINE WEBHOOK
+------------------------------ */
 app.post("/webhook", line.middleware(config), (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
     .then(() => res.status(200).end())
@@ -1206,39 +1176,47 @@ app.post("/webhook", line.middleware(config), (req, res) => {
     });
 });
 
-// ------------------------------
-//  MAIN BOT LOGIC
-// ------------------------------
+/* ------------------------------
+   MAIN BOT LOGIC
+------------------------------ */
 function handleEvent(event) {
   if (event.type !== "message" || event.message.type !== "text") {
     return Promise.resolve(null);
   }
 
-  // ⭐⭐⭐ เงื่อนไขใหม่สำหรับกลุ่ม ⭐⭐⭐
+  // ⭐ เงื่อนไขกลุ่ม
   if (event.source.type === "group") {
     const triggers = ["บอท", "bot", "Bot"];
-    const text = event.message.text;
-
-    const hasTrigger = triggers.some((word) => text.includes(word));
-    if (!hasTrigger) {
-      return Promise.resolve(null);
-    }
+    const raw = event.message.text;
+    const hasTrigger = triggers.some((w) => raw.includes(w));
+    if (!hasTrigger) return Promise.resolve(null);
   }
-  // ⭐⭐⭐ จบส่วนที่แก้ ⭐⭐⭐
 
-
-  // ------------------------------
-  // เตรียมข้อความ msg ให้พร้อมใช้งาน
-  // ------------------------------
+  // ⭐ เตรียมข้อความ
   let msg = event.message.text
     .toLowerCase()
     .trim()
     .replace(/\s+/g, "");
 
+  // ⭐ AO TABLE
+  if (msg === "ao") {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: `
+💚 SAFETY ZONE
+A : [A1] [A2] [A3] [A4]
+B : [B1] [B2] [B3] [B4]
+C : [C1] [C2] [C3] [C4]
 
-  // ------------------------------
-  // 1) ทักทายทั่วไป
-  // ------------------------------
+💙 SUPPORT ZONE
+D : [D1] [D2] [D3] [D4]
+E : [E1] [E2] [E3] [E4]
+F : [F1] [F2] [F3] [F4] [F5] [F6]
+      `,
+    });
+  }
+
+  // ⭐ ทักทาย
   if (
     msg.includes("สวัสดี") ||
     msg.includes("หวัดดี") ||
@@ -1248,31 +1226,15 @@ function handleEvent(event) {
     msg.includes("hi") ||
     msg.includes("hey")
   ) {
-    return reply(
-      event,
-      `สวัสดีครับ ผมคือ Safety Bot ของ Sodick ครับ 🙂
-Hello! I am the Sodick Safety Bot 🙂`
-    );
+    return reply(event, `สวัสดีครับ ผมคือ Safety Bot ของ Sodick ครับ 🙂`);
   }
 
-  // ------------------------------
-  // 2) ถามชื่อ
-  // ------------------------------
-  if (
-    msg.includes("ชื่ออะไร") ||
-    msg.includes("yourname") ||
-    msg.includes("whoareyou")
-  ) {
-    return reply(
-      event,
-      `ผมชื่อ Sodicksafety AI Bot ครับ  
-You can call me the Sodick Safety Bot 🙂`
-    );
+  // ⭐ ชื่อ
+  if (msg.includes("ชื่ออะไร") || msg.includes("yourname") || msg.includes("whoareyou")) {
+    return reply(event, `ผมชื่อ Sodicksafety AI Bot ครับ 🙂`);
   }
 
-  // ------------------------------
-  // 3) ถามสบายดีไหม
-  // ------------------------------
+  // ⭐ สบายดีไหม
   if (
     msg.includes("สบายดีไหม") ||
     msg.includes("เป็นไงบ้าง") ||
@@ -1281,46 +1243,20 @@ You can call me the Sodick Safety Bot 🙂`
     msg.includes("howareyou") ||
     msg.includes("areyouok")
   ) {
-    return reply(
-      event,
-      `ช่วงนี้งานเยอะ เหนื่อยนิดหน่อยครับ  
-I'm a bit busy lately, but I'm doing okay 🙂  
-ขอกำลังใจหน่อยนะครับ 😅`
-    );
+    return reply(event, `ช่วงนี้งานเยอะ เหนื่อยนิดหน่อยครับ 🙂`);
   }
 
-  // ------------------------------
-  // 4) ขอบคุณ
-  // ------------------------------
+  // ⭐ ขอบคุณ
   if (msg.includes("ขอบคุณ") || msg.includes("thank") || msg.includes("thanks")) {
-    return reply(
-      event,
-      `ยินดีมากครับ 🙂  
-You're very welcome!  
-ถ้ามีอะไรให้ช่วยเรื่องความปลอดภัย บอกผมได้เลยนะครับ`
-    );
+    return reply(event, `ยินดีมากครับ 🙂`);
   }
 
-  // ------------------------------
-  // 5) 555
-  // ------------------------------
-  if (
-    msg.includes("555") ||
-    msg.includes("ฮ่า") ||
-    msg.includes("lol") ||
-    msg.includes("haha")
-  ) {
-    return reply(
-      event,
-      `ฮ่าๆๆ 😂  
-Haha 😂  
-ดีใจที่ทำให้คุณยิ้มได้นะครับ`
-    );
+  // ⭐ 555
+  if (msg.includes("555") || msg.includes("ฮ่า") || msg.includes("lol") || msg.includes("haha")) {
+    return reply(event, `ฮ่าๆๆ 😂`);
   }
 
-  // ------------------------------
-  // 6) ขอความช่วยเหลือทั่วไป
-  // ------------------------------
+  // ⭐ ขอความช่วยเหลือ
   if (
     msg.includes("ช่วยด้วย") ||
     msg.includes("ขอความช่วยเหลือ") ||
@@ -1328,81 +1264,10 @@ Haha 😂
     msg.includes("helpme") ||
     msg.includes("ineedhelp")
   ) {
-    return reply(
-      event,
-      `ผมอยู่ตรงนี้ครับ  
-I'm here to help you.  
-ถ้าเป็นเรื่องความปลอดภัย แจ้งรายละเอียดให้ผมได้เลยนะครับ`
-    );
+    return reply(event, `ผมอยู่ตรงนี้ครับ พร้อมช่วยเสมอ 🙂`);
   }
 
-  // ------------------------------
-  // 7) ถามว่าทำอะไรได้บ้าง
-  // ------------------------------
-  if (
-    msg.includes("ทำอะไรได้บ้าง") ||
-    msg.includes("ใช้ยังไง") ||
-    msg.includes("ทำอะไรได้") ||
-    msg.includes("whatcanyoudo") ||
-    msg.includes("howtouse")
-  ) {
-    return reply(
-      event,
-      `ตอนนี้ผมช่วยตอบคำถามทั่วไปได้ครับ 🙂  
-I can answer general questions for now.  
-เร็ว ๆ นี้จะช่วยเรื่องความปลอดภัยได้มากขึ้นครับ`
-    );
-  }
-
-  // ------------------------------
-  // 8) ถามว่าอยู่ไหน
-  // ------------------------------
-  if (
-    msg.includes("อยู่ไหน") ||
-    msg.includes("อยู่ที่ไหน") ||
-    msg.includes("whereareyou")
-  ) {
-    return reply(
-      event,
-      `ผมอยู่ในระบบครับ พร้อมช่วยเหลือเสมอครับ 🙂  
-I'm always here in the system to support you 🙂`
-    );
-  }
-
-  // ------------------------------
-  // 9) ถามว่ากินข้าวยัง
-  // ------------------------------
-  if (msg.includes("กินข้าว") || msg.includes("haveyoueaten")) {
-    return reply(
-      event,
-      `ยังเลยครับ ช่วงนี้งานSafetyพี่เยอะมาก 😅  
-Not yet, I'm quite busy 😅  
-แล้วคุณล่ะครับ กินข้าวหรือยัง`
-    );
-  }
-
-  // ------------------------------
-  // 10) คำหยาบ
-  // ------------------------------
-  if (
-    msg.includes("โง่") ||
-    msg.includes("ควาย") ||
-    msg.includes("สัส") ||
-    msg.includes("เหี้ย") ||
-    msg.includes("stupid") ||
-    msg.includes("idiot")
-  ) {
-    return reply(
-      event,
-      `ใจเย็น ๆ นะครับ 🙂  
-Please stay calm 🙂  
-ผมอยู่เพื่อช่วยเหลือคุณนะครับ`
-    );
-  }
-
-  // ------------------------------
-  // 11) แจ้งเหตุฉุกเฉิน
-  // ------------------------------
+  // ⭐ emergency
   if (
     msg.includes("แจ้งเหตุ") ||
     msg.includes("อุบัติเหตุ") ||
@@ -1433,216 +1298,60 @@ Please stay calm 🙂
     );
   }
 
-  // ------------------------------
-  // 12) ค้นหาใน safetyQA
-  // ------------------------------
+  // ⭐ ค้นหาใน safetyQA
   const found = safetyQA.find((q) =>
     msg.includes(q.question.replace(/\s+/g, ""))
   );
+  if (found) return reply(event, found.answer);
 
-  if (found) {
-    return reply(event, found.answer);
-  }
-
-    // ------------------------------
-  // A) คลังคำ categories
-  // ------------------------------
+  // ⭐ categories
   const categories = {
-    greeting: [
-      "สวัสดี",
-      "หวัดดี",
-      "ดีครับ",
-      "ดีค่ะ",
-      "ดีจ้า",
-      "ฮัลโหล",
-      "ไง",
-      "ว่าไง",
-    ],
+    greeting: ["สวัสดี", "หวัดดี", "ดีครับ", "ดีค่ะ", "ดีจ้า", "ฮัลโหล", "ไง", "ว่าไง"],
     feeling: ["เศร้า", "ร้องไห้", "เสียใจ", "เครียด", "กังวล", "ท้อ"],
-    daily: [
-      "ทำไรอยู่",
-      "อยู่ไหน",
-      "ไปไหนมา",
-      "กินข้าวยัง",
-      "หิวไหม",
-      "ง่วงไหม",
-      "นอนยัง",
-      "ตื่นยัง",
-      "เลิกงานยัง",
-    ],
-    compliment: [
-      "เก่งมาก",
-      "สุดยอด",
-      "ดีมาก",
-      "เยี่ยมเลย",
-      "น่ารักจัง",
-      "ขอบคุณนะ",
-      "เป็นกำลังใจให้นะ",
-      "สู้ๆนะ",
-      "ดูแลตัวเองด้วย",
-    ],
-    friendly: [
-      "คิดถึง",
-      "คิดถึงไหม",
-      "รักมั้ย",
-      "รักเราไหม",
-      "ลืมเราหรือยัง",
-      "ตอบเร็วๆ",
-      "อย่าเงียบดิ",
-      "คุยกับเราหน่อย",
-      "เหงา",
-      "เบื่อ",
-      "หิว",
-      "ง่วง",
-    ],
+    daily: ["ทำไรอยู่", "อยู่ไหน", "ไปไหนมา", "กินข้าวยัง", "หิวไหม", "ง่วงไหม", "นอนยัง", "ตื่นยัง", "เลิกงานยัง"],
+    compliment: ["เก่งมาก", "สุดยอด", "ดีมาก", "เยี่ยมเลย", "น่ารักจัง", "ขอบคุณนะ", "เป็นกำลังใจให้นะ", "สู้ๆนะ", "ดูแลตัวเองด้วย"],
+    friendly: ["คิดถึง", "คิดถึงไหม", "รักมั้ย", "รักเราไหม", "ลืมเราหรือยัง", "ตอบเร็วๆ", "อย่าเงียบดิ", "คุยกับเราหน่อย", "เหงา", "เบื่อ", "หิว", "ง่วง"],
     exclaim: ["โอ้โห", "โหดจัง", "จริงดิ", "จริงป่ะ", "โคตรดี", "สุดจัด", "ปังมาก"],
     question: ["ช่วยคิดหน่อย", "แนะนำหน่อย", "ทำไงดี", "ทำไงต่อ"],
   };
 
-  // ------------------------------
-  // B) ชุดคำตอบ replies
-  // ------------------------------
+  // ⭐ replies
   const replies = {
-    greeting: [
-      "สวัสดีครับ 🙂",
-      "ดีครับผม Safety พร้อมช่วยเสมอครับ",
-      "ฮัลโหลครับ 🙂",
-      "ว่าไงครับ วันนี้เป็นไงบ้าง",
-    ],
-    feeling: [
-      "Safetyอยู่ตรงนี้นะครับ ไม่ต้องเหงา 🙂",
-      "ใจเย็น ๆ นะครับ เดี๋ยวทุกอย่างก็ดีขึ้นครับ",
-      "พักก่อนก็ได้นะครับ Safetyเป็นกำลังใจให้เสมอ 🙂",
-      "คิดถึงเหมือนกันครับ ดูแลตัวเองด้วยนะ",
-    ],
-    daily: [
-      "Safety กำลัง standby พร้อมช่วยงานอยู่ครับ 🙂",
-      "Safety อยู่ในระบบนี่แหละครับ พร้อมช่วยเสมอ",
-      "กินอะไรก็ได้ที่อร่อยและมีความสุขครับ 😄",
-      "พักผ่อนบ้างนะครับ อย่าหักโหม",
-    ],
-    compliment: [
-      "ขอบคุณครับ Safetyดีใจที่ช่วยได้ 🙂",
-      "พี่เก่งมากครับ ทำได้ดีมาก",
-      "สุดยอดไปเลยครับ 😄",
-      "Safetyเป็นกำลังใจให้เสมอนะครับ",
-    ],
-    friendly: [
-      "อยู่นี่ครับ ไม่หายไปไหน @Safety 🙂",
-       "รักเสมอ  @Safety ",
-      "ไม่เบื่อ  @Safety ",
-      "หิวต้องอดทนจะไม่อ้วน  @Safety ",
-      "คิดถึงเหมือนกันครับ  @Safety ",
-      "คุยได้เสมอนะครับ  @Safety ",
-      "ไม่ลืมหรอกครับ  @Safety 🙂",
-    ],
-    exclaim: [
-      "โหดจริงครับ แต่พี่เก่งกว่าอีก 😄",
-      "สุดจัดเลยครับ!",
-      "ปังมากครับ!",
-      "จริงครับผม!",
-    ],
-    question: [
-      "ได้ครับ เดี๋ยวSafetyช่วยคิดให้ 🙂",
-      "โอเคครับ บอกSafetyเพิ่มได้นะ",
-      "Safetyช่วยได้ครับ ลองเล่าเพิ่มหน่อย",
-      "ได้เลยครับ เดี๋ยวSafetyแนะนำให้",
-    ],
+    greeting: ["สวัสดีครับ 🙂", "ดีครับผม Safety พร้อมช่วยเสมอครับ", "ฮัลโหลครับ 🙂", "ว่าไงครับ วันนี้เป็นไงบ้าง"],
+    feeling: ["Safetyอยู่ตรงนี้นะครับ ไม่ต้องเหงา 🙂", "ใจเย็น ๆ นะครับ เดี๋ยวทุกอย่างก็ดีขึ้นครับ", "พักก่อนก็ได้นะครับ Safetyเป็นกำลังใจให้เสมอ 🙂", "คิดถึงเหมือนกันครับ ดูแลตัวเองด้วยนะ"],
+    daily: ["Safety กำลัง standby พร้อมช่วยงานอยู่ครับ 🙂", "Safety อยู่ในระบบนี่แหละครับ พร้อมช่วยเสมอ", "กินอะไรก็ได้ที่อร่อยและมีความสุขครับ 😄", "พักผ่อนบ้างนะครับ อย่าหักโหม"],
+    compliment: ["ขอบคุณครับ Safetyดีใจที่ช่วยได้ 🙂", "พี่เก่งมากครับ ทำได้ดีมาก", "สุดยอดไปเลยครับ 😄", "Safetyเป็นกำลังใจให้เสมอนะครับ"],
+    friendly: ["อยู่นี่ครับ ไม่หายไปไหน @Safety 🙂", "รักเสมอ  @Safety", "ไม่เบื่อ  @Safety", "หิวต้องอดทนจะไม่อ้วน  @Safety", "คิดถึงเหมือนกันครับ  @Safety", "คุยได้เสมอนะครับ  @Safety", "ไม่ลืมหรอกครับ  @Safety 🙂"],
+    exclaim: ["โหดจริงครับ แต่พี่เก่งกว่าอีก 😄", "สุดจัดเลยครับ!", "ปังมากครับ!", "จริงครับผม!"],
+    question: ["ได้ครับ เดี๋ยวSafetyช่วยคิดให้ 🙂", "โอเคครับ บอกSafetyเพิ่มได้นะ", "Safetyช่วยได้ครับ ลองเล่าเพิ่มหน่อย", "ได้เลยครับ เดี๋ยวSafetyแนะนำให้"],
   };
 
-  // ------------------------------
-  // C) ฟังก์ชันสุ่มตอบ
-  // ------------------------------
+  // ⭐ random reply
   function randomReply(list) {
     return list[Math.floor(Math.random() * list.length)];
   }
 
-  // ------------------------------
-  // D) ตัวจับหมวดคำ (หลังจากอารมณ์พิเศษ)
-  // ------------------------------
+  // ⭐ category detection
   for (const category in categories) {
     if (categories[category].some((word) => msg.includes(word))) {
       return reply(event, randomReply(replies[category]));
     }
   }
 
-// ------------------------------
-  // 13) Fallback — แจ้งผู้พัฒนา + mention
-  // ------------------------------
+  // ⭐ fallback
   return client.replyMessage(event.replyToken, {
     type: "text",
-    text: `ระบบยังไม่มีข้อมูลคำถามนี้
-แจ้งผู้พัฒนาระบบ: @Trerasak_K
-เพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/_T4H-3TKUa
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
-    mention: {
-      mentionees: [
-        {
-          index: 27,
-          userId: "U4a74c3933c0ecf9d2062768696ba3df8",
-        },
-      ],
-    },
+    text: `ระบบยังไม่มีข้อมูลคำถามนี้`,
   });
+}
 
-  // ⭐⭐ ต้องมีบรรทัดนี้ ⭐⭐
-  return Promise.resolve(null);
-} // ← ปิด handleEvent ตรงนี้จริง ๆ
-
-// ------------------------------
-// Helper: ส่งข้อความกลับ
-// ------------------------------
+/* ------------------------------
+   Helper
+------------------------------ */
 function reply(event, text) {
   return client.replyMessage(event.replyToken, {
     type: "text",
     text,
   });
 }
-// ------------------------------
-// Webhook
-// ------------------------------
 
-
-app.post("/webhook", (req, res) => {
-  const events = req.body.events;
-
-  events.forEach(async (event) => {
-    const text = event.message.text;
-    let replyMessage = "";
-
-    // ------------------------------
-    // AO TABLE COMMAND
-    // ------------------------------
-    if (text === "ao") {
-      replyMessage = `
-💚 SAFETY ZONE
-A : [A1] [A2] [A3] [A4]
-B : [B1] [B2] [B3] [B4]
-C : [C1] [C2] [C3] [C4]
-
-💙 SUPPORT ZONE
-D : [D1] [D2] [D3] [D4]
-E : [E1] [E2] [E3] [E4]
-F : [F1] [F2] [F3] [F4] [F5] [F6]
-      `;
-    }
-
-    await client.replyMessage(event.replyToken, {
-      type: "text",
-      text: replyMessage,
-    });
-  });
-
-  res.sendStatus(200);
-});
-
-// ------------------------------
-// Render ใช้ PORT จาก ENV
-// ------------------------------
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("LINE Bot server running on port " + PORT);
-});
