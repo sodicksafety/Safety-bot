@@ -520,7 +520,6 @@ Because using a phone reduces awareness and can lead to accidents in hazardous a
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
 },
-
 {
   question: "ทำไมต้องไม่เปิดเพลงเสียงดังตอนทำงาน",
   answer: `เพราะทำให้เสียสมาธิ ไม่ได้ยินสัญญาณเตือน และเพิ่มความเสี่ยงอุบัติเหตุ
@@ -530,32 +529,11 @@ Because loud music reduces concentration and prevents you from hearing warning s
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
 },
-
 {
   question: "ทำไมต้องตรวจถังดับเพลิงก่อนเชื่อม",
   answer: `เพื่อให้มั่นใจว่าถังดับเพลิงพร้อมใช้งาน หากเกิดไฟลุกขึ้นมาจะได้ดับได้ทันที
 
 To ensure the fire extinguisher is functional and ready in case a fire starts during welding.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องเคลียร์ของไวไฟออกจากพื้นที่เชื่อม",
-  answer: `เพราะสะเก็ดไฟจากงานเชื่อมสามารถทำให้ของไวไฟติดไฟได้ง่าย
-
-Because welding sparks can easily ignite flammable materials nearby.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่เสื้อผ้ากันไฟตอนเชื่อม",
-  answer: `เพื่อป้องกันสะเก็ดไฟไหม้เสื้อผ้าและลดการบาดเจ็บจากความร้อน
-
-To protect your clothing from sparks and reduce burn injuries during welding.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
@@ -580,7 +558,6 @@ To ensure no flammable materials or hazards are present before welding begins.
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
 },
-
 {
   question: "ทำไมต้องใช้ผ้าคลุมกันไฟของแท้",
   answer: `เพราะผ้าธรรมดาไหม้เร็วและไม่สามารถป้องกันสะเก็ดไฟได้ดี
@@ -860,6 +837,7 @@ Because shelves are not designed to support people and may collapse.
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
 },
+
 {
   question: "ทำไมต้องปิดประตูคลังสารเคมี",
   answer: `เพื่อป้องกันการรั่วไหล การปนเปื้อน และการเข้าถึงโดยไม่ได้รับอนุญาต
