@@ -1542,7 +1542,425 @@ Tax ID: 0105531085736`
 - น้องพิน: 083-237-4357  
 - น้องกี้: 094-938-0425`
 },
+// ------------------------------
+//  SAFETY Q&A DATABASE (ENVIRONMENT 50 ITEMS)
+// ------------------------------
 
+const safetyQA = [
+
+{
+question: "ทำไมต้องคัดแยกขยะ",
+answer: `การคัดแยกขยะช่วยลดการปนเปื้อน ลดมลพิษ และทำให้กำจัดได้ถูกต้องตามกฎหมาย ขยะของบริษัทแบ่งเป็น 5 ประเภท และต้องทิ้งให้ถูกถังตามที่กำหนด
+
+Waste separation reduces contamination, pollution, and ensures proper legal disposal. The company divides waste into 5 types, each requiring correct disposal.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ขยะทั่วไปคืออะไร",
+answer: `ขยะทั่วไปคือขยะที่ไม่เป็นอันตราย เช่น เศษอาหาร กระดาษ พลาสติก ซากพืช ซากสัตว์ ให้ทิ้งลงถัง “ขยะทั่วไป”
+
+General waste includes non‑hazardous items such as food scraps, paper, plastics, and plant debris.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ขยะจากการผลิตคืออะไร",
+answer: `คือขยะจากกระบวนการผลิต เช่น เศษกระดาษ กล่อง กระป๋อง หรือพลาสติกที่ไม่ปนเปื้อนสารเคมี ให้ทิ้งลงถัง “ขยะจากการผลิต”
+
+Production waste includes paper, cardboard, and plastics not contaminated with chemicals.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ขยะอันตรายคืออะไร",
+answer: `คือขยะที่มีสารเคมีปนเปื้อน เช่น ถุงมือเปื้อนสารเคมี ภาชนะสารเคมี แบตเตอรี่ กระป๋องสี ต้องทิ้งในถังแดง “ขยะอันตราย”
+
+Hazardous waste includes chemical‑contaminated materials such as gloves, containers, batteries, and paint cans.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ขยะติดเชื้อคืออะไร",
+answer: `ขยะติดเชื้อคือวัสดุที่ใช้ในการปฐมพยาบาล เช่น สำลี ผ้าก๊อซ ผ้าพันแผล ต้องทิ้งในถังแดง “ขยะติดเชื้อ”
+
+Infectious waste includes cotton, gauze, and bandages used in first aid.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "scrap คืออะไร",
+answer: `Scrap คือเศษวัสดุจากการผลิต เช่น เหล็ก อลูมิเนียม ทองแดง ต้องรวบรวมและนำไปทิ้งที่โรงขยะ
+
+Scrap refers to leftover production materials such as steel, aluminum, and copper.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องใช้ถุงขยะสีดำสีแดง",
+answer: `ถุงสีดำใช้สำหรับขยะทั่วไปและขยะจากการผลิต ส่วนถุงสีแดงใช้สำหรับขยะอันตราย เพื่อแยกประเภทให้ชัดเจนและปลอดภัย
+
+Black bags are for general and production waste, while red bags are for hazardous waste.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องทิ้งขยะให้ถูกถัง",
+answer: `เพื่อป้องกันการปนเปื้อน ลดอันตราย และทำให้กำจัดได้ถูกต้องตามกฎหมาย
+
+Correct disposal prevents contamination and ensures legal compliance.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องแยก scrap",
+answer: `เพราะ scrap เป็นวัสดุรีไซเคิลได้ ต้องแยกจากขยะทั่วไปเพื่อให้กำจัดได้ถูกต้องและนำกลับมาใช้ใหม่ได้
+
+Scrap is recyclable and must be separated for proper disposal and reuse.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องห้ามทิ้งขยะลงรางน้ำ",
+answer: `เพราะทำให้เกิดการอุดตัน ปนเปื้อน และอาจไหลลงสู่สิ่งแวดล้อมภายนอก ซึ่งผิดกฎหมาย
+
+Dumping waste into drains causes blockages, contamination, and environmental pollution.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+// ------------------------------
+// CLEANLINESS & POLLUTION CONTROL
+// ------------------------------
+
+{
+question: "ทำไมต้องรักษาความสะอาดพื้นที่ทำงาน",
+answer: `เพื่อป้องกันอุบัติเหตุ ลดการสะสมของเชื้อโรค และทำให้พื้นที่ทำงานปลอดภัย
+
+Clean workplaces reduce accidents, germs, and hazards.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องป้องกันขยะฟุ้งกระจาย",
+answer: `เพราะขยะฟุ้งกระจายทำให้เกิดฝุ่น กลิ่น และอาจรบกวนพื้นที่อื่น
+
+Preventing waste scattering reduces dust, odor, and contamination.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องเก็บขยะทุกวัน",
+answer: `เพื่อป้องกันกลิ่นเหม็น การสะสมของแมลง และลดความเสี่ยงด้านสุขอนามัย
+
+Daily waste collection prevents odor, pests, and hygiene issues.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องล้างพื้นที่หลังทำงาน",
+answer: `เพื่อกำจัดคราบสกปรก ลดการลื่นล้ม และทำให้พื้นที่ปลอดภัย
+
+Cleaning after work removes dirt and reduces slip hazards.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องปิดฝาถังขยะ",
+answer: `เพื่อป้องกันกลิ่น แมลง และสัตว์รบกวน
+
+Closed bins prevent odor and pests.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องห้ามวางขยะกองไว้",
+answer: `เพราะทำให้เกิดกลิ่น สกปรก และเสี่ยงต่อการปนเปื้อน
+
+Piled waste causes odor, dirt, and contamination risks.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องห้ามทิ้งน้ำเสียลงพื้น",
+answer: `เพราะทำให้พื้นลื่น เกิดกลิ่น และอาจไหลลงแหล่งน้ำ
+
+Wastewater on floors causes slips, odor, and pollution.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องควบคุมฝุ่นจากงานก่อสร้าง",
+answer: `ฝุ่นทำให้เกิดปัญหาสุขภาพและรบกวนพื้นที่อื่น ต้องควบคุมอย่างเข้มงวด
+
+Construction dust affects health and nearby areas.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องป้องกันกลิ่นเหม็นจากขยะ",
+answer: `เพื่อสุขอนามัยและความสบายของพนักงาน
+
+Odor control improves hygiene and comfort.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องห้ามทิ้งเศษอาหารในพื้นที่ผลิต",
+answer: `เพราะทำให้เกิดแมลง สกปรก และปนเปื้อนสินค้า
+
+Food waste attracts pests and contaminates products.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+// ------------------------------
+// RESOURCE SAVING
+// ------------------------------
+
+{
+question: "ทำไมต้องประหยัดน้ำ",
+answer: `น้ำเป็นทรัพยากรจำกัด การใช้น้ำอย่างประหยัดช่วยลดค่าใช้จ่ายและลดความเสี่ยงขาดแคลน
+
+Water is limited; saving it reduces cost and shortages.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องประหยัดไฟ",
+answer: `การประหยัดไฟช่วยลดค่าใช้จ่ายและลดการปล่อยก๊าซเรือนกระจก
+
+Saving electricity reduces costs and greenhouse gases.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องปิดแอร์เมื่อไม่ใช้งาน",
+answer: `เพื่อลดพลังงาน ลดค่าไฟ และยืดอายุเครื่องปรับอากาศ
+
+Turning off AC saves energy and extends equipment life.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องลดใช้กระดาษ",
+answer: `เพื่อลดการตัดต้นไม้ ลดขยะ และลดต้นทุน
+
+Reducing paper saves trees and reduces waste.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องใช้ถุงผ้าแทนถุงพลาสติก",
+answer: `เพราะถุงผ้าใช้ซ้ำได้ ลดขยะพลาสติกที่ย่อยสลายยาก
+
+Reusable bags reduce plastic waste.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องลดใช้โฟม",
+answer: `โฟมย่อยสลายยากและเป็นอันตรายต่อสิ่งแวดล้อม
+
+Foam is non‑biodegradable and harmful.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องลดใช้ขวดพลาสติก",
+answer: `ขวดพลาสติกใช้เวลาย่อยสลายนานมากและก่อมลพิษ
+
+Plastic bottles take centuries to decompose.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องใช้แก้วส่วนตัว",
+answer: `เพื่อลดขยะจากแก้วพลาสติกและรักษาสิ่งแวดล้อม
+
+Personal cups reduce plastic waste.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องปิดคอมพิวเตอร์หลังเลิกงาน",
+answer: `เพื่อลดพลังงานและยืดอายุอุปกรณ์
+
+Shutting down computers saves energy and extends lifespan.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องใช้พลังงานอย่างคุ้มค่า",
+answer: `เพื่อลดต้นทุน ลดมลพิษ และเพิ่มประสิทธิภาพองค์กร
+
+Efficient energy use reduces cost and pollution.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+// ------------------------------
+// CHEMICAL & HAZARDOUS CONTROL
+// ------------------------------
+
+{
+question: "ทำไมต้องแยกสารเคมีออกจากขยะทั่วไป",
+answer: `เพื่อป้องกันการปนเปื้อนและอันตรายจากปฏิกิริยาเคมี
+
+Chemical waste must be separated to avoid contamination and reactions.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องติดป้ายสารเคมี",
+answer: `เพื่อให้รู้ว่าสารนั้นคืออะไร อันตรายแค่ไหน และต้องจัดการอย่างไร
+
+Chemical labeling ensures safe handling and identification.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องเก็บสารเคมีในพื้นที่เฉพาะ",
+answer: `เพื่อป้องกันการรั่วไหลและอุบัติเหตุ
+
+Chemical storage areas prevent leaks and accidents.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องสวม PPE เมื่อใช้สารเคมี",
+answer: `เพื่อป้องกันการสัมผัสสารเคมีที่อาจเป็นอันตรายต่อผิวหนังและระบบหายใจ
+
+PPE protects against chemical exposure.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องรายงานสารเคมีหก",
+answer: `เพื่อให้เจ้าหน้าที่เข้ามาควบคุมและทำความสะอาดอย่างถูกวิธี
+
+Chemical spills must be reported for proper cleanup.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องห้ามเทสารเคมีลงพื้น",
+answer: `เพราะทำให้เกิดการปนเปื้อนและอันตรายต่อสิ่งแวดล้อม
+
+Pouring chemicals on the floor causes contamination.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องเก็บภาชนะสารเคมีให้มิดชิด",
+answer: `เพื่อป้องกันการรั่วไหลและการระเหยของสารเคมี
+
+Closed containers prevent leaks and evaporation.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องตรวจสอบวันหมดอายุสารเคมี",
+answer: `สารเคมีหมดอายุอาจเสื่อมสภาพและเป็นอันตราย
+
+Expired chemicals may degrade and become dangerous.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องแยกแบตเตอรี่ออกจากขยะทั่วไป",
+answer: `แบตเตอรี่มีสารอันตราย เช่น ตะกั่ว กรด ต้องกำจัดอย่างถูกวิธี
+
+Batteries contain hazardous materials and require special disposal.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+{
+question: "ทำไมต้องกำจัดหลอดไฟอย่างถูกวิธี",
+answer: `หลอดไฟมีสารปรอท ต้องกำจัดในระบบเฉพาะเพื่อป้องกันอันตราย
+
+Fluorescent lamps contain mercury and require special disposal.
+
+ศึกษาข้อมูลเพิ่มเติม:
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+},
+
+];
   // เพิ่ม Q&A อื่น ๆ ได้ที่นี่
 ];
 
@@ -1760,29 +2178,44 @@ const found = safetyQA.find(q =>
 if (found) {
   return reply(event, found.answer);
 }
-
 // ------------------------------
 // 12.1) จับคำอารมณ์แบบครอบจักรวาล (ขั้นเทพ)
 // ------------------------------
-if (msg.includes("คิดถึง")) {
+
+// คิดถึง (ทั่วไป) → feeling
+if (
+  msg.includes("คิดถึง") &&
+  !msg.includes("คิดถึงมั้ย") &&
+  !msg.includes("คิดถึงไหม")
+) {
   return reply(event, randomReply(replies.feeling));
 }
 
-if (msg.includes("รัก")) {
+// คิดถึงมั้ย / คิดถึงไหม → friendly
+if (msg.includes("คิดถึงมั้ย") || msg.includes("คิดถึงไหม")) {
   return reply(event, randomReply(replies.friendly));
 }
 
+// รัก → friendly (แต่กันคำว่า "น่ารัก")
+if (msg.includes("รัก") && !msg.includes("น่ารัก")) {
+  return reply(event, randomReply(replies.friendly));
+}
+
+// เหนื่อย → feeling
 if (msg.includes("เหนื่อย")) {
   return reply(event, randomReply(replies.feeling));
 }
 
+// หิว → daily
 if (msg.includes("หิว")) {
   return reply(event, randomReply(replies.daily));
 }
 
+// ง่วง → daily
 if (msg.includes("ง่วง")) {
   return reply(event, randomReply(replies.daily));
 }
+
 
 // ------------------------------
 // A) คลังคำ (categories) — เวอร์ชันเสถียร
@@ -1793,8 +2226,8 @@ const categories = {
   ],
 
   feeling: [
-    "เหงา","เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล",
-    "ท้อ","เบื่อ"
+    "เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล",
+    "ท้อ"
   ],
 
   daily: [
@@ -1808,8 +2241,9 @@ const categories = {
   ],
 
   friendly: [
-    "คิดถึงมั้ย","รักเรามั้ย","ลืมเราหรือยัง","ตอบเร็วๆ","อย่าเงียบดิ",
-    "คุยกับเราหน่อย","เหงาอ่ะ","เบื่ออ่ะ","หิวอ่ะ","ง่วงอ่ะ"
+    "คิดถึงมั้ย","คิดถึงไหม","รักเรามั้ย","รักเราไหม","ลืมเราหรือยัง",
+    "ตอบเร็วๆ","อย่าเงียบดิ","คุยกับเราหน่อย",
+    "เหงาอ่ะ","เบื่ออ่ะ","หิวอ่ะ","ง่วงอ่ะ"
   ],
 
   exclaim: [
@@ -1823,6 +2257,7 @@ const categories = {
     "ทำไงต่อ"
   ]
 };
+
 
 // ------------------------------
 // B) ชุดคำตอบแบบสุ่ม (replies)
@@ -1878,12 +2313,14 @@ const replies = {
   ]
 };
 
+
 // ------------------------------
 // C) ฟังก์ชันสุ่มตอบ
 // ------------------------------
 function randomReply(list) {
   return list[Math.floor(Math.random() * list.length)];
 }
+
 
 // ------------------------------
 // D) ตัวจับหมวดคำ (หลังจากอารมณ์พิเศษ)
