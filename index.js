@@ -13,1281 +13,540 @@ const config = {
 const client = new line.Client(config);
 
 // ------------------------------
-//  SAFETY Q&A DATABASE
+//  SAFETY Q&A DATABASE (รวมทั้งหมดเป็นก้อนเดียว)
 // ------------------------------
 const safetyQA = [
-{
-  question: "ทำไมต้องอบรม",
-  answer: `เพราะบริษัทต้องให้แน่ใจว่าผู้รับเหมารู้กฎความปลอดภัยพื้นฐานก่อนเริ่มงาน เพื่อป้องกันอุบัติเหตุ
+  {
+    question: "ทำไมต้องอบรม",
+    answer: `เพราะบริษัทต้องให้แน่ใจว่าผู้รับเหมารู้กฎความปลอดภัยพื้นฐานก่อนเริ่มงาน เพื่อป้องกันอุบัติเหตุ
 
 Because the company must ensure that contractors understand basic safety rules before starting work to prevent accidents.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องแลกบัตร",
-  answer: `เพื่อยืนยันตัวตนและให้ รปภ. ตรวจสอบว่าใครเข้ามาทำงานในพื้นที่บริษัท
+  {
+    question: "ทำไมต้องแลกบัตร",
+    answer: `เพื่อยืนยันตัวตนและให้ รปภ. ตรวจสอบว่าใครเข้ามาทำงานในพื้นที่บริษัท
 
 To verify identity and allow security staff to check who enters the company premises.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ppeคืออะไร",
-  answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ
+  {
+    question: "ppeคืออะไร",
+    answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ
 
 PPE stands for Personal Protective Equipment such as safety helmets, safety shoes, safety glasses, and gloves.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใส่รองเท้าหุ้มส้น",
-  answer: `เพื่อป้องกันเท้าจากของตก ของมีคม และอุบัติเหตุในพื้นที่ทำงาน
+  {
+    question: "ทำไมต้องใส่รองเท้าหุ้มส้น",
+    answer: `เพื่อป้องกันเท้าจากของตก ของมีคม และอุบัติเหตุในพื้นที่ทำงาน
 
 To protect your feet from falling objects, sharp items, and workplace accidents.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องขอใบwork",
-  answer: `เพราะงานบางประเภทเสี่ยง เช่น งานเชื่อม งานที่สูง งานอับอากาศ ต้องมีการตรวจสอบความปลอดภัยก่อนเริ่มงาน
+  {
+    question: "ทำไมต้องขอใบwork",
+    answer: `เพราะงานบางประเภทเสี่ยง เช่น งานเชื่อม งานที่สูง งานอับอากาศ ต้องมีการตรวจสอบความปลอดภัยก่อนเริ่มงาน
 
 Because certain jobs are high-risk, such as welding, working at height, or confined space work, and require safety checks before starting.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "สูบบุหรี่ตรงไหน",
-  answer: `สูบได้เฉพาะจุดที่บริษัทกำหนด ห้ามสูบในอาคารหรือห้องน้ำเด็ดขาด
+  {
+    question: "สูบบุหรี่ตรงไหน",
+    answer: `สูบได้เฉพาะจุดที่บริษัทกำหนด ห้ามสูบในอาคารหรือห้องน้ำเด็ดขาด
 
 Smoking is allowed only in designated smoking areas. Smoking inside buildings or restrooms is strictly prohibited.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องกั้นพื้นที่ทำงาน",
-  answer: `เพื่อให้คนอื่นรู้ว่ามีงานกำลังดำเนินอยู่ และป้องกันไม่ให้คนที่ไม่เกี่ยวข้องเข้าไปในพื้นที่เสี่ยง
+  {
+    question: "ทำไมต้องกั้นพื้นที่ทำงาน",
+    answer: `เพื่อให้คนอื่นรู้ว่ามีงานกำลังดำเนินอยู่ และป้องกันไม่ให้คนที่ไม่เกี่ยวข้องเข้าไปในพื้นที่เสี่ยง
 
 To inform others that work is in progress and to prevent unauthorized people from entering hazardous areas.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องแจ้งจป.ถ้าเกิดอุบัติเหตุ",
-  answer: `เพื่อให้เจ้าหน้าที่เข้ามาช่วยเหลือ ตรวจสอบ และป้องกันไม่ให้เกิดซ้ำ
+  {
+    question: "ทำไมต้องแจ้งจป.ถ้าเกิดอุบัติเหตุ",
+    answer: `เพื่อให้เจ้าหน้าที่เข้ามาช่วยเหลือ ตรวจสอบ และป้องกันไม่ให้เกิดซ้ำ
 
 So that safety officers can assist, investigate, and prevent the incident from happening again.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "งานเชื่อมต้องเตรียมอะไรบ้าง",
-  answer: `ต้องมีหน้ากากกันสะเก็ดไฟ แว่นตา ถุงมือหนัง ถังดับเพลิง ผ้าคลุมกันไฟ และกั้นพื้นที่ให้เรียบร้อย
+  {
+    question: "งานเชื่อมต้องเตรียมอะไรบ้าง",
+    answer: `ต้องมีหน้ากากกันสะเก็ดไฟ แว่นตา ถุงมือหนัง ถังดับเพลิง ผ้าคลุมกันไฟ และกั้นพื้นที่ให้เรียบร้อย
 
 You must prepare a welding mask, safety glasses, leather gloves, a fire extinguisher, fire-resistant covers, and properly barricade the work area.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมงานที่สูงต้องใช้ full body harness",
-  answer: `เพื่อป้องกันการตกจากที่สูง ลดแรงกระแทก และช่วยชีวิตถ้าเกิดพลาด
+  {
+    question: "ทำไมงานที่สูงต้องใช้ full body harness",
+    answer: `เพื่อป้องกันการตกจากที่สูง ลดแรงกระแทก และช่วยชีวิตถ้าเกิดพลาด
 
 To prevent falls from height, reduce impact force, and save your life in case of an accident.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "งานเชื่อมคืออะไร",
-  answer: `งานที่มีความร้อนและประกายไฟ เช่น เชื่อม ตัด เจียร ต้องระวังไฟไหม้
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
+
+  {
+    question: "งานเชื่อมคืออะไร",
+    answer: `งานที่มีความร้อนและประกายไฟ เช่น เชื่อม ตัด เจียร ต้องระวังไฟไหม้
 
 Welding work involves heat and sparks such as welding, cutting, and grinding, which can easily cause fire hazards.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมงานเชื่อมต้องขออนุญาต",
-  answer: `เพราะเสี่ยงไฟไหม้ ต้องตรวจพื้นที่และอุปกรณ์ก่อนเริ่มงาน
+  {
+    question: "ทำไมงานเชื่อมต้องขออนุญาต",
+    answer: `เพราะเสี่ยงไฟไหม้ ต้องตรวจพื้นที่และอุปกรณ์ก่อนเริ่มงาน
 
 Because welding work has fire risks, the area and equipment must be inspected before starting.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องคลุมของด้วยผ้ากันไฟ",
-  answer: `เพื่อกันสะเก็ดไฟไปโดนของบริษัทจนเกิดความเสียหาย
+  {
+    question: "ทำไมต้องคลุมของด้วยผ้ากันไฟ",
+    answer: `เพื่อกันสะเก็ดไฟไปโดนของบริษัทจนเกิดความเสียหาย
 
 To prevent sparks from damaging company property by covering items with fire-resistant cloth.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องตรวจพื้นที่หลังเชื่อม",
-  answer: `กันไฟลุกซ้ำจากสะเก็ดไฟที่ค้างอยู่
+  {
+    question: "ทำไมต้องตรวจพื้นที่หลังเชื่อม",
+    answer: `กันไฟลุกซ้ำจากสะเก็ดไฟที่ค้างอยู่
 
 To prevent re-ignition caused by remaining sparks after welding work is done.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องมีคนเฝ้างานเชื่อม",
-  answer: `เพื่อดูความปลอดภัยและคอยดับไฟถ้ามีเหตุฉุกเฉิน
+  {
+    question: "ทำไมต้องมีคนเฝ้างานเชื่อม",
+    answer: `เพื่อดูความปลอดภัยและคอยดับไฟถ้ามีเหตุฉุกเฉิน
 
 To monitor safety and extinguish fire immediately if an emergency occurs.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใส่แว่นเชื่อม",
-  answer: `เพื่อป้องกันแสงเชื่อมที่ทำลายสายตา
+  {
+    question: "ทำไมต้องใส่แว่นเชื่อม",
+    answer: `เพื่อป้องกันแสงเชื่อมที่ทำลายสายตา
 
 To protect your eyes from welding light that can cause severe eye damage.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "งานที่สูงคืออะไร",
-  answer: `งานที่ทำบนที่สูงเกิน 2 เมตรขึ้นไป ต้องใช้อุปกรณ์กันตก
+  {
+    question: "งานที่สูงคืออะไร",
+    answer: `งานที่ทำบนที่สูงเกิน 2 เมตรขึ้นไป ต้องใช้อุปกรณ์กันตก
 
 High work refers to tasks performed above 2 meters where fall protection equipment is required.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องขออนุญาตงานที่สูง",
-  answer: `เพราะเสี่ยงตก ต้องตรวจอุปกรณ์ก่อนทำงาน
+  {
+    question: "ทำไมต้องขออนุญาตงานที่สูง",
+    answer: `เพราะเสี่ยงตก ต้องตรวจอุปกรณ์ก่อนทำงาน
 
 Because working at height has fall risks, equipment must be inspected before starting.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องตรวจบันได",
-  answer: `กันบันไดหักหรือพังตอนใช้งาน
+  {
+    question: "ทำไมต้องตรวจบันได",
+    answer: `กันบันไดหักหรือพังตอนใช้งาน
 
 To prevent ladder collapse or breakage during use.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องผูกบันได",
-  answer: `เพื่อกันบันไดล้มตอนขึ้นลง
+  {
+    question: "ทำไมต้องผูกบันได",
+    answer: `เพื่อกันบันไดล้มตอนขึ้นลง
 
 To prevent the ladder from falling while climbing up or down.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมต้องมีราวกันตก",
-  answer: `เพื่อกันพลาดตกจากขอบนั่งร้านหรือพื้นที่สูง
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
+
+  {
+    question: "ทำไมต้องมีราวกันตก",
+    answer: `เพื่อกันพลาดตกจากขอบนั่งร้านหรือพื้นที่สูง
 
 To prevent accidental falls from scaffolding edges or elevated platforms.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใส่หมวกบนที่สูง",
-  answer: `กันของตกใส่หัวและป้องกันการกระแทก
+  {
+    question: "ทำไมต้องใส่หมวกบนที่สูง",
+    answer: `กันของตกใส่หัวและป้องกันการกระแทก
 
 To protect your head from falling objects and impacts while working at height.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "งานไฟฟ้าคืออะไร",
-  answer: `งานที่เกี่ยวกับสายไฟ อุปกรณ์ไฟฟ้า หรือวงจรไฟฟ้า ซึ่งมีความเสี่ยงไฟดูดและไฟไหม้
+  {
+    question: "งานไฟฟ้าคืออะไร",
+    answer: `งานที่เกี่ยวกับสายไฟ อุปกรณ์ไฟฟ้า หรือวงจรไฟฟ้า ซึ่งมีความเสี่ยงไฟดูดและไฟไหม้
 
 Electrical work involves wiring, electrical devices, or circuits, which carry risks of electric shock and fire.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องปิดสวิตช์ก่อนซ่อมไฟ",
-  answer: `เพื่อกันไฟดูดและป้องกันอุบัติเหตุจากไฟฟ้ารั่ว
+  {
+    question: "ทำไมต้องปิดสวิตช์ก่อนซ่อมไฟ",
+    answer: `เพื่อกันไฟดูดและป้องกันอุบัติเหตุจากไฟฟ้ารั่ว
 
 To prevent electric shock and avoid accidents caused by electrical leakage.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใช้เครื่องมือหุ้มฉนวน",
-  answer: `เพื่อกันไฟรั่วเข้ามือและลดความเสี่ยงไฟดูด
+  {
+    question: "ทำไมต้องใช้เครื่องมือหุ้มฉนวน",
+    answer: `เพื่อกันไฟรั่วเข้ามือและลดความเสี่ยงไฟดูด
 
 To prevent electrical current from passing through tools into your hands, reducing shock risk.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องไม่ใช้ปลั๊กพ่วงหลายชั้น",
-  answer: `เพราะเสี่ยงโหลดเกินจนทำให้ไฟไหม้
+  {
+    question: "ทำไมต้องไม่ใช้ปลั๊กพ่วงหลายชั้น",
+    answer: `เพราะเสี่ยงโหลดเกินจนทำให้ไฟไหม้
 
 Because using multiple extension layers can overload the circuit and cause fire hazards.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องตรวจปลั๊กก่อนใช้",
-  answer: `กันไฟช็อต ไฟลัดวงจร หรือประกายไฟที่อาจทำให้เกิดไฟไหม้
+  {
+    question: "ทำไมต้องตรวจปลั๊กก่อนใช้",
+    answer: `กันไฟช็อต ไฟลัดวงจร หรือประกายไฟที่อาจทำให้เกิดไฟไหม้
 
 To prevent electric shock, short circuits, or sparks that could lead to fire.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "สารเคมีคืออะไร",
-  answer: `ของเหลวหรือของแข็งที่อาจเป็นพิษ ระคายเคือง หรือไวไฟ ต้องใช้อย่างระมัดระวัง
+  {
+    question: "สารเคมีคืออะไร",
+    answer: `ของเหลวหรือของแข็งที่อาจเป็นพิษ ระคายเคือง หรือไวไฟ ต้องใช้อย่างระมัดระวัง
 
 Chemicals are liquids or solids that may be toxic, irritating, or flammable and must be handled carefully.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใส่ถุงมือเวลาใช้สารเคมี",
-  answer: `เพื่อป้องกันผิวหนังไหม้ ระคายเคือง หรือดูดซึมสารพิษเข้าสู่ร่างกาย
+  {
+    question: "ทำไมต้องใส่ถุงมือเวลาใช้สารเคมี",
+    answer: `เพื่อป้องกันผิวหนังไหม้ ระคายเคือง หรือดูดซึมสารพิษเข้าสู่ร่างกาย
 
 To protect your skin from burns, irritation, or absorption of harmful chemicals.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมสารเคมีต้องเก็บในที่เฉพาะ",
-  answer: `เพื่อกันรั่วไหล ปนเปื้อน หรือเกิดปฏิกิริยากับสารอื่น
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
+
+  {
+    question: "ทำไมสารเคมีต้องเก็บในที่เฉพาะ",
+    answer: `เพื่อกันรั่วไหล ปนเปื้อน หรือเกิดปฏิกิริยากับสารอื่น
 
 To prevent leaks, contamination, or dangerous reactions with other chemicals.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมสารเคมีหกต้องรีบแจ้ง",
-  answer: `เพราะอาจเป็นพิษ ไวไฟ หรือทำให้ลื่นจนเกิดอุบัติเหตุ
+  {
+    question: "ทำไมสารเคมีหกต้องรีบแจ้ง",
+    answer: `เพราะอาจเป็นพิษ ไวไฟ หรือทำให้ลื่นจนเกิดอุบัติเหตุ
 
 Because chemical spills may be toxic, flammable, or cause slipping hazards leading to accidents.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ที่อับอากาศคืออะไร",
-  answer: `พื้นที่แคบ อากาศไม่พอ อาจมีแก๊สพิษหรือออกไม่ได้ อันตรายถึงชีวิต
+  {
+    question: "ที่อับอากาศคืออะไร",
+    answer: `พื้นที่แคบ อากาศไม่พอ อาจมีแก๊สพิษหรือออกไม่ได้ อันตรายถึงชีวิต
 
 A confined space is a narrow area with limited airflow that may contain toxic gases or restricted exit routes, posing life-threatening risks.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องตรวจอากาศก่อนเข้า",
-  answer: `เพื่อดูว่ามีออกซิเจนเพียงพอหรือมีแก๊สพิษหรือไม่
+  {
+    question: "ทำไมต้องตรวจอากาศก่อนเข้า",
+    answer: `เพื่อดูว่ามีออกซิเจนเพียงพอหรือมีแก๊สพิษหรือไม่
 
 To ensure oxygen levels are safe and detect any toxic gases before entering.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องมีคนเฝ้าด้านนอก",
-  answer: `เพื่อช่วยเหลือทันทีหากเกิดเหตุฉุกเฉินภายในที่อับอากาศ
+  {
+    question: "ทำไมต้องมีคนเฝ้าด้านนอก",
+    answer: `เพื่อช่วยเหลือทันทีหากเกิดเหตุฉุกเฉินภายในที่อับอากาศ
 
 To provide immediate assistance if an emergency occurs inside the confined space.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องมีอุปกรณ์ช่วยหายใจ",
-  answer: `เพื่อป้องกันการขาดอากาศหรือสูดดมแก๊สพิษที่อาจทำให้หมดสติหรือเสียชีวิต
+  {
+    question: "ทำไมต้องมีอุปกรณ์ช่วยหายใจ",
+    answer: `เพื่อป้องกันการขาดอากาศหรือสูดดมแก๊สพิษที่อาจทำให้หมดสติหรือเสียชีวิต
 
 To prevent suffocation or inhalation of toxic gases that can cause unconsciousness or death.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องมีใบอนุญาตเข้าที่อับอากาศ",
-  answer: `เพราะเป็นงานเสี่ยงตาย ต้องตรวจสอบทุกขั้นตอนก่อนเข้า
+  {
+    question: "ทำไมต้องมีใบอนุญาตเข้าที่อับอากาศ",
+    answer: `เพราะเป็นงานเสี่ยงตาย ต้องตรวจสอบทุกขั้นตอนก่อนเข้า
 
 Because confined space entry is extremely dangerous and requires strict safety checks before entry.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องแยกขยะ",
-  answer: `เพื่อป้องกันปนเปื้อน ลดอันตราย และทำให้กำจัดได้ง่ายและถูกวิธี
+  {
+    question: "ทำไมต้องแยกขยะ",
+    answer: `เพื่อป้องกันปนเปื้อน ลดอันตราย และทำให้กำจัดได้ง่ายและถูกวิธี
 
 To prevent contamination, reduce hazards, and ensure proper waste disposal.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องทิ้งของมีคมในถังเฉพาะ",
-  answer: `เพื่อป้องกันการบาดเจ็บของพนักงานเก็บขยะและป้องกันการปนเปื้อน
+  {
+    question: "ทำไมต้องทิ้งของมีคมในถังเฉพาะ",
+    answer: `เพื่อป้องกันการบาดเจ็บของพนักงานเก็บขยะและป้องกันการปนเปื้อน
 
 To prevent injuries to waste handlers and avoid contamination.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องเก็บพื้นที่ให้สะอาด",
-  answer: `เพื่อป้องกันการลื่น หกล้ม และลดอุบัติเหตุในพื้นที่ทำงาน
+  {
+    question: "ทำไมต้องเก็บพื้นที่ให้สะอาด",
+    answer: `เพื่อป้องกันการลื่น หกล้ม และลดอุบัติเหตุในพื้นที่ทำงาน
 
 To prevent slips, trips, and falls, reducing workplace accidents.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมห้ามแตะเครื่องจักรถ้าไม่เกี่ยวข้อง",
-  answer: `เพราะเสี่ยงโดนหนีบ ดึง หรือบาดเจ็บจากชิ้นส่วนที่เคลื่อนที่
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
+
+  {
+    question: "ทำไมห้ามแตะเครื่องจักรถ้าไม่เกี่ยวข้อง",
+    answer: `เพราะเสี่ยงโดนหนีบ ดึง หรือบาดเจ็บจากชิ้นส่วนที่เคลื่อนที่
 
 Because you may get caught, pulled in, or injured by moving machine parts.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องปิดเครื่องก่อนซ่อม",
-  answer: `เพื่อป้องกันเครื่องทำงานเองโดยไม่ตั้งใจ ซึ่งอาจทำให้เกิดอุบัติเหตุรุนแรง
+  {
+    question: "ทำไมต้องปิดเครื่องก่อนซ่อม",
+    answer: `เพื่อป้องกันเครื่องทำงานเองโดยไม่ตั้งใจ ซึ่งอาจทำให้เกิดอุบัติเหตุรุนแรง
 
 To prevent the machine from accidentally starting during maintenance, which can cause serious injuries.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องไม่สอดมือเข้าเครื่อง",
-  answer: `เพราะอาจโดนหนีบ ดึง หรือบาดเจ็บจากชิ้นส่วนที่หมุนหรือเคลื่อนที่
+  {
+    question: "ทำไมต้องไม่สอดมือเข้าเครื่อง",
+    answer: `เพราะอาจโดนหนีบ ดึง หรือบาดเจ็บจากชิ้นส่วนที่หมุนหรือเคลื่อนที่
 
 Because your hand may get caught, pulled, or injured by rotating or moving parts.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องติดบัตร",
-  answer: `เพื่อให้รู้ว่าเป็นผู้รับเหมาที่ได้รับอนุญาตและสามารถตรวจสอบตัวตนได้ทันที
+  {
+    question: "ทำไมต้องติดบัตร",
+    answer: `เพื่อให้รู้ว่าเป็นผู้รับเหมาที่ได้รับอนุญาตและสามารถตรวจสอบตัวตนได้ทันที
 
 To identify you as an authorized contractor and allow quick verification of your identity.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องแลกบัตร",
-  answer: `เพื่อความปลอดภัยและควบคุมการเข้าออกของบุคคลภายนอก
-
-To ensure safety and control the entry and exit of external personnel.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องทิ้งขยะให้ถูกถัง",
-  answer: `เพื่อป้องกันปนเปื้อน ลดอันตราย และทำให้กำจัดได้ถูกวิธี
+  {
+    question: "ทำไมต้องทิ้งขยะให้ถูกถัง",
+    answer: `เพื่อป้องกันปนเปื้อน ลดอันตราย และทำให้กำจัดได้ถูกวิธี
 
 To prevent contamination, reduce hazards, and ensure proper waste disposal.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องไม่เดินในพื้นที่ที่ไม่ได้รับอนุญาต",
-  answer: `เพราะอาจมีอันตราย เช่น เครื่องจักรทำงานอยู่ หรือมีงานเสี่ยงกำลังดำเนินการ
+  {
+    question: "ทำไมต้องไม่เดินในพื้นที่ที่ไม่ได้รับอนุญาต",
+    answer: `เพราะอาจมีอันตราย เช่น เครื่องจักรทำงานอยู่ หรือมีงานเสี่ยงกำลังดำเนินการ
 
 Because restricted areas may contain hazards such as operating machinery or ongoing high‑risk work.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องรายงานอุบัติเหตุทันที",
-  answer: `เพื่อให้ช่วยเหลือได้เร็ว ตรวจสอบสาเหตุ และป้องกันไม่ให้เกิดซ้ำ
+  {
+    question: "ทำไมต้องรายงานอุบัติเหตุทันที",
+    answer: `เพื่อให้ช่วยเหลือได้เร็ว ตรวจสอบสาเหตุ และป้องกันไม่ให้เกิดซ้ำ
 
 To ensure quick assistance, investigate the cause, and prevent recurrence.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องไม่ยุ่งเครื่องจักรที่ไม่เกี่ยวข้อง",
-  answer: `เพราะอาจทำให้เครื่องทำงานผิดพลาดหรือเกิดอุบัติเหตุได้
-
-Because touching machines unnecessarily may cause malfunction or accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องแต่งกายรัดกุม",
-  answer: `เพื่อป้องกันเสื้อผ้าไปเกี่ยวกับเครื่องจักรหรืออุปกรณ์ที่หมุนอยู่
+  {
+    question: "ทำไมต้องแต่งกายรัดกุม",
+    answer: `เพื่อป้องกันเสื้อผ้าไปเกี่ยวกับเครื่องจักรหรืออุปกรณ์ที่หมุนอยู่
 
 To prevent loose clothing from getting caught in rotating machinery or equipment.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมต้องไม่วิ่งในโรงงาน",
-  answer: `เพราะพื้นอาจลื่น มีสิ่งกีดขวาง หรือมีรถโฟล์คลิฟต์วิ่งอยู่ ทำให้เกิดอุบัติเหตุได้ง่าย
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-Because the floor may be slippery, obstacles may be present, or forklifts may be operating, increasing the risk of accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ใช้โทรศัพท์ในพื้นที่เสี่ยง",
-  answer: `เพราะทำให้เสียสมาธิ ไม่ระวังรอบตัว และอาจเกิดอุบัติเหตุได้
-
-Because using a phone reduces awareness and can lead to accidents in hazardous areas.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมต้องไม่เปิดเพลงเสียงดังตอนทำงาน",
-  answer: `เพราะทำให้เสียสมาธิ ไม่ได้ยินสัญญาณเตือน และเพิ่มความเสี่ยงอุบัติเหตุ
-
-Because loud music reduces concentration and prevents you from hearing warning signals, increasing accident risks.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมต้องตรวจถังดับเพลิงก่อนเชื่อม",
-  answer: `เพื่อให้มั่นใจว่าถังดับเพลิงพร้อมใช้งาน หากเกิดไฟลุกขึ้นมาจะได้ดับได้ทันที
-
-To ensure the fire extinguisher is functional and ready in case a fire starts during welding.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่เชื่อมใกล้ถังแก๊ส",
-  answer: `เพราะถังแก๊สไวไฟและอาจระเบิดได้หากโดนความร้อนหรือสะเก็ดไฟ
-
-Because gas cylinders are flammable and may explode if exposed to heat or sparks.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องตรวจพื้นที่รอบก่อนเชื่อม",
-  answer: `เพื่อดูว่ามีของไวไฟหรือสิ่งกีดขวางที่อาจทำให้เกิดอุบัติเหตุหรือไฟไหม้หรือไม่
-
-To ensure no flammable materials or hazards are present before welding begins.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมต้องใช้ผ้าคลุมกันไฟของแท้",
-  answer: `เพราะผ้าธรรมดาไหม้เร็วและไม่สามารถป้องกันสะเก็ดไฟได้ดี
-
-Because regular cloth burns easily and cannot protect against welding sparks effectively.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ยกของหนักคนเดียว",
-  answer: `เพราะเสี่ยงปวดหลัง กล้ามเนื้อฉีก หรือบาดเจ็บจากการยกผิดท่า
-
-Because lifting heavy objects alone can cause back pain, muscle strain, or injuries from improper lifting posture.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ยกของที่ถูกต้องทำอย่างไร",
-  answer: `งอเข่า หลังตรง ใช้กำลังขา ไม่ก้มหลังยกของ
-
-Bend your knees, keep your back straight, and use your legs to lift instead of bending your back.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใช้รถเข็นแทนการยกของ",
-  answer: `เพื่อลดการบาดเจ็บจากการยกของหนักและเพิ่มความปลอดภัยในการขนย้าย
-
-To reduce injuries from lifting heavy items and improve safety during transportation.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่ถุงมือเวลาเคลื่อนย้ายของ",
-  answer: `เพื่อป้องกันมือจากของมีคม ของร้อน หรือพื้นผิวที่หยาบ
-
-To protect your hands from sharp edges, heat, or rough surfaces while handling materials.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่เดินตัดหน้ารถโฟล์คลิฟต์",
-  answer: `เพราะคนขับอาจมองไม่เห็น ทำให้เกิดอุบัติเหตุรุนแรงได้
-
-Because the driver may not see you, leading to severe accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องให้สัญญาณมือกับรถโฟล์คลิฟต์",
-  answer: `เพื่อให้คนขับรู้ว่าคุณอยู่ตรงไหนและต้องการให้เขาทำอะไร
-
-To let the forklift driver know your position and what action you want them to take.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ยืนหลังรถโฟล์คลิฟต์",
-  answer: `เพราะรถอาจถอยหลังโดยไม่ทันเห็น ทำให้เกิดอุบัติเหตุได้
-
-Because the forklift may reverse without noticing you, causing accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ปีนขึ้นรถโฟล์คลิฟต์",
-  answer: `เพราะรถไม่ได้ออกแบบให้โดยสาร เสี่ยงตกหรือโดนหนีบ
-
-Because forklifts are not designed for passengers, posing risks of falling or being crushed.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "รถโฟล์คลิฟต์มีจุดอันตรายตรงไหนบ้าง",
-  answer: `ด้านหน้า ด้านหลัง และบริเวณรัศมีการหมุน เป็นจุดที่เสี่ยงโดนชนหรือหนีบ
-
-The front, rear, and turning radius areas are danger zones where collisions or crushing can occur.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่เดินคุยกันในพื้นที่ทำงาน",
-  answer: `เพราะอาจไม่ทันระวังสิ่งกีดขวาง รถโฟล์คลิฟต์ หรืออันตรายรอบตัว
-
-Because walking while chatting reduces awareness of obstacles, forklifts, and surrounding hazards.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่หยอกล้อกันในโรงงาน",
-  answer: `เพราะอาจทำให้ล้ม ชนของ หรือเกิดอุบัติเหตุรุนแรงได้
-
-Because horseplay can cause falls, collisions, or serious accidents in the workplace.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่หมวกนิรภัย",
-  answer: `เพื่อป้องกันศีรษะจากของตก ของหล่น หรือการกระแทก
+  {
+    question: "ทำไมต้องใส่หมวกนิรภัย",
+    answer: `เพื่อป้องกันศีรษะจากของตก ของหล่น หรือการกระแทก
 
 To protect your head from falling objects, impacts, or collisions.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใส่แว่นตานิรภัย",
-  answer: `เพื่อป้องกันเศษวัสดุ ฝุ่น หรือสารเคมีกระเด็นเข้าตา
+  {
+    question: "ทำไมต้องใส่แว่นตานิรภัย",
+    answer: `เพื่อป้องกันเศษวัสดุ ฝุ่น หรือสารเคมีกระเด็นเข้าตา
 
 To protect your eyes from debris, dust, or chemical splashes.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใส่ถุงมือกันบาด",
-  answer: `เพื่อป้องกันมือจากของมีคม เช่น เหล็ก แผ่นโลหะ หรือเครื่องมือ
+  {
+    question: "ทำไมต้องใส่ถุงมือกันบาด",
+    answer: `เพื่อป้องกันมือจากของมีคม เช่น เหล็ก แผ่นโลหะ หรือเครื่องมือ
 
 To protect your hands from sharp objects such as metal sheets, tools, or steel edges.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมต้องใส่รองเท้าเซฟตี้",
-  answer: `เพื่อป้องกันเท้าจากของตก ของมีคม และกันลื่นในพื้นที่ทำงาน
+  {
+    question: "ทำไมต้องใส่รองเท้าเซฟตี้",
+    answer: `เพื่อป้องกันเท้าจากของตก ของมีคม และกันลื่นในพื้นที่ทำงาน
 
 To protect your feet from falling objects, sharp items, and slippery surfaces in the workplace.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ทำไมห้ามใส่รองเท้าแตะในโรงงาน",
-  answer: `เพราะรองเท้าแตะไม่ป้องกันอันตราย เช่น ของตก ของมีคม หรือไฟฟ้ารั่ว
+  {
+    question: "ทำไมห้ามใส่รองเท้าแตะในโรงงาน",
+    answer: `เพราะรองเท้าแตะไม่ป้องกันอันตราย เช่น ของตก ของมีคม หรือไฟฟ้ารั่ว
 
-Because slippers do not protect against hazards such as falling objects, sharp items, or electrical risks.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมห้ามใส่เครื่องประดับในโรงงาน",
-  answer: `เพราะอาจไปเกี่ยวเครื่องจักร ทำให้เกิดอุบัติเหตุรุนแรงได้
-
-Because jewelry can get caught in machinery, causing severe injuries.
+Flip‑flops do not protect against hazards such as falling objects, sharp items, or electrical risks.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องเก็บผม",
-  answer: `เพื่อป้องกันผมไปพันกับเครื่องจักรหรืออุปกรณ์ที่หมุนอยู่
-
-To prevent hair from getting caught in rotating machinery or equipment.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องคาดเข็มขัดนิรภัย",
-  answer: `เพื่อป้องกันการกระแทกและการบาดเจ็บเมื่อเกิดอุบัติเหตุ
-
-To prevent impact injuries and protect you during accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องเปิดไฟเตือน",
-  answer: `เพื่อให้คนอื่นรู้ว่ามีงานหรืออันตรายอยู่ในพื้นที่
-
-To alert others that work or hazards are present in the area.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องเสียบปลั๊กให้แน่น",
-  answer: `เพื่อป้องกันไฟลัดวงจรและประกายไฟ
-
-To prevent short circuits and electrical sparks.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่แตะสายไฟเปลือย",
-  answer: `เพราะเสี่ยงไฟดูดและอาจถึงชีวิต
-
-Because exposed wires can cause electric shock and be fatal.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องปิดวาล์วแก๊ส",
-  answer: `เพื่อป้องกันการรั่วไหลและการระเบิด
-
-To prevent gas leaks and potential explosions.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่หน้ากาก",
-  answer: `เพื่อป้องกันฝุ่น ควัน และสารเคมีเข้าสู่ร่างกาย
-
-To protect yourself from dust, fumes, and chemical exposure.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องล้างมือหลังทำงาน",
-  answer: `เพื่อกำจัดสารเคมีและสิ่งสกปรกที่อาจเป็นอันตราย
-
-To remove chemicals and contaminants that may be harmful.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องปิดเครื่องมือหลังใช้",
-  answer: `เพื่อป้องกันอุบัติเหตุและประหยัดพลังงาน
-
-To prevent accidents and save energy.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ปีนชั้นวางของ",
-  answer: `เพราะชั้นวางไม่ได้ออกแบบให้รับน้ำหนักคน อาจล้มและบาดเจ็บได้
-
-Because shelves are not designed to support people and may collapse.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องปิดประตูคลังสารเคมี",
-  answer: `เพื่อป้องกันการรั่วไหล การปนเปื้อน และการเข้าถึงโดยไม่ได้รับอนุญาต
-
-To prevent leaks, contamination, and unauthorized access.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องติดป้ายเตือน",
-  answer: `เพื่อให้ทุกคนรู้ว่าพื้นที่นั้นมีอันตรายหรือมีงานกำลังดำเนินการ
-
-To inform everyone that hazards or ongoing work are present in the area.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ห้ามปีนรั้วทำไม",
-  answer: `เพราะเสี่ยงตก บาดเจ็บ หรือโดนของมีคมเกี่ยว
-
-Because climbing fences can cause falls, injuries, or cuts from sharp edges.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ห้ามวิ่งบนบันไดทำไม",
-  answer: `เพราะเสี่ยงลื่น ตก หรือชนสิ่งกีดขวาง
-
-Because running on stairs increases the risk of slipping, falling, or hitting obstacles.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ยืนใต้ของยก",
-  answer: `เพราะของอาจตกลงมาและทำให้บาดเจ็บรุนแรง
-
-Because lifted loads may fall and cause severe injuries.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ห้ามเปิดฝาถังสารเคมีเองทำไม",
-  answer: `เพราะอาจมีแรงดัน กลิ่นพิษ หรือสารเคมีกระเด็นออกมา
-
-Because pressure, toxic fumes, or splashes may occur when opening chemical containers.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ใช้เครื่องมือชำรุด",
-  answer: `เพราะอาจทำงานผิดพลาดและทำให้เกิดอุบัติเหตุ
-
-Because damaged tools can malfunction and cause accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องตรวจPPE",
-  answer: `เพื่อให้มั่นใจว่าอุปกรณ์ยังใช้งานได้และป้องกันอันตรายได้จริง
-
-To ensure PPE is functional and provides proper protection.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ห้ามทิ้งน้ำมันลงท่อทำไม",
-  answer: `เพราะทำให้ท่ออุดตันและเกิดมลพิษต่อสิ่งแวดล้อม
-
-Because oil can clog pipes and cause environmental pollution.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-{
-  question: "ทำไมต้องไม่บล็อกทางหนีไฟ",
-  answer: `เพราะต้องใช้หนีออกจากพื้นที่เมื่อเกิดเหตุฉุกเฉิน หากมีสิ่งกีดขวางจะทำให้หนีไม่ทัน
-
-Because fire exits must remain clear for emergency evacuation; obstacles can delay escape.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องรู้จุดรวมพล",
-  answer: `เพื่อให้ทุกคนไปรวมตัวในที่ปลอดภัยและตรวจเช็กจำนวนคนได้ครบ
-
-To ensure everyone gathers in a safe area and can be accounted for during emergencies.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ใช้ลิฟต์ตอนไฟไหม้",
-  answer: `เพราะลิฟต์อาจค้างหรือดูดควันเข้า ทำให้ติดอยู่ข้างใน
-
-Because elevators may fail or fill with smoke during a fire, trapping occupants inside.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องรู้วิธีใช้ถังดับเพลิง",
-  answer: `เพื่อให้ดับไฟได้ทันก่อนลุกลามและควบคุมสถานการณ์ได้เร็ว
-
-To extinguish small fires before they spread and maintain control of the situation.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ถังดับเพลิงต้องตรวจอะไรบ้าง",
-  answer: `ตรวจแรงดัน สภาพถัง และวันหมดอายุ เพื่อให้มั่นใจว่าใช้ได้จริง
-
-Check pressure, tank condition, and expiration date to ensure it works properly.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่เล่นกับถังดับเพลิง",
-  answer: `เพราะอาจทำให้แรงดันรั่วหรือใช้งานไม่ได้ตอนฉุกเฉิน
-
-Because misuse may damage the extinguisher or reduce pressure, making it unusable in emergencies.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ไฟไหม้โทรแจ้งใคร",
-  answer: `แจ้งเจ้าหน้าที่ความปลอดภัยหรือหัวหน้างานทันที พร้อมบอกตำแหน่งเกิดเหตุ
-
-Notify safety officers or supervisors immediately and provide the exact location of the fire.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "เจอควันต้องทำอย่างไร",
-  answer: `ก้มตัวต่ำ ปิดจมูก และรีบออกจากพื้นที่ทันที
-
-Stay low, cover your nose, and evacuate the area immediately.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "เจอคนหมดสติทำอย่างไร",
-  answer: `แจ้งเจ้าหน้าที่ทันที ห้ามยกหรือขยับตัวเองถ้าไม่จำเป็น
-
-Notify safety staff immediately; avoid moving the person unless necessary.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมห้ามวิ่ง",
-  answer: `เพราะอาจลื่น หกล้ม หรือชนของในพื้นที่ทำงาน
-
-Because running can cause slips, falls, or collisions.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมห้ามปีนโต๊ะ",
-  answer: `เพราะโต๊ะไม่ได้ออกแบบให้รับน้ำหนัก อาจล้มและบาดเจ็บได้
-
-Because tables are not designed to support weight and may collapse.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมห้ามเล่นมือถือ",
-  answer: `เพราะทำให้เสียสมาธิและอาจเกิดอุบัติเหตุในพื้นที่เสี่ยง
-
-Because using a phone reduces awareness and increases accident risks.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่PPE",
-  answer: `เพื่อป้องกันอันตรายจากงาน เช่น ของตก ของมีคม หรือสารเคมี
-
-To protect yourself from hazards such as falling objects, sharp items, or chemicals.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่หมวก",
-  answer: `เพื่อกันของตกใส่หัวและลดการบาดเจ็บ
-
-To protect your head from falling objects and impacts.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่แว่น",
-  answer: `เพื่อกันฝุ่น เศษวัสดุ หรือสารเคมีกระเด็นเข้าตา
-
-To protect your eyes from dust, debris, or chemical splashes.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่ถุงมือ",
-  answer: `เพื่อป้องกันมือจากของมีคม ของร้อน หรือสารเคมี
-
-To protect your hands from sharp edges, heat, or chemicals.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่รองเท้าเซฟตี้",
-  answer: `เพื่อกันของตกใส่เท้าและป้องกันการลื่น
-
-To protect your feet from falling objects and slipping hazards.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมห้ามเข้าเขตกั้น",
-  answer: `เพราะเป็นพื้นที่เสี่ยง เช่น งานเชื่อม งานไฟฟ้า หรือของตกจากที่สูง
-
-Because barricaded areas contain hazards such as welding, electrical work, or falling objects.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ห้ามวิ่งเพราะอะไร",
-  answer: `เพราะเสี่ยงลื่นล้มและชนสิ่งกีดขวาง
-
-Because running increases the risk of slipping and collisions.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ห้ามปีนเพราะอะไร",
-  answer: `เพราะอาจตกลงมาและบาดเจ็บได้
-
-Because climbing can lead to falls and injuries.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่หมวก",
-  answer: `เพื่อกันของตกใส่หัว
-
-To protect your head from falling objects.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่แว่น",
-  answer: `เพื่อกันเศษวัสดุเข้าตา
-
-To protect your eyes from debris.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่ถุงมือ",
-  answer: `เพื่อป้องกันมือจากของมีคม
-
-To protect your hands from sharp objects.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่รองเท้า",
-  answer: `เพื่อกันของตกใส่เท้า
-
-To protect your feet from falling objects.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ห้ามเข้าเขตกั้นเพราะอะไร",
-  answer: `เพราะเป็นพื้นที่อันตราย
-
-Because barricaded areas contain hazards.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องรายงานอุบัติเหตุ",
-  answer: `เพื่อให้ช่วยเหลือและแก้ไขได้ทันที
-
-To ensure quick assistance and correction.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องปิดเครื่องก่อนซ่อม",
-  answer: `เพื่อกันเครื่องทำงานเองและเกิดอุบัติเหตุ
-
-To prevent accidental machine startup.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องแจ้งจป.ก่อนเริ่มงาน",
-  answer: `เพื่อให้คนอื่นรู้และหลีกเลี่ยงพื้นที่เสี่ยง
-
-To inform others and avoid hazards.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องรายงานอันตราย",
-  answer: `เพื่อให้แก้ไขได้ทันทีและป้องกันอุบัติเหตุ
-
-To ensure hazards are fixed quickly and prevent accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องรู้เบอร์ฉุกเฉิน",
-  answer: `เพื่อให้ติดต่อขอความช่วยเหลือได้ทันทีเมื่อเกิดเหตุ
-
-To ensure you can quickly call for help during emergencies.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องรายงานของหาย",
-  answer: `เพื่อป้องกันการนำไปใช้ผิดวัตถุประสงค์และเพื่อความปลอดภัยของพื้นที่
-
-To prevent misuse and maintain workplace safety.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องแจ้งก่อนเริ่มงานซ่อม",
-  answer: `เพื่อให้ทุกคนรู้และหลีกเลี่ยงพื้นที่เสี่ยง
-
-To inform others and keep them away from hazardous areas.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่ใส่เสื้อผ้าหลวมในโรงงาน",
-  answer: `เพราะเสื้อผ้าหลวมอาจไปเกี่ยวกับเครื่องจักร ทำให้เกิดอุบัติเหตุได้
-
-Because loose clothing can get caught in machinery and cause accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องระวังมุมอับสายตา",
-  answer: `เพราะอาจมีรถหรือคนเดินอยู่โดยที่คุณมองไม่เห็น ทำให้เกิดอุบัติเหตุได้ง่าย
-
-Because vehicles or pedestrians may be in blind spots, increasing the risk of accidents.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องไม่เชื่อมในพื้นที่แคบโดยไม่มีระบายอากาศ",
-  answer: `เพราะควันเชื่อมเป็นอันตรายต่อระบบหายใจ และอาจสะสมจนเกิดไฟไหม้หรือระเบิดได้
-
-Because welding fumes are hazardous and can accumulate in confined spaces, causing fire or explosion risks.
-
-ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
-
-{
-  question: "ทำไมต้องใส่แว่นตอนใช้สารเคมี",
-  answer: `เพื่อกันสารเคมีกระเด็นเข้าตา ซึ่งอาจทำให้ตาบอดหรือบาดเจ็บรุนแรง
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
+
+  {
+    question: "ทำไมต้องใส่แว่นตอนใช้สารเคมี",
+    answer: `เพื่อกันสารเคมีกระเด็นเข้าตา ซึ่งอาจทำให้ตาบอดหรือบาดเจ็บรุนแรง
 
 To prevent chemical splashes from entering your eyes, which can cause severe injury or blindness.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
+  {
     question: "จุดสูบบุหรี่",
     answer: `📍 จุดสูบบุหรี่ของบริษัท
 
@@ -1296,10 +555,10 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 • หลังอาคาร 4  
 
 🏭 โรงงาน 2  
-• บริเวณข้างโรงขยะ`
-},
+• บริเวณข้างโรงขยะ`,
+  },
 
-{
+  {
     question: "ขยะมีกี่ประเภท",
     answer: `♻️ ขยะในบริษัทมีทั้งหมด **5 ประเภท** ได้แก่:
 
@@ -1307,128 +566,130 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 2) ขยะจากการผลิตค่ะ  
 3) ขยะอันตรายค่ะ  
 4) ขยะติดเชื้อค่ะ  
-5) Scrapค่ะ`
-},
+5) Scrapค่ะ`,
+  },
 
-{
+  {
     question: "PPEคืออะไร",
     answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ
 
 PPE stands for Personal Protective Equipment such as safety helmets, safety shoes, safety glasses, and gloves.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
+  },
 
-{
-  question: "ที่อยู่บริษัท",
-  answer: `📍 **ที่อยู่บริษัท Sodick (Thailand) Co., Ltd.**
-
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
-ตำบลคลองหนึ่ง อำเภอคลองหลวง  
-จังหวัดปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736`
-},
-
-{
-  question: "บริษัทอยู่ไหน",
-  answer: `📍 **ที่อยู่บริษัท Sodick (Thailand)**  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
-ตำบลคลองหนึ่ง อำเภอคลองหลวง  
-จังหวัดปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736`
-},
-
-{
-  question: "สำนักงานใหญ่",
-  answer: `🏢 **สำนักงานใหญ่ Sodick (Thailand)**  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
-ตำบลคลองหนึ่ง อำเภอคลองหลวง  
-จังหวัดปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736`
-},
-
-{
-  question: "ใบกำกับภาษี",
-  answer: `🧾 **ข้อมูลใบกำกับภาษี Sodick (Thailand)**  
+  {
+    question: "ที่อยู่บริษัท",
+    answer: `📍 **ที่อยู่บริษัท Sodick (Thailand) Co., Ltd.**
 
 บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
 60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
 ตำบลคลองหนึ่ง อำเภอคลองหลวง  
 จังหวัดปทุมธานี 12120  
 โทร: 02-529-2450-6  
-Tax ID: 0105531085736`
-},
+Tax ID: 0105531085736`,
+  },
 
-{
-  question: "taxid",
-  answer: `🧾 **Tax ID บริษัท Sodick (Thailand)**  
-Tax ID: 0105531085736`
-},
-
-{
-  question: "เลขผู้เสียภาษี",
-  answer: `🧾 **ข้อมูลใบกำกับภาษี Sodick (Thailand)**  
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
+  {
+    question: "บริษัทอยู่ไหน",
+    answer: `📍 **ที่อยู่บริษัท Sodick (Thailand)**  
 60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
 ตำบลคลองหนึ่ง อำเภอคลองหลวง  
 จังหวัดปทุมธานี 12120  
-Tax ID: 0105531085736`
-},
+โทร: 02-529-2450-6  
+Tax ID: 0105531085736`,
+  },
 
-{
-  question: "ขอข้อมูลบริษัท",
-  answer: `📄 **ข้อมูลบริษัท Sodick (Thailand)**  
+  {
+    question: "สำนักงานใหญ่",
+    answer: `🏢 **สำนักงานใหญ่ Sodick (Thailand)**  
+60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
+ตำบลคลองหนึ่ง อำเภอคลองหลวง  
+จังหวัดปทุมธานี 12120  
+โทร: 02-529-2450-6  
+Tax ID: 0105531085736`,
+  },
+
+  {
+    question: "ใบกำกับภาษี",
+    answer: `🧾 **ข้อมูลใบกำกับภาษี Sodick (Thailand)**  
 
 บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
 60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
 ตำบลคลองหนึ่ง อำเภอคลองหลวง  
 จังหวัดปทุมธานี 12120  
 โทร: 02-529-2450-6  
-Tax ID: 0105531085736`
-},
+Tax ID: 0105531085736`,
+  },
 
-{
-  question: "ขอที่อยู่บริษัท",
-  answer: `📍 **ที่อยู่บริษัท Sodick (Thailand)**  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
-ตำบลคลองหนึ่ง อำเภอคลองหลวง  
-จังหวัดปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736`
-},
-{
-  question: "บริษัทอยู่แถวไหน",
-  answer: `📍 บริษัทอยู่ที่คลองหนึ่ง คลองหลวง ปทุมธานีครับ  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736`
-},
+  {
+    question: "taxid",
+    answer: `🧾 **Tax ID บริษัท Sodick (Thailand)**  
+Tax ID: 0105531085736`,
+  },
 
-{
-  question: "ขอโลเคชั่นบริษัท",
-  answer: `📍 **ที่อยู่บริษัท Sodick (Thailand)**  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
-ตำบลคลองหนึ่ง อำเภอคลองหลวง  
-จังหวัดปทุมธานี 12120`
-},
-
-{
-  question: "ที่อยู่ในใบกำกับภาษี",
-  answer: `🧾 **ข้อมูลใบกำกับภาษี Sodick (Thailand)**  
+  {
+    question: "เลขผู้เสียภาษี",
+    answer: `🧾 **ข้อมูลใบกำกับภาษี Sodick (Thailand)**  
 บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
 60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
 ตำบลคลองหนึ่ง อำเภอคลองหลวง  
 จังหวัดปทุมธานี 12120  
-Tax ID: 0105531085736`
-},
-{
-  question: "เบอร์ติดต่อ",
-  answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
+Tax ID: 0105531085736`,
+  },
+
+  {
+    question: "ขอข้อมูลบริษัท",
+    answer: `📄 **ข้อมูลบริษัท Sodick (Thailand)**  
+
+บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
+60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
+ตำบลคลองหนึ่ง อำเภอคลองหลวง  
+จังหวัดปทุมธานี 12120  
+โทร: 02-529-2450-6  
+Tax ID: 0105531085736`,
+  },
+
+  {
+    question: "ขอที่อยู่บริษัท",
+    answer: `📍 **ที่อยู่บริษัท Sodick (Thailand)**  
+60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
+ตำบลคลองหนึ่ง อำเภอคลองหลวง  
+จังหวัดปทุมธานี 12120  
+โทร: 02-529-2450-6  
+Tax ID: 0105531085736`,
+  },
+
+  {
+    question: "บริษัทอยู่แถวไหน",
+    answer: `📍 บริษัทอยู่ที่คลองหนึ่ง คลองหลวง ปทุมธานีครับ  
+60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
+โทร: 02-529-2450-6  
+Tax ID: 0105531085736`,
+  },
+
+  {
+    question: "ขอโลเคชั่นบริษัท",
+    answer: `📍 **ที่อยู่บริษัท Sodick (Thailand)**  
+60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
+ตำบลคลองหนึ่ง อำเภอคลองหลวง  
+จังหวัดปทุมธานี 12120`,
+  },
+
+  {
+    question: "ที่อยู่ในใบกำกับภาษี",
+    answer: `🧾 **ข้อมูลใบกำกับภาษี Sodick (Thailand)**  
+บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
+60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน  
+ตำบลคลองหนึ่ง อำเภอคลองหลวง  
+จังหวัดปทุมธานี 12120  
+Tax ID: 0105531085736`,
+  },
+
+  {
+    question: "เบอร์ติดต่อ",
+    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
 
 🏭 **โรงงาน 1**  
 เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
@@ -1442,31 +703,12 @@ Tax ID: 0105531085736`
 - พี่ไก่: 061-645-5095  
 - น้องดุช: 081-695-4474  
 - น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-},
+- น้องกี้: 094-938-0425`,
+  },
 
-{
-  question: "ขอเบอร์ติดต่อ",
-  answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
-
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุช: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-},
-
-{
-  question: "ขอเบอร์",
-  answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
+  {
+    question: "ขอเบอร์ติดต่อ",
+    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
 
 🏭 **โรงงาน 1**  
 เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
@@ -1480,31 +722,12 @@ Tax ID: 0105531085736`
 - พี่ไก่: 061-645-5095  
 - น้องดุช: 081-695-4474  
 - น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-},
+- น้องกี้: 094-938-0425`,
+  },
 
-{
-  question: "ขอเบอร์โทร",
-  answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
-
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุช: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-},
-
-{
-  question: "เบอร์โทร",
-  answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
+  {
+    question: "ขอเบอร์",
+    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
 
 🏭 **โรงงาน 1**  
 เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
@@ -1518,427 +741,51 @@ Tax ID: 0105531085736`
 - พี่ไก่: 061-645-5095  
 - น้องดุช: 081-695-4474  
 - น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-},
-// ------------------------------
-//  SAFETY Q&A DATABASE (ENVIRONMENT 50 ITEMS)
-// ------------------------------
-
-const safetyQA = [
-
-{
-question: "ทำไมต้องคัดแยกขยะ",
-answer: `การคัดแยกขยะช่วยลดการปนเปื้อน ลดมลพิษ และทำให้กำจัดได้ถูกต้องตามกฎหมาย ขยะของบริษัทแบ่งเป็น 5 ประเภท และต้องทิ้งให้ถูกถังตามที่กำหนด
-
-Waste separation reduces contamination, pollution, and ensures proper legal disposal. The company divides waste into 5 types, each requiring correct disposal.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ขยะทั่วไปคืออะไร",
-answer: `ขยะทั่วไปคือขยะที่ไม่เป็นอันตราย เช่น เศษอาหาร กระดาษ พลาสติก ซากพืช ซากสัตว์ ให้ทิ้งลงถัง “ขยะทั่วไป”
-
-General waste includes non‑hazardous items such as food scraps, paper, plastics, and plant debris.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ขยะจากการผลิตคืออะไร",
-answer: `คือขยะจากกระบวนการผลิต เช่น เศษกระดาษ กล่อง กระป๋อง หรือพลาสติกที่ไม่ปนเปื้อนสารเคมี ให้ทิ้งลงถัง “ขยะจากการผลิต”
-
-Production waste includes paper, cardboard, and plastics not contaminated with chemicals.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ขยะอันตรายคืออะไร",
-answer: `คือขยะที่มีสารเคมีปนเปื้อน เช่น ถุงมือเปื้อนสารเคมี ภาชนะสารเคมี แบตเตอรี่ กระป๋องสี ต้องทิ้งในถังแดง “ขยะอันตราย”
-
-Hazardous waste includes chemical‑contaminated materials such as gloves, containers, batteries, and paint cans.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ขยะติดเชื้อคืออะไร",
-answer: `ขยะติดเชื้อคือวัสดุที่ใช้ในการปฐมพยาบาล เช่น สำลี ผ้าก๊อซ ผ้าพันแผล ต้องทิ้งในถังแดง “ขยะติดเชื้อ”
-
-Infectious waste includes cotton, gauze, and bandages used in first aid.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "scrap คืออะไร",
-answer: `Scrap คือเศษวัสดุจากการผลิต เช่น เหล็ก อลูมิเนียม ทองแดง ต้องรวบรวมและนำไปทิ้งที่โรงขยะ
-
-Scrap refers to leftover production materials such as steel, aluminum, and copper.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องใช้ถุงขยะสีดำสีแดง",
-answer: `ถุงสีดำใช้สำหรับขยะทั่วไปและขยะจากการผลิต ส่วนถุงสีแดงใช้สำหรับขยะอันตราย เพื่อแยกประเภทให้ชัดเจนและปลอดภัย
-
-Black bags are for general and production waste, while red bags are for hazardous waste.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องทิ้งขยะให้ถูกถัง",
-answer: `เพื่อป้องกันการปนเปื้อน ลดอันตราย และทำให้กำจัดได้ถูกต้องตามกฎหมาย
-
-Correct disposal prevents contamination and ensures legal compliance.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องแยก scrap",
-answer: `เพราะ scrap เป็นวัสดุรีไซเคิลได้ ต้องแยกจากขยะทั่วไปเพื่อให้กำจัดได้ถูกต้องและนำกลับมาใช้ใหม่ได้
-
-Scrap is recyclable and must be separated for proper disposal and reuse.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องห้ามทิ้งขยะลงรางน้ำ",
-answer: `เพราะทำให้เกิดการอุดตัน ปนเปื้อน และอาจไหลลงสู่สิ่งแวดล้อมภายนอก ซึ่งผิดกฎหมาย
-
-Dumping waste into drains causes blockages, contamination, and environmental pollution.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-// ------------------------------
-// CLEANLINESS & POLLUTION CONTROL
-// ------------------------------
-
-{
-question: "ทำไมต้องรักษาความสะอาดพื้นที่ทำงาน",
-answer: `เพื่อป้องกันอุบัติเหตุ ลดการสะสมของเชื้อโรค และทำให้พื้นที่ทำงานปลอดภัย
-
-Clean workplaces reduce accidents, germs, and hazards.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องป้องกันขยะฟุ้งกระจาย",
-answer: `เพราะขยะฟุ้งกระจายทำให้เกิดฝุ่น กลิ่น และอาจรบกวนพื้นที่อื่น
-
-Preventing waste scattering reduces dust, odor, and contamination.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องเก็บขยะทุกวัน",
-answer: `เพื่อป้องกันกลิ่นเหม็น การสะสมของแมลง และลดความเสี่ยงด้านสุขอนามัย
-
-Daily waste collection prevents odor, pests, and hygiene issues.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องล้างพื้นที่หลังทำงาน",
-answer: `เพื่อกำจัดคราบสกปรก ลดการลื่นล้ม และทำให้พื้นที่ปลอดภัย
-
-Cleaning after work removes dirt and reduces slip hazards.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องปิดฝาถังขยะ",
-answer: `เพื่อป้องกันกลิ่น แมลง และสัตว์รบกวน
-
-Closed bins prevent odor and pests.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องห้ามวางขยะกองไว้",
-answer: `เพราะทำให้เกิดกลิ่น สกปรก และเสี่ยงต่อการปนเปื้อน
-
-Piled waste causes odor, dirt, and contamination risks.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องห้ามทิ้งน้ำเสียลงพื้น",
-answer: `เพราะทำให้พื้นลื่น เกิดกลิ่น และอาจไหลลงแหล่งน้ำ
-
-Wastewater on floors causes slips, odor, and pollution.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องควบคุมฝุ่นจากงานก่อสร้าง",
-answer: `ฝุ่นทำให้เกิดปัญหาสุขภาพและรบกวนพื้นที่อื่น ต้องควบคุมอย่างเข้มงวด
-
-Construction dust affects health and nearby areas.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องป้องกันกลิ่นเหม็นจากขยะ",
-answer: `เพื่อสุขอนามัยและความสบายของพนักงาน
-
-Odor control improves hygiene and comfort.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องห้ามทิ้งเศษอาหารในพื้นที่ผลิต",
-answer: `เพราะทำให้เกิดแมลง สกปรก และปนเปื้อนสินค้า
-
-Food waste attracts pests and contaminates products.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-// ------------------------------
-// RESOURCE SAVING
-// ------------------------------
-
-{
-question: "ทำไมต้องประหยัดน้ำ",
-answer: `น้ำเป็นทรัพยากรจำกัด การใช้น้ำอย่างประหยัดช่วยลดค่าใช้จ่ายและลดความเสี่ยงขาดแคลน
-
-Water is limited; saving it reduces cost and shortages.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องประหยัดไฟ",
-answer: `การประหยัดไฟช่วยลดค่าใช้จ่ายและลดการปล่อยก๊าซเรือนกระจก
-
-Saving electricity reduces costs and greenhouse gases.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องปิดแอร์เมื่อไม่ใช้งาน",
-answer: `เพื่อลดพลังงาน ลดค่าไฟ และยืดอายุเครื่องปรับอากาศ
-
-Turning off AC saves energy and extends equipment life.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องลดใช้กระดาษ",
-answer: `เพื่อลดการตัดต้นไม้ ลดขยะ และลดต้นทุน
-
-Reducing paper saves trees and reduces waste.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องใช้ถุงผ้าแทนถุงพลาสติก",
-answer: `เพราะถุงผ้าใช้ซ้ำได้ ลดขยะพลาสติกที่ย่อยสลายยาก
-
-Reusable bags reduce plastic waste.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องลดใช้โฟม",
-answer: `โฟมย่อยสลายยากและเป็นอันตรายต่อสิ่งแวดล้อม
-
-Foam is non‑biodegradable and harmful.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องลดใช้ขวดพลาสติก",
-answer: `ขวดพลาสติกใช้เวลาย่อยสลายนานมากและก่อมลพิษ
-
-Plastic bottles take centuries to decompose.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องใช้แก้วส่วนตัว",
-answer: `เพื่อลดขยะจากแก้วพลาสติกและรักษาสิ่งแวดล้อม
-
-Personal cups reduce plastic waste.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องปิดคอมพิวเตอร์หลังเลิกงาน",
-answer: `เพื่อลดพลังงานและยืดอายุอุปกรณ์
-
-Shutting down computers saves energy and extends lifespan.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องใช้พลังงานอย่างคุ้มค่า",
-answer: `เพื่อลดต้นทุน ลดมลพิษ และเพิ่มประสิทธิภาพองค์กร
-
-Efficient energy use reduces cost and pollution.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-// ------------------------------
-// CHEMICAL & HAZARDOUS CONTROL
-// ------------------------------
-
-{
-question: "ทำไมต้องแยกสารเคมีออกจากขยะทั่วไป",
-answer: `เพื่อป้องกันการปนเปื้อนและอันตรายจากปฏิกิริยาเคมี
-
-Chemical waste must be separated to avoid contamination and reactions.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องติดป้ายสารเคมี",
-answer: `เพื่อให้รู้ว่าสารนั้นคืออะไร อันตรายแค่ไหน และต้องจัดการอย่างไร
-
-Chemical labeling ensures safe handling and identification.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องเก็บสารเคมีในพื้นที่เฉพาะ",
-answer: `เพื่อป้องกันการรั่วไหลและอุบัติเหตุ
-
-Chemical storage areas prevent leaks and accidents.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องสวม PPE เมื่อใช้สารเคมี",
-answer: `เพื่อป้องกันการสัมผัสสารเคมีที่อาจเป็นอันตรายต่อผิวหนังและระบบหายใจ
-
-PPE protects against chemical exposure.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องรายงานสารเคมีหก",
-answer: `เพื่อให้เจ้าหน้าที่เข้ามาควบคุมและทำความสะอาดอย่างถูกวิธี
-
-Chemical spills must be reported for proper cleanup.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องห้ามเทสารเคมีลงพื้น",
-answer: `เพราะทำให้เกิดการปนเปื้อนและอันตรายต่อสิ่งแวดล้อม
-
-Pouring chemicals on the floor causes contamination.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องเก็บภาชนะสารเคมีให้มิดชิด",
-answer: `เพื่อป้องกันการรั่วไหลและการระเหยของสารเคมี
-
-Closed containers prevent leaks and evaporation.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องตรวจสอบวันหมดอายุสารเคมี",
-answer: `สารเคมีหมดอายุอาจเสื่อมสภาพและเป็นอันตราย
-
-Expired chemicals may degrade and become dangerous.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องแยกแบตเตอรี่ออกจากขยะทั่วไป",
-answer: `แบตเตอรี่มีสารอันตราย เช่น ตะกั่ว กรด ต้องกำจัดอย่างถูกวิธี
-
-Batteries contain hazardous materials and require special disposal.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-
-{
-question: "ทำไมต้องกำจัดหลอดไฟอย่างถูกวิธี",
-answer: `หลอดไฟมีสารปรอท ต้องกำจัดในระบบเฉพาะเพื่อป้องกันอันตราย
-
-Fluorescent lamps contain mercury and require special disposal.
-
-ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-]; // ปิด array แค่ครั้งเดียวเท่านั้น
-// เพิ่ม Q&A อื่น ๆ ได้ที่นี่ (ถ้าจะเพิ่ม ให้เพิ่มก่อนปิด array)
+- น้องกี้: 094-938-0425`,
+  },
+
+  {
+    question: "ขอเบอร์โทร",
+    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
+
+🏭 **โรงงาน 1**  
+เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
+เบอร์ภายใน: 102, 127, 129  
+
+🏭 **โรงงาน 2**  
+เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
+เบอร์ภายใน: 137  
+
+📱 **เบอร์มือถือ**  
+- พี่ไก่: 061-645-5095  
+- น้องดุช: 081-695-4474  
+- น้องพิน: 083-237-4357  
+- น้องกี้: 094-938-0425`,
+  },
+
+  {
+    question: "เบอร์โทร",
+    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
+
+🏭 **โรงงาน 1**  
+เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
+เบอร์ภายใน: 102, 127, 129  
+
+🏭 **โรงงาน 2**  
+เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
+เบอร์ภายใน: 137  
+
+📱 **เบอร์มือถือ**  
+- พี่ไก่: 061-645-5095  
+- น้องดุช: 081-695-4474  
+- น้องพิน: 083-237-4357  
+- น้องกี้: 094-938-0425`,
+  },
+];
+
+// --------------------------------------------------
+//  LOGIC ทั้งหมดของบอท
+// --------------------------------------------------
 
 // ------------------------------
 //  LINE WEBHOOK
@@ -1965,7 +812,7 @@ function handleEvent(event) {
     const triggers = ["บอท", "bot", "Bot"];
     const text = event.message.text;
 
-    const hasTrigger = triggers.some(word => text.includes(word));
+    const hasTrigger = triggers.some((word) => text.includes(word));
     if (!hasTrigger) {
       return Promise.resolve(null);
     }
@@ -1989,8 +836,11 @@ function handleEvent(event) {
     msg.includes("hi") ||
     msg.includes("hey")
   ) {
-    return reply(event, `สวัสดีครับ ผมคือ Safety Bot ของ Sodick ครับ 🙂
-Hello! I am the Sodick Safety Bot 🙂`);
+    return reply(
+      event,
+      `สวัสดีครับ ผมคือ Safety Bot ของ Sodick ครับ 🙂
+Hello! I am the Sodick Safety Bot 🙂`
+    );
   }
 
   // ------------------------------
@@ -2001,8 +851,11 @@ Hello! I am the Sodick Safety Bot 🙂`);
     msg.includes("yourname") ||
     msg.includes("whoareyou")
   ) {
-    return reply(event, `ผมชื่อ Sodicksafety AI Bot ครับ  
-You can call me the Sodick Safety Bot 🙂`);
+    return reply(
+      event,
+      `ผมชื่อ Sodicksafety AI Bot ครับ  
+You can call me the Sodick Safety Bot 🙂`
+    );
   }
 
   // ------------------------------
@@ -2016,27 +869,41 @@ You can call me the Sodick Safety Bot 🙂`);
     msg.includes("howareyou") ||
     msg.includes("areyouok")
   ) {
-    return reply(event, `ช่วงนี้งานเยอะ เหนื่อยนิดหน่อยครับ  
+    return reply(
+      event,
+      `ช่วงนี้งานเยอะ เหนื่อยนิดหน่อยครับ  
 I'm a bit busy lately, but I'm doing okay 🙂  
-ขอกำลังใจหน่อยนะครับ 😅`);
+ขอกำลังใจหน่อยนะครับ 😅`
+    );
   }
 
   // ------------------------------
   // 4) ขอบคุณ
   // ------------------------------
   if (msg.includes("ขอบคุณ") || msg.includes("thank") || msg.includes("thanks")) {
-    return reply(event, `ยินดีมากครับ 🙂  
+    return reply(
+      event,
+      `ยินดีมากครับ 🙂  
 You're very welcome!  
-ถ้ามีอะไรให้ช่วยเรื่องความปลอดภัย บอกผมได้เลยนะครับ`);
+ถ้ามีอะไรให้ช่วยเรื่องความปลอดภัย บอกผมได้เลยนะครับ`
+    );
   }
 
   // ------------------------------
   // 5) 555
   // ------------------------------
-  if (msg.includes("555") || msg.includes("ฮ่า") || msg.includes("lol") || msg.includes("haha")) {
-    return reply(event, `ฮ่าๆๆ 😂  
+  if (
+    msg.includes("555") ||
+    msg.includes("ฮ่า") ||
+    msg.includes("lol") ||
+    msg.includes("haha")
+  ) {
+    return reply(
+      event,
+      `ฮ่าๆๆ 😂  
 Haha 😂  
-ดีใจที่ทำให้คุณยิ้มได้นะครับ`);
+ดีใจที่ทำให้คุณยิ้มได้นะครับ`
+    );
   }
 
   // ------------------------------
@@ -2049,9 +916,12 @@ Haha 😂
     msg.includes("helpme") ||
     msg.includes("ineedhelp")
   ) {
-    return reply(event, `ผมอยู่ตรงนี้ครับ  
+    return reply(
+      event,
+      `ผมอยู่ตรงนี้ครับ  
 I'm here to help you.  
-ถ้าเป็นเรื่องความปลอดภัย แจ้งรายละเอียดให้ผมได้เลยนะครับ`);
+ถ้าเป็นเรื่องความปลอดภัย แจ้งรายละเอียดให้ผมได้เลยนะครับ`
+    );
   }
 
   // ------------------------------
@@ -2064,9 +934,12 @@ I'm here to help you.
     msg.includes("whatcanyoudo") ||
     msg.includes("howtouse")
   ) {
-    return reply(event, `ตอนนี้ผมช่วยตอบคำถามทั่วไปได้ครับ 🙂  
+    return reply(
+      event,
+      `ตอนนี้ผมช่วยตอบคำถามทั่วไปได้ครับ 🙂  
 I can answer general questions for now.  
-เร็ว ๆ นี้จะช่วยเรื่องความปลอดภัยได้มากขึ้นครับ`);
+เร็ว ๆ นี้จะช่วยเรื่องความปลอดภัยได้มากขึ้นครับ`
+    );
   }
 
   // ------------------------------
@@ -2077,37 +950,43 @@ I can answer general questions for now.
     msg.includes("อยู่ที่ไหน") ||
     msg.includes("whereareyou")
   ) {
-    return reply(event, `ผมอยู่ในระบบครับ พร้อมช่วยเหลือเสมอและไปอยู่ในใจพี่ครับ 🙂  
-I'm always here in the system to support you 🙂`);
+    return reply(
+      event,
+      `ผมอยู่ในระบบครับ พร้อมช่วยเหลือเสมอครับ 🙂  
+I'm always here in the system to support you 🙂`
+    );
   }
 
- // ------------------------------
-// 9) ถามว่ากินข้าวยัง (เวอร์ชันแก้ไขให้ครอบคลุม)
-// ------------------------------
-if (
-  msg.includes("กินข้าว") ||
-  msg.includes("haveyoueaten")
-) {
-  return reply(event, `ยังเลยครับ ช่วงนี้งานพี่เยอะมาก 😅  
+  // ------------------------------
+  // 9) ถามว่ากินข้าวยัง
+  // ------------------------------
+  if (msg.includes("กินข้าว") || msg.includes("haveyoueaten")) {
+    return reply(
+      event,
+      `ยังเลยครับ ช่วงนี้งานพี่เยอะมาก 😅  
 Not yet, I'm quite busy 😅  
-แล้วคุณล่ะครับ กินข้าวหรือยัง`);
-}
+แล้วคุณล่ะครับ กินข้าวหรือยัง`
+    );
+  }
 
-// ------------------------------
-// 10) คำหยาบ
-// ------------------------------
-if (
-  msg.includes("โง่") ||
-  msg.includes("ควาย") ||
-  msg.includes("สัส") ||
-  msg.includes("เหี้ย") ||
-  msg.includes("stupid") ||
-  msg.includes("idiot")
-) {
-  return reply(event, `ใจเย็น ๆ นะครับ 🙂  
+  // ------------------------------
+  // 10) คำหยาบ
+  // ------------------------------
+  if (
+    msg.includes("โง่") ||
+    msg.includes("ควาย") ||
+    msg.includes("สัส") ||
+    msg.includes("เหี้ย") ||
+    msg.includes("stupid") ||
+    msg.includes("idiot")
+  ) {
+    return reply(
+      event,
+      `ใจเย็น ๆ นะครับ 🙂  
 Please stay calm 🙂  
-ผมอยู่เพื่อช่วยเหลือคุณนะครับ`);
-}
+ผมอยู่เพื่อช่วยเหลือคุณนะครับ`
+    );
+  }
 
   // ------------------------------
   // 11) แจ้งเหตุฉุกเฉิน
@@ -2125,8 +1004,9 @@ Please stay calm 🙂
     msg.includes("emergency") ||
     msg.includes("danger")
   ) {
-    return reply(event,
-`หากมีเหตุฉุกเฉิน กรุณาติดต่อเจ้าหน้าที่ความปลอดภัยทันที
+    return reply(
+      event,
+      `หากมีเหตุฉุกเฉิน กรุณาติดต่อเจ้าหน้าที่ความปลอดภัยทันที
 
 โรงงาน 1  
 - พี่ไก่ โทร 102 น้องดุจ โทร 127 น้องกี้ โทร 129 
@@ -2137,178 +1017,177 @@ Please stay calm 🙂
 ผู้จัดการ  
 - พี่ช้าง โทร 100  
 
-ผมพร้อมช่วยให้ข้อมูลเพิ่มเติมได้ครับ 🙂`);
+ผมพร้อมช่วยให้ข้อมูลเพิ่มเติมได้ครับ 🙂`
+    );
   }
 
-// ------------------------------
-// 12) ค้นหาใน safetyQA
-// ------------------------------
-const found = safetyQA.find(q =>
-  msg.includes(q.question.replace(/\s+/g, ""))
-);
+  // ------------------------------
+  // 12) ค้นหาใน safetyQA
+  // ------------------------------
+  const found = safetyQA.find((q) =>
+    msg.includes(q.question.replace(/\s+/g, ""))
+  );
 
-if (found) {
-  return reply(event, found.answer);
-}
-// ------------------------------
-// 12.1) จับคำอารมณ์แบบครอบจักรวาล (ขั้นเทพ)
-// ------------------------------
-
-// คิดถึง (ทั่วไป) → feeling
-if (
-  msg.includes("คิดถึง") &&
-  !msg.includes("คิดถึงมั้ย") &&
-  !msg.includes("คิดถึงไหม")
-) {
-  return reply(event, randomReply(replies.feeling));
-}
-
-// คิดถึงมั้ย / คิดถึงไหม → friendly
-if (msg.includes("คิดถึงมั้ย") || msg.includes("คิดถึงไหม")) {
-  return reply(event, randomReply(replies.friendly));
-}
-
-// รัก → friendly (แต่กันคำว่า "น่ารัก")
-if (msg.includes("รัก") && !msg.includes("น่ารัก")) {
-  return reply(event, randomReply(replies.friendly));
-}
-
-// เหนื่อย → feeling
-if (msg.includes("เหนื่อย")) {
-  return reply(event, randomReply(replies.feeling));
-}
-
-// หิว → daily
-if (msg.includes("หิว")) {
-  return reply(event, randomReply(replies.daily));
-}
-
-// ง่วง → daily
-if (msg.includes("ง่วง")) {
-  return reply(event, randomReply(replies.daily));
-}
-
-
-// ------------------------------
-// A) คลังคำ (categories) — เวอร์ชันเสถียร
-// ------------------------------
-const categories = {
-  greeting: [
-    "สวัสดี","หวัดดี","ดีครับ","ดีค่ะ","ดีจ้า","ฮัลโหล","ไง","ว่าไง"
-  ],
-
-  feeling: [
-    "เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล",
-    "ท้อ"
-  ],
-
-  daily: [
-    "ทำไรอยู่","อยู่ไหน","ไปไหนมา","กินข้าวยัง","หิวไหม",
-    "ง่วงไหม","นอนยัง","ตื่นยัง","เลิกงานยัง"
-  ],
-
-  compliment: [
-    "เก่งมาก","สุดยอด","ดีมาก","เยี่ยมเลย","น่ารักจัง","ขอบคุณนะ",
-    "เป็นกำลังใจให้นะ","สู้ๆนะ","ดูแลตัวเองด้วย"
-  ],
-
-  friendly: [
-    "คิดถึงมั้ย","คิดถึงไหม","รักเรามั้ย","รักเราไหม","ลืมเราหรือยัง",
-    "ตอบเร็วๆ","อย่าเงียบดิ","คุยกับเราหน่อย",
-    "เหงาอ่ะ","เบื่ออ่ะ","หิวอ่ะ","ง่วงอ่ะ"
-  ],
-
-  exclaim: [
-    "โอ้โห","โหดจัง","จริงดิ","จริงป่ะ","โคตรดี","สุดจัด","ปังมาก"
-  ],
-
-  question: [
-    "ช่วยคิดหน่อย",
-    "แนะนำหน่อย",
-    "ทำไงดี",
-    "ทำไงต่อ"
-  ]
-};
-
-
-// ------------------------------
-// B) ชุดคำตอบแบบสุ่ม (replies)
-// ------------------------------
-const replies = {
-  greeting: [
-    "สวัสดีครับ 🙂",
-    "ดีครับผม พร้อมช่วยเสมอครับ",
-    "ฮัลโหลครับ 🙂",
-    "ว่าไงครับ วันนี้เป็นไงบ้าง"
-  ],
-
-  feeling: [
-    "ผมอยู่ตรงนี้นะครับ ไม่ต้องเหงา 🙂",
-    "ใจเย็น ๆ นะครับ เดี๋ยวทุกอย่างก็ดีขึ้นครับ",
-    "พักก่อนก็ได้นะครับ ผมเป็นกำลังใจให้เสมอ 🙂",
-    "คิดถึงเหมือนกันครับ ดูแลตัวเองด้วยนะ"
-  ],
-
-  daily: [
-    "กำลัง standby พร้อมช่วยงานอยู่ครับ 🙂",
-    "ผมอยู่ในระบบนี่แหละครับ พร้อมช่วยเสมอ",
-    "กินอะไรก็ได้ที่อร่อยและมีความสุขครับ 😄",
-    "พักผ่อนบ้างนะครับ อย่าหักโหม"
-  ],
-
-  compliment: [
-    "ขอบคุณครับ ผมดีใจที่ช่วยได้ 🙂",
-    "พี่เก่งมากครับ ทำได้ดีมาก",
-    "สุดยอดไปเลยครับ 😄",
-    "ผมเป็นกำลังใจให้เสมอนะครับ"
-  ],
-
-  friendly: [
-    "ผมอยู่นี่ครับ ไม่หายไปไหน 🙂",
-    "คิดถึงเหมือนกันครับ",
-    "คุยได้เสมอนะครับ",
-    "ผมไม่ลืมไก่หรอกครับ 🙂"
-  ],
-
-  exclaim: [
-    "โหดจริงครับ แต่ไก่เก่งกว่าอีก 😄",
-    "สุดจัดเลยครับ!",
-    "ปังมากครับ!",
-    "จริงครับผม!"
-  ],
-
-  question: [
-    "ได้ครับ เดี๋ยวผมช่วยคิดให้ 🙂",
-    "โอเคครับ บอกผมเพิ่มได้นะ",
-    "ผมช่วยได้ครับ ลองเล่าเพิ่มหน่อย",
-    "ได้เลยครับ เดี๋ยวผมแนะนำให้"
-  ]
-};
-
-
-// ------------------------------
-// C) ฟังก์ชันสุ่มตอบ
-// ------------------------------
-function randomReply(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-
-// ------------------------------
-// D) ตัวจับหมวดคำ (หลังจากอารมณ์พิเศษ)
-// ------------------------------
-for (const category in categories) {
-  if (categories[category].some(word => msg.includes(word))) {
-    return reply(event, randomReply(replies[category]));
+  if (found) {
+    return reply(event, found.answer);
   }
-}
+
+  // ------------------------------
+  // 12.1) จับคำอารมณ์
+  // ------------------------------
+  if (
+    msg.includes("คิดถึง") &&
+    !msg.includes("คิดถึงมั้ย") &&
+    !msg.includes("คิดถึงไหม")
+  ) {
+    return reply(event, randomReply(replies.feeling));
+  }
+
+  if (msg.includes("คิดถึงมั้ย") || msg.includes("คิดถึงไหม")) {
+    return reply(event, randomReply(replies.friendly));
+  }
+
+  if (msg.includes("รัก") && !msg.includes("น่ารัก")) {
+    return reply(event, randomReply(replies.friendly));
+  }
+
+  if (msg.includes("เหนื่อย")) {
+    return reply(event, randomReply(replies.feeling));
+  }
+
+  if (msg.includes("หิว")) {
+    return reply(event, randomReply(replies.daily));
+  }
+
+  if (msg.includes("ง่วง")) {
+    return reply(event, randomReply(replies.daily));
+  }
+
+  // ------------------------------
+  // A) คลังคำ categories
+  // ------------------------------
+  const categories = {
+    greeting: [
+      "สวัสดี",
+      "หวัดดี",
+      "ดีครับ",
+      "ดีค่ะ",
+      "ดีจ้า",
+      "ฮัลโหล",
+      "ไง",
+      "ว่าไง",
+    ],
+    feeling: ["เศร้า", "ร้องไห้", "เสียใจ", "เครียด", "กังวล", "ท้อ"],
+    daily: [
+      "ทำไรอยู่",
+      "อยู่ไหน",
+      "ไปไหนมา",
+      "กินข้าวยัง",
+      "หิวไหม",
+      "ง่วงไหม",
+      "นอนยัง",
+      "ตื่นยัง",
+      "เลิกงานยัง",
+    ],
+    compliment: [
+      "เก่งมาก",
+      "สุดยอด",
+      "ดีมาก",
+      "เยี่ยมเลย",
+      "น่ารักจัง",
+      "ขอบคุณนะ",
+      "เป็นกำลังใจให้นะ",
+      "สู้ๆนะ",
+      "ดูแลตัวเองด้วย",
+    ],
+    friendly: [
+      "คิดถึงมั้ย",
+      "คิดถึงไหม",
+      "รักเรามั้ย",
+      "รักเราไหม",
+      "ลืมเราหรือยัง",
+      "ตอบเร็วๆ",
+      "อย่าเงียบดิ",
+      "คุยกับเราหน่อย",
+      "เหงาอ่ะ",
+      "เบื่ออ่ะ",
+      "หิวอ่ะ",
+      "ง่วงอ่ะ",
+    ],
+    exclaim: ["โอ้โห", "โหดจัง", "จริงดิ", "จริงป่ะ", "โคตรดี", "สุดจัด", "ปังมาก"],
+    question: ["ช่วยคิดหน่อย", "แนะนำหน่อย", "ทำไงดี", "ทำไงต่อ"],
+  };
+
+  // ------------------------------
+  // B) ชุดคำตอบ replies
+  // ------------------------------
+  const replies = {
+    greeting: [
+      "สวัสดีครับ 🙂",
+      "ดีครับผม พร้อมช่วยเสมอครับ",
+      "ฮัลโหลครับ 🙂",
+      "ว่าไงครับ วันนี้เป็นไงบ้าง",
+    ],
+    feeling: [
+      "ผมอยู่ตรงนี้นะครับ ไม่ต้องเหงา 🙂",
+      "ใจเย็น ๆ นะครับ เดี๋ยวทุกอย่างก็ดีขึ้นครับ",
+      "พักก่อนก็ได้นะครับ ผมเป็นกำลังใจให้เสมอ 🙂",
+      "คิดถึงเหมือนกันครับ ดูแลตัวเองด้วยนะ",
+    ],
+    daily: [
+      "กำลัง standby พร้อมช่วยงานอยู่ครับ 🙂",
+      "ผมอยู่ในระบบนี่แหละครับ พร้อมช่วยเสมอ",
+      "กินอะไรก็ได้ที่อร่อยและมีความสุขครับ 😄",
+      "พักผ่อนบ้างนะครับ อย่าหักโหม",
+    ],
+    compliment: [
+      "ขอบคุณครับ ผมดีใจที่ช่วยได้ 🙂",
+      "พี่เก่งมากครับ ทำได้ดีมาก",
+      "สุดยอดไปเลยครับ 😄",
+      "ผมเป็นกำลังใจให้เสมอนะครับ",
+    ],
+    friendly: [
+      "ผมอยู่นี่ครับ ไม่หายไปไหน 🙂",
+      "คิดถึงเหมือนกันครับ",
+      "คุยได้เสมอนะครับ",
+      "ผมไม่ลืมไก่หรอกครับ 🙂",
+    ],
+    exclaim: [
+      "โหดจริงครับ แต่ไก่เก่งกว่าอีก 😄",
+      "สุดจัดเลยครับ!",
+      "ปังมากครับ!",
+      "จริงครับผม!",
+    ],
+    question: [
+      "ได้ครับ เดี๋ยวผมช่วยคิดให้ 🙂",
+      "โอเคครับ บอกผมเพิ่มได้นะ",
+      "ผมช่วยได้ครับ ลองเล่าเพิ่มหน่อย",
+      "ได้เลยครับ เดี๋ยวผมแนะนำให้",
+    ],
+  };
+
+  // ------------------------------
+  // C) ฟังก์ชันสุ่มตอบ
+  // ------------------------------
+  function randomReply(list) {
+    return list[Math.floor(Math.random() * list.length)];
+  }
+
+  // ------------------------------
+  // D) ตัวจับหมวดคำ (หลังจากอารมณ์พิเศษ)
+  // ------------------------------
+  for (const category in categories) {
+    if (categories[category].some((word) => msg.includes(word))) {
+      return reply(event, randomReply(replies[category]));
+    }
+  }
+
   // ------------------------------
   // 13) Fallback — แจ้งผู้พัฒนา + mention
   // ------------------------------
   return client.replyMessage(event.replyToken, {
     type: "text",
-    text:
-`ระบบยังไม่มีข้อมูลคำถามนี้
+    text: `ระบบยังไม่มีข้อมูลคำถามนี้
 แจ้งผู้พัฒนาระบบ: @Trerasak_K
 เพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/_T4H-3TKUa
 
@@ -2318,15 +1197,15 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
       mentionees: [
         {
           index: 27,
-          userId: "U4a74c3933c0ecf9d2062768696ba3df8"
-        }
-      ]
-    }
+          userId: "U4a74c3933c0ecf9d2062768696ba3df8",
+        },
+      ],
+    },
   });
 }
 
 // ------------------------------
-//  Helper: ส่งข้อความกลับ
+// Helper: ส่งข้อความกลับ
 // ------------------------------
 function reply(event, text) {
   return client.replyMessage(event.replyToken, {
