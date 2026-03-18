@@ -376,7 +376,7 @@ Because confined space entry is extremely dangerous and requires strict safety c
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
   },
 
-  {
+ {
     question: "ทำไมต้องแยกขยะ",
     answer: `เพื่อป้องกันปนเปื้อน ลดอันตราย และทำให้กำจัดได้ง่ายและถูกวิธี
 
@@ -525,162 +525,165 @@ To protect your feet from falling objects, sharp items, and slippery surfaces in
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
   },
-{
-  question: "ทำไมห้ามใส่รองเท้าแตะ",
-  answer: `เพราะรองเท้าแตะไม่ป้องกันอันตราย เช่น ของตก ของมีคม หรือไฟฟ้ารั่ว
+
+  {
+    question: "ทำไมห้ามใส่รองเท้าแตะ",
+    answer: `เพราะรองเท้าแตะไม่ป้องกันอันตราย เช่น ของตก ของมีคม หรือไฟฟ้ารั่ว
 
 Flip‑flops do not protect against hazards such as falling objects, sharp items, or electrical risks.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
-},
+  },
 
-{
-  question: "ทำไมต้องใส่แว่นตอนใช้สารเคมี",
-  answer: `เพื่อกันสารเคมีกระเด็นเข้าตา ซึ่งอาจทำให้ตาบอดหรือบาดเจ็บรุนแรง
+  {
+    question: "ทำไมต้องใส่แว่นตอนใช้สารเคมี",
+    answer: `เพื่อกันสารเคมีกระเด็นเข้าตา ซึ่งอาจทำให้ตาบอดหรือบาดเจ็บรุนแรง
 
 To prevent chemical splashes from entering your eyes, which can cause severe injury or blindness.
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
-},
-{
-question: "ทำไมต้องคัดแยกขยะ",
-answer: `การคัดแยกขยะช่วยลดการปนเปื้อน ลดมลพิษ และทำให้กำจัดได้ถูกต้องตามกฎหมาย ขยะของบริษัทแบ่งเป็น 5 ประเภท และต้องทิ้งให้ถูกถังตามที่กำหนด
+  },
 
-Waste separation reduces contamination, pollution, and ensures proper legal disposal. The company divides waste into 5 types, each requiring correct disposal.
+  {
+    question: "ทำไมต้องคัดแยกขยะ",
+    answer: `การคัดแยกขยะช่วยลดการปนเปื้อน ลดมลพิษ และทำให้กำจัดได้ถูกต้องตามกฎหมาย ขยะของบริษัทแบ่งเป็น 5 ประเภท และต้องทิ้งให้ถูกถังตามที่กำหนด
+
+Waste separation reduces contamination, pollution, and ensures proper legal disposal.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ขยะทั่วไปคืออะไร",
-answer: `ขยะทั่วไปคือขยะที่ไม่เป็นอันตราย เช่น เศษอาหาร กระดาษ พลาสติก ซากพืช ซากสัตว์ ให้ทิ้งลงถัง “ขยะทั่วไป”
+  {
+    question: "ขยะทั่วไปคืออะไร",
+    answer: `ขยะทั่วไปคือขยะที่ไม่เป็นอันตราย เช่น เศษอาหาร กระดาษ พลาสติก ซากพืช ซากสัตว์ ให้ทิ้งลงถัง “ขยะทั่วไป”
 
 General waste includes non‑hazardous items such as food scraps, paper, plastics, and plant debris.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ขยะจากการผลิตคืออะไร",
-answer: `คือขยะจากกระบวนการผลิต เช่น เศษกระดาษ กล่อง กระป๋อง หรือพลาสติกที่ไม่ปนเปื้อนสารเคมี ให้ทิ้งลงถัง “ขยะจากการผลิต”
+  {
+    question: "ขยะจากการผลิตคืออะไร",
+    answer: `คือขยะจากกระบวนการผลิต เช่น เศษกระดาษ กล่อง กระป๋อง หรือพลาสติกที่ไม่ปนเปื้อนสารเคมี ให้ทิ้งลงถัง “ขยะจากการผลิต”
 
 Production waste includes paper, cardboard, and plastics not contaminated with chemicals.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ขยะอันตรายคืออะไร",
-answer: `คือขยะที่มีสารเคมีปนเปื้อน เช่น ถุงมือเปื้อนสารเคมี ภาชนะสารเคมี แบตเตอรี่ กระป๋องสี ต้องทิ้งในถังแดง “ขยะอันตราย”
+  {
+    question: "ขยะอันตรายคืออะไร",
+    answer: `คือขยะที่มีสารเคมีปนเปื้อน เช่น ถุงมือเปื้อนสารเคมี ภาชนะสารเคมี แบตเตอรี่ กระป๋องสี ต้องทิ้งในถังแดง “ขยะอันตราย”
 
 Hazardous waste includes chemical‑contaminated materials such as gloves, containers, batteries, and paint cans.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ขยะติดเชื้อคืออะไร",
-answer: `ขยะติดเชื้อคือวัสดุที่ใช้ในการปฐมพยาบาล เช่น สำลี ผ้าก๊อซ ผ้าพันแผล ต้องทิ้งในถังแดง “ขยะติดเชื้อ”
+  {
+    question: "ขยะติดเชื้อคืออะไร",
+    answer: `ขยะติดเชื้อคือวัสดุที่ใช้ในการปฐมพยาบาล เช่น สำลี ผ้าก๊อซ ผ้าพันแผล ต้องทิ้งในถังแดง “ขยะติดเชื้อ”
 
 Infectious waste includes cotton, gauze, and bandages used in first aid.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "scrap คืออะไร",
-answer: `Scrap คือเศษวัสดุจากการผลิต เช่น เหล็ก อลูมิเนียม ทองแดง ต้องรวบรวมและนำไปทิ้งที่โรงขยะ
+  {
+    question: "scrap คืออะไร",
+    answer: `Scrap คือเศษวัสดุจากการผลิต เช่น เหล็ก อลูมิเนียม ทองแดง ต้องรวบรวมและนำไปทิ้งที่โรงขยะ
 
 Scrap refers to leftover production materials such as steel, aluminum, and copper.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องใช้ถุงขยะสีดำสีแดง",
-answer: `ถุงสีดำใช้สำหรับขยะทั่วไปและขยะจากการผลิต ส่วนถุงสีแดงใช้สำหรับขยะอันตราย เพื่อแยกประเภทให้ชัดเจนและปลอดภัย
+  {
+    question: "ทำไมต้องใช้ถุงขยะสีดำสีแดง",
+    answer: `ถุงสีดำใช้สำหรับขยะทั่วไปและขยะจากการผลิต ส่วนถุงสีแดงใช้สำหรับขยะอันตราย เพื่อแยกประเภทให้ชัดเจนและปลอดภัย
 
 Black bags are for general and production waste, while red bags are for hazardous waste.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องทิ้งขยะให้ถูกถัง",
-answer: `เพื่อป้องกันการปนเปื้อน ลดอันตราย และทำให้กำจัดได้ถูกต้องตามกฎหมาย
+  {
+    question: "ทำไมต้องทิ้งขยะให้ถูกถัง",
+    answer: `เพื่อป้องกันการปนเปื้อน ลดอันตราย และทำให้กำจัดได้ถูกต้องตามกฎหมาย
 
 Correct disposal prevents contamination and ensures legal compliance.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องแยก scrap",
-answer: `เพราะ scrap เป็นวัสดุรีไซเคิลได้ ต้องแยกจากขยะทั่วไปเพื่อให้กำจัดได้ถูกต้องและนำกลับมาใช้ใหม่ได้
+  {
+    question: "ทำไมต้องแยก scrap",
+    answer: `เพราะ scrap เป็นวัสดุรีไซเคิลได้ ต้องแยกจากขยะทั่วไปเพื่อให้กำจัดได้ถูกต้องและนำกลับมาใช้ใหม่ได้
 
 Scrap is recyclable and must be separated for proper disposal and reuse.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องห้ามทิ้งขยะลงรางน้ำ",
-answer: `เพราะทำให้เกิดการอุดตัน ปนเปื้อน และอาจไหลลงสู่สิ่งแวดล้อมภายนอก ซึ่งผิดกฎหมาย
+  {
+    question: "ทำไมต้องห้ามทิ้งขยะลงรางน้ำ",
+    answer: `เพราะทำให้เกิดการอุดตัน ปนเปื้อน และอาจไหลลงสู่สิ่งแวดล้อมภายนอก ซึ่งผิดกฎหมาย
 
 Dumping waste into drains causes blockages, contamination, and environmental pollution.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
-{
-question: "ทำไมต้องรักษาความสะอาดพื้นที่ทำงาน",
-answer: `เพื่อป้องกันอุบัติเหตุ ลดการสะสมของเชื้อโรค และทำให้พื้นที่ทำงานปลอดภัย
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
+
+  {
+    question: "ทำไมต้องรักษาความสะอาดพื้นที่ทำงาน",
+    answer: `เพื่อป้องกันอุบัติเหตุ ลดการสะสมของเชื้อโรค และทำให้พื้นที่ทำงานปลอดภัย
 
 Clean workplaces reduce accidents, germs, and hazards.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องป้องกันขยะฟุ้งกระจาย",
-answer: `เพราะขยะฟุ้งกระจายทำให้เกิดฝุ่น กลิ่น และอาจรบกวนพื้นที่อื่น
+  {
+    question: "ทำไมต้องป้องกันขยะฟุ้งกระจาย",
+    answer: `เพราะขยะฟุ้งกระจายทำให้เกิดฝุ่น กลิ่น และอาจรบกวนพื้นที่อื่น
 
 Preventing waste scattering reduces dust, odor, and contamination.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องเก็บขยะทุกวัน",
-answer: `เพื่อป้องกันกลิ่นเหม็น การสะสมของแมลง และลดความเสี่ยงด้านสุขอนามัย
+  {
+    question: "ทำไมต้องเก็บขยะทุกวัน",
+    answer: `เพื่อป้องกันกลิ่นเหม็น การสะสมของแมลง และลดความเสี่ยงด้านสุขอนามัย
 
 Daily waste collection prevents odor, pests, and hygiene issues.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องล้างพื้นที่หลังทำงาน",
-answer: `เพื่อกำจัดคราบสกปรก ลดการลื่นล้ม และทำให้พื้นที่ปลอดภัย
+  {
+    question: "ทำไมต้องล้างพื้นที่หลังทำงาน",
+    answer: `เพื่อกำจัดคราบสกปรก ลดการลื่นล้ม และทำให้พื้นที่ปลอดภัย
 
 Cleaning after work removes dirt and reduces slip hazards.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
 },
 
 {
@@ -842,106 +845,106 @@ Efficient energy use reduces cost and pollution.
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
 },
 {
-question: "ทำไมต้องแยกสารเคมีออกจากขยะทั่วไป",
-answer: `เพื่อป้องกันการปนเปื้อนและอันตรายจากปฏิกิริยาเคมี
+    question: "ทำไมต้องแยกสารเคมีออกจากขยะทั่วไป",
+    answer: `เพื่อป้องกันการปนเปื้อนและอันตรายจากปฏิกิริยาเคมี
 
 Chemical waste must be separated to avoid contamination and reactions.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องติดป้ายสารเคมี",
-answer: `เพื่อให้รู้ว่าสารนั้นคืออะไร อันตรายแค่ไหน และต้องจัดการอย่างไร
+  {
+    question: "ทำไมต้องติดป้ายสารเคมี",
+    answer: `เพื่อให้รู้ว่าสารนั้นคืออะไร อันตรายแค่ไหน และต้องจัดการอย่างไร
 
 Chemical labeling ensures safe handling and identification.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องเก็บสารเคมีในพื้นที่เฉพาะ",
-answer: `เพื่อป้องกันการรั่วไหลและอุบัติเหตุ
+  {
+    question: "ทำไมต้องเก็บสารเคมีในพื้นที่เฉพาะ",
+    answer: `เพื่อป้องกันการรั่วไหลและอุบัติเหตุ
 
 Chemical storage areas prevent leaks and accidents.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องสวมPPEเมื่อใช้สารเคมี",
-answer: `เพื่อป้องกันการสัมผัสสารเคมีที่อาจเป็นอันตรายต่อผิวหนังและระบบหายใจ
+  {
+    question: "ทำไมต้องสวมPPEเมื่อใช้สารเคมี",
+    answer: `เพื่อป้องกันการสัมผัสสารเคมีที่อาจเป็นอันตรายต่อผิวหนังและระบบหายใจ
 
 PPE protects against chemical exposure.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องรายงานสารเคมีหก",
-answer: `เพื่อให้เจ้าหน้าที่เข้ามาควบคุมและทำความสะอาดอย่างถูกวิธี
+  {
+    question: "ทำไมต้องรายงานสารเคมีหก",
+    answer: `เพื่อให้เจ้าหน้าที่เข้ามาควบคุมและทำความสะอาดอย่างถูกวิธี
 
 Chemical spills must be reported for proper cleanup.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องห้ามเทสารเคมีลงพื้น",
-answer: `เพราะทำให้เกิดการปนเปื้อนและอันตรายต่อสิ่งแวดล้อม
+  {
+    question: "ทำไมต้องห้ามเทสารเคมีลงพื้น",
+    answer: `เพราะทำให้เกิดการปนเปื้อนและอันตรายต่อสิ่งแวดล้อม
 
 Pouring chemicals on the floor causes contamination.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องเก็บภาชนะสารเคมีให้มิดชิด",
-answer: `เพื่อป้องกันการรั่วไหลและการระเหยของสารเคมี
+  {
+    question: "ทำไมต้องเก็บภาชนะสารเคมีให้มิดชิด",
+    answer: `เพื่อป้องกันการรั่วไหลและการระเหยของสารเคมี
 
 Closed containers prevent leaks and evaporation.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องตรวจสอบวันหมดอายุสารเคมี",
-answer: `สารเคมีหมดอายุอาจเสื่อมสภาพและเป็นอันตราย
+  {
+    question: "ทำไมต้องตรวจสอบวันหมดอายุสารเคมี",
+    answer: `สารเคมีหมดอายุอาจเสื่อมสภาพและเป็นอันตราย
 
 Expired chemicals may degrade and become dangerous.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องแยกแบตเตอรี่",
-answer: `แบตเตอรี่มีสารอันตราย เช่น ตะกั่ว กรด ต้องกำจัดอย่างถูกวิธี
+  {
+    question: "ทำไมต้องแยกแบตเตอรี่",
+    answer: `แบตเตอรี่มีสารอันตราย เช่น ตะกั่ว กรด ต้องกำจัดอย่างถูกวิธี
 
 Batteries contain hazardous materials and require special disposal.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
-{
-question: "ทำไมต้องกำจัดหลอดไฟอย่างถูกวิธี",
-answer: `หลอดไฟมีสารปรอท ต้องกำจัดในระบบเฉพาะเพื่อป้องกันอันตราย
+  {
+    question: "ทำไมต้องกำจัดหลอดไฟอย่างถูกวิธี",
+    answer: `หลอดไฟมีสารปรอท ต้องกำจัดในระบบเฉพาะเพื่อป้องกันอันตราย
 
 Fluorescent lamps contain mercury and require special disposal.
 
 ศึกษาข้อมูลเพิ่มเติม:
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
-},
+https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`,
+  },
 
- {
+  {
     question: "จุดสูบบุหรี่",
     answer: `📍 จุดสูบบุหรี่ของบริษัท
 
@@ -957,11 +960,11 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
     question: "ขยะมีกี่ประเภท",
     answer: `♻️ ขยะในบริษัทมีทั้งหมด **5 ประเภท** ได้แก่:
 
-1) ขยะทั่วไปค่ะ  
-2) ขยะจากการผลิตค่ะ  
-3) ขยะอันตรายค่ะ  
-4) ขยะติดเชื้อค่ะ  
-5) Scrapค่ะ`,
+1) ขยะทั่วไป  
+2) ขยะจากการผลิต  
+3) ขยะอันตราย  
+4) ขยะติดเชื้อ  
+5) Scrap`,
   },
 
   /* ------------------------------
