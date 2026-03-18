@@ -1614,27 +1614,31 @@ Please stay calm 🙂
     }
   }
 
-  // ------------------------------
-  // 13) Fallback — แจ้งผู้พัฒนา + mention
-  // ------------------------------
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: `ระบบยังไม่มีข้อมูลคำถามนี้
+// ------------------------------
+// 13) Fallback — แจ้งผู้พัฒนา + mention
+// ------------------------------
+return client.replyMessage(event.replyToken, {
+  type: "text",
+  text: `ระบบยังไม่มีข้อมูลคำถามนี้
 แจ้งผู้พัฒนาระบบ: @Trerasak_K
 เพิ่มเพื่อนผู้พัฒนา: https://line.me/ti/p/_T4H-3TKUa
 
 ศึกษาข้อมูลเพิ่มเติมในคู่มือนี้:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`,
-    mention: {
-      mentionees: [
-        {
-          index: 27,
-          userId: "U4a74c3933c0ecf9d2062768696ba3df8",
-        },
-      ],
-    },
-  });
-}
+  mention: {
+    mentionees: [
+      {
+        index: 27,
+        userId: "U4a74c3933c0ecf9d2062768696ba3df8",
+      },
+    ],
+  },
+});
+
+// ⭐⭐ ต้องมีบรรทัดนี้ ⭐⭐
+return Promise.resolve(null);
+
+} // ← ปิด handleEvent ตรงนี้จริง ๆ
 
 // ------------------------------
 // Helper: ส่งข้อความกลับ
