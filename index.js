@@ -1444,58 +1444,7 @@ Please stay calm 🙂
     return reply(event, found.answer);
   }
 
-  // ------------------------------
-  // 12.1) จับคำอารมณ์ (เวอร์ชันเรียบง่าย)
-  // ------------------------------
-
-  // คิดถึง
-  if (msg.includes("คิดถึง")) {
-    if (msg.includes("คิดถึงมั้ย") || msg.includes("คิดถึงไหม")) {
-      return reply(event, randomReply(replies.friendly));
-    }
-    return reply(event, randomReply(replies.feeling));
-  }
-
-  // รัก (ยกเว้น "น่ารัก")
-  if (msg.includes("รัก") && !msg.includes("น่ารัก")) {
-    return reply(event, randomReply(replies.friendly));
-  }
-
-  // ลืมเราหรือยัง
-  if (msg.includes("ลืมเราหรือยัง")) {
-    return reply(event, randomReply(replies.friendly));
-  }
-
-  // โหดจัง / จริงดิ / จริงป่ะ
-  if (
-    msg.includes("โหดจัง") ||
-    msg.includes("จริงดิ") ||
-    msg.includes("จริงป่ะ")
-  ) {
-    return reply(event, randomReply(replies.exclaim));
-  }
-
-  // เหนื่อย
-  if (msg.includes("เหนื่อย")) {
-    return reply(event, randomReply(replies.feeling));
-  }
-
-  // หิว
-  if (msg.includes("หิว")) {
-    return reply(event, randomReply(replies.daily));
-  }
-
-  // ง่วง
-  if (msg.includes("ง่วง")) {
-    return reply(event, randomReply(replies.daily));
-  }
-
-  // ช่วยคิดหน่อย / แนะนำหน่อย
-  if (msg.includes("ช่วยคิด") || msg.includes("แนะนำหน่อย")) {
-    return reply(event, randomReply(replies.question));
-  }
-
-  // ------------------------------
+    // ------------------------------
   // A) คลังคำ categories
   // ------------------------------
   const categories = {
@@ -1533,18 +1482,18 @@ Please stay calm 🙂
       "ดูแลตัวเองด้วย",
     ],
     friendly: [
-      "คิดถึงมั้ย",
+      "คิดถึง",
       "คิดถึงไหม",
-      "รักเรามั้ย",
+      "รักมั้ย",
       "รักเราไหม",
       "ลืมเราหรือยัง",
       "ตอบเร็วๆ",
       "อย่าเงียบดิ",
       "คุยกับเราหน่อย",
-      "เหงาอ่ะ",
-      "เบื่ออ่ะ",
-      "หิวอ่ะ",
-      "ง่วงอ่ะ",
+      "เหงา",
+      "เบื่อ",
+      "หิว",
+      "ง่วง",
     ],
     exclaim: ["โอ้โห", "โหดจัง", "จริงดิ", "จริงป่ะ", "โคตรดี", "สุดจัด", "ปังมาก"],
     question: ["ช่วยคิดหน่อย", "แนะนำหน่อย", "ทำไงดี", "ทำไงต่อ"],
@@ -1579,10 +1528,13 @@ Please stay calm 🙂
       "Safetyเป็นกำลังใจให้เสมอนะครับ",
     ],
     friendly: [
-      "Safetyอยู่นี่ครับ ไม่หายไปไหน 🙂",
-      "Safetyคิดถึงเหมือนกันครับ",
-      "Safetyคุยได้เสมอนะครับ",
-      "Safetyไม่ลืมหรอกครับ 🙂",
+      "Safety  อยู่นี่ครับ ไม่หายไปไหน 🙂",
+            "Safety รักเสมอ",
+            "Safety ไม่เบื่อ",
+            "Safety หิวต้องอดทนจะไม่อ้วน",
+      "Safety คิดถึงเหมือนกันครับ",
+      "Safety คุยได้เสมอนะครับ",
+      "Safety ไม่ลืมหรอกครับ 🙂",
     ],
     exclaim: [
       "โหดจริงครับ แต่พี่เก่งกว่าอีก 😄",
