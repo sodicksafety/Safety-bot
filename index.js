@@ -1600,6 +1600,43 @@ function reply(event, text) {
     text,
   });
 }
+// ------------------------------
+// Webhook
+// ------------------------------
+
+
+app.post("/webhook", (req, res) => {
+  const events = req.body.events;
+
+  events.forEach(async (event) => {
+    const text = event.message.text;
+    let replyMessage = "";
+
+    // ------------------------------
+    // AO TABLE COMMAND
+    // ------------------------------
+    if (text === "ao") {
+      replyMessage = `
+💚 SAFETY ZONE
+A : [A1] [A2] [A3] [A4]
+B : [B1] [B2] [B3] [B4]
+C : [C1] [C2] [C3] [C4]
+
+💙 SUPPORT ZONE
+D : [D1] [D2] [D3] [D4]
+E : [E1] [E2] [E3] [E4]
+F : [F1] [F2] [F3] [F4] [F5] [F6]
+      `;
+    }
+
+    await client.replyMessage(event.replyToken, {
+      type: "text",
+      text: replyMessage,
+    });
+  });
+
+  res.sendStatus(200);
+});
 
 // ------------------------------
 // Render ใช้ PORT จาก ENV
