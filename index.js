@@ -17,7 +17,7 @@ const client = new line.Client(config);
 // ------------------------------
 const safetyQA = [
 {
-  question: "ทำไมต้องอบรมก่อนเข้าทำงาน",
+  question: "ทำไมต้องอบรม",
   answer: `เพราะบริษัทต้องให้แน่ใจว่าผู้รับเหมารู้กฎความปลอดภัยพื้นฐานก่อนเริ่มงาน เพื่อป้องกันอุบัติเหตุ
 
 Because the company must ensure that contractors understand basic safety rules before starting work to prevent accidents.
@@ -37,7 +37,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ppe คืออะไร",
+  question: "ppeคืออะไร",
   answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ
 
 PPE stands for Personal Protective Equipment such as safety helmets, safety shoes, safety glasses, and gloves.
@@ -67,7 +67,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "จุดสูบบุหรี่อยู่ตรงไหน",
+  question: "สูบบุหรี่ตรงไหน",
   answer: `สูบได้เฉพาะจุดที่บริษัทกำหนด ห้ามสูบในอาคารหรือห้องน้ำเด็ดขาด
 
 Smoking is allowed only in designated smoking areas. Smoking inside buildings or restrooms is strictly prohibited.
@@ -77,7 +77,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องกั้นพื้นที่ตอนทำงาน",
+  question: "ทำไมต้องกั้นพื้นที่ทำงาน",
   answer: `เพื่อให้คนอื่นรู้ว่ามีงานกำลังดำเนินอยู่ และป้องกันไม่ให้คนที่ไม่เกี่ยวข้องเข้าไปในพื้นที่เสี่ยง
 
 To inform others that work is in progress and to prevent unauthorized people from entering hazardous areas.
@@ -176,7 +176,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "งานสูงคืออะไร",
+  question: "งานที่สูงคืออะไร",
   answer: `งานที่ทำบนที่สูงเกิน 2 เมตรขึ้นไป ต้องใช้อุปกรณ์กันตก
 
 High work refers to tasks performed above 2 meters where fall protection equipment is required.
@@ -186,7 +186,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องขออนุญาตงานสูง",
+  question: "ทำไมต้องขออนุญาตงานที่สูง",
   answer: `เพราะเสี่ยงตก ต้องตรวจอุปกรณ์ก่อนทำงาน
 
 Because working at height has fall risks, equipment must be inspected before starting.
@@ -196,7 +196,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องตรวจบันไดก่อนใช้",
+  question: "ทำไมต้องตรวจบันได",
   answer: `กันบันไดหักหรือพังตอนใช้งาน
 
 To prevent ladder collapse or breakage during use.
@@ -702,7 +702,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องใส่หมวกนิรภัยตลอดเวลา",
+  question: "ทำไมต้องใส่หมวกนิรภัย",
   answer: `เพื่อป้องกันศีรษะจากของตก ของหล่น หรือการกระแทก
 
 To protect your head from falling objects, impacts, or collisions.
@@ -742,7 +742,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องไม่ใส่รองเท้าแตะในโรงงาน",
+  question: "ทำไมห้ามใส่รองเท้าแตะในโรงงาน",
   answer: `เพราะรองเท้าแตะไม่ป้องกันอันตราย เช่น ของตก ของมีคม หรือไฟฟ้ารั่ว
 
 Because slippers do not protect against hazards such as falling objects, sharp items, or electrical risks.
@@ -752,7 +752,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องไม่ใส่เครื่องประดับในโรงงาน",
+  question: "ทำไมห้ามใส่เครื่องประดับในโรงงาน",
   answer: `เพราะอาจไปเกี่ยวเครื่องจักร ทำให้เกิดอุบัติเหตุรุนแรงได้
 
 Because jewelry can get caught in machinery, causing severe injuries.
@@ -762,7 +762,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องเก็บผมให้เรียบร้อย",
+  question: "ทำไมต้องเก็บผม",
   answer: `เพื่อป้องกันผมไปพันกับเครื่องจักรหรืออุปกรณ์ที่หมุนอยู่
 
 To prevent hair from getting caught in rotating machinery or equipment.
@@ -792,7 +792,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
 },
 
 {
-  question: "ทำไมต้องใส่ปลั๊กให้แน่น",
+  question: "ทำไมต้องเสียบปลั๊กให้แน่น",
   answer: `เพื่อป้องกันไฟลัดวงจรและประกายไฟ
 
 To prevent short circuits and electrical sparks.
@@ -1325,15 +1325,15 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=shari
     question: "ขยะมีกี่ประเภท",
     answer: `♻️ ขยะในบริษัทมีทั้งหมด **5 ประเภท** ได้แก่:
 
-1) ขยะทั่วไป  
-2) ขยะจากการผลิต  
-3) ขยะอันตราย  
-4) ขยะติดเชื้อ  
-5) Scrap`
+1) ขยะทั่วไปค่ะ  
+2) ขยะจากการผลิตค่ะ  
+3) ขยะอันตรายค่ะ  
+4) ขยะติดเชื้อค่ะ  
+5) Scrapค่ะ`
 },
 
 {
-    question: "ppeคืออะไร",
+    question: "PPEคืออะไร",
     answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ
 
 PPE stands for Personal Protective Equipment such as safety helmets, safety shoes, safety glasses, and gloves.
@@ -1341,6 +1341,7 @@ PPE stands for Personal Protective Equipment such as safety helmets, safety shoe
 ศึกษาข้อมูลเพิ่มเติม:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view?usp=sharing`
 },
+
 {
   question: "ที่อยู่บริษัท",
   answer: `📍 **ที่อยู่บริษัท Sodick (Thailand) Co., Ltd.**
@@ -1691,124 +1692,15 @@ I'm always here in the system to support you 🙂`);
   }
 
  // ------------------------------
-// 9) ถามว่ากินข้าวยัง
+// 9) ถามว่ากินข้าวยัง (เวอร์ชันแก้ไขให้ครอบคลุม)
 // ------------------------------
 if (
-  msg.includes("กินข้าวยัง") ||
-  msg.includes("กินข้าวหรือยัง") ||
+  msg.includes("กินข้าว") ||
   msg.includes("haveyoueaten")
 ) {
   return reply(event, `ยังเลยครับ ช่วงนี้งานเยอะมาก 😅  
 Not yet, I'm quite busy 😅  
 แล้วคุณล่ะครับ กินข้าวหรือยัง`);
-}
-
-// ------------------------------
-// A) คลังคำ (categories)
-// ------------------------------
-const categories = {
-  greeting: [
-    "สวัสดี","หวัดดี","ดีครับ","ดีค่ะ","ดีจ้า","ฮัลโหล","ไง","ว่าไง","เป็นไง","เป็นไงบ้าง"
-  ],
-
-  feeling: [
-    "คิดถึง","คิดถึงจัง","เหงา","เหงาจัง","เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล",
-    "เหนื่อย","เหนื่อยมาก","ท้อ","ท้อแท้","เบื่อ","เบื่อจัง"
-  ],
-
-  daily: [
-    "ทำไรอยู่","ทำอะไรอยู่","อยู่ไหน","ไปไหนมา","กินข้าวยัง","กินไรดี","หิวไหม",
-    "ง่วงไหม","นอนยัง","ตื่นยัง","เลิกงานยัง","พักอยู่เหรอ"
-  ],
-
-  compliment: [
-    "เก่งมาก","เก่งจัง","สุดยอด","ดีมาก","เยี่ยมเลย","น่ารักจัง","ขอบคุณนะ",
-    "เป็นกำลังใจให้นะ","สู้ๆนะ","ดูแลตัวเองด้วย"
-  ],
-
-  friendly: [
-    "คิดถึงมั้ย","รักเรามั้ย","ลืมเราหรือยัง","ตอบเร็วๆ","อย่าเงียบดิ","คุยกับเราหน่อย",
-    "เหงาอ่ะ","เบื่ออ่ะ","หิวอ่ะ","ง่วงอ่ะ"
-  ],
-
-  exclaim: [
-    "โอ้โห","โหดจัง","จริงดิ","จริงป่ะ","โคตรดี","โคตรเหนื่อย","โคตรหิว","สุดจัด","ปังมาก"
-  ],
-
-  question: [
-    "คืออะไร","ทำไมอ่ะ","เพราะอะไร","ยังไงอ่ะ","อธิบายหน่อย","บอกหน่อย",
-    "ช่วยคิดหน่อย","แนะนำหน่อย","ต้องทำไง","ทำไงดี","ทำไงต่อ"
-  ]
-};
-
-// ------------------------------
-// B) ชุดคำตอบแบบสุ่ม (replies)
-// ------------------------------
-const replies = {
-  greeting: [
-    "สวัสดีครับ 🙂",
-    "ดีครับผม พร้อมช่วยเสมอครับ",
-    "ฮัลโหลครับ 🙂",
-    "ว่าไงครับ วันนี้เป็นไงบ้าง"
-  ],
-
-  feeling: [
-    "ผมอยู่ตรงนี้นะครับ ไม่ต้องเหงา 🙂",
-    "ใจเย็น ๆ นะครับ เดี๋ยวทุกอย่างก็ดีขึ้นครับ",
-    "พักก่อนก็ได้นะครับ ผมเป็นกำลังใจให้เสมอ 🙂",
-    "คิดถึงเหมือนกันครับ ดูแลตัวเองด้วยนะ"
-  ],
-
-  daily: [
-    "กำลัง standby พร้อมช่วยงานอยู่ครับ 🙂",
-    "ผมอยู่ในระบบนี่แหละครับ พร้อมช่วยเสมอ",
-    "กินอะไรก็ได้ที่อร่อยและมีความสุขครับ 😄",
-    "พักผ่อนบ้างนะครับ อย่าหักโหม"
-  ],
-
-  compliment: [
-    "ขอบคุณครับ ผมดีใจที่ช่วยได้ 🙂",
-    "ไก่เก่งมากครับ ทำได้ดีมาก",
-    "สุดยอดไปเลยครับ 😄",
-    "ผมเป็นกำลังใจให้เสมอนะครับ"
-  ],
-
-  friendly: [
-    "ผมอยู่นี่ครับ ไม่หายไปไหน 🙂",
-    "คิดถึงเหมือนกันครับ",
-    "คุยได้เสมอนะครับ",
-    "ผมไม่ลืมไก่หรอกครับ 🙂"
-  ],
-
-  exclaim: [
-    "โหดจริงครับ แต่ไก่เก่งกว่าอีก 😄",
-    "สุดจัดเลยครับ!",
-    "ปังมากครับ!",
-    "จริงครับผม!"
-  ],
-
-  question: [
-    "อธิบายให้ได้ครับ บอกผมเพิ่มได้นะ 🙂",
-    "ได้เลยครับ เดี๋ยวผมช่วยคิดให้",
-    "เรื่องนี้ผมช่วยได้ครับ บอกเพิ่มหน่อยนะ",
-    "ได้ครับ เดี๋ยวผมแนะนำให้"
-  ]
-};
-
-// ------------------------------
-// C) ฟังก์ชันสุ่มตอบ
-// ------------------------------
-function randomReply(list) {
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-// ------------------------------
-// D) ตัวจับหมวดคำ
-// ------------------------------
-for (const category in categories) {
-  if (categories[category].some(word => msg.includes(word))) {
-    return reply(event, randomReply(replies[category]));
-  }
 }
 
 // ------------------------------
@@ -1869,6 +1761,116 @@ Please stay calm 🙂
     return reply(event, found.answer);
   }
 
+// ------------------------------
+// A) คลังคำ (categories) — เวอร์ชันแก้ไข
+// ------------------------------
+const categories = {
+  greeting: [
+    "สวัสดี","หวัดดี","ดีครับ","ดีค่ะ","ดีจ้า","ฮัลโหล","ไง","ว่าไง"
+  ],
+
+  feeling: [
+    "คิดถึง","เหงา","เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล",
+    "เหนื่อย","ท้อ","เบื่อ"
+  ],
+
+  daily: [
+    "ทำไรอยู่","อยู่ไหน","ไปไหนมา","กินข้าวยัง","หิวไหม",
+    "ง่วงไหม","นอนยัง","ตื่นยัง","เลิกงานยัง"
+  ],
+
+  compliment: [
+    "เก่งมาก","สุดยอด","ดีมาก","เยี่ยมเลย","น่ารักจัง","ขอบคุณนะ",
+    "เป็นกำลังใจให้นะ","สู้ๆนะ","ดูแลตัวเองด้วย"
+  ],
+
+  friendly: [
+    "คิดถึงมั้ย","รักเรามั้ย","ลืมเราหรือยัง","ตอบเร็วๆ","อย่าเงียบดิ",
+    "คุยกับเราหน่อย","เหงาอ่ะ","เบื่ออ่ะ","หิวอ่ะ","ง่วงอ่ะ"
+  ],
+
+  exclaim: [
+    "โอ้โห","โหดจัง","จริงดิ","จริงป่ะ","โคตรดี","สุดจัด","ปังมาก"
+  ],
+
+  question: [
+    "ช่วยคิดหน่อย",
+    "แนะนำหน่อย",
+    "ทำไงดี",
+    "ทำไงต่อ"
+  ]
+};
+
+// ------------------------------
+// B) ชุดคำตอบแบบสุ่ม (replies)
+// ------------------------------
+const replies = {
+  greeting: [
+    "สวัสดีครับ 🙂",
+    "ดีครับผม พร้อมช่วยเสมอครับ",
+    "ฮัลโหลครับ 🙂",
+    "ว่าไงครับ วันนี้เป็นไงบ้าง"
+  ],
+
+  feeling: [
+    "ผมอยู่ตรงนี้นะครับ ไม่ต้องเหงา 🙂",
+    "ใจเย็น ๆ นะครับ เดี๋ยวทุกอย่างก็ดีขึ้นครับ",
+    "พักก่อนก็ได้นะครับ ผมเป็นกำลังใจให้เสมอ 🙂",
+    "คิดถึงเหมือนกันครับ ดูแลตัวเองด้วยนะ"
+  ],
+
+  daily: [
+    "กำลัง standby พร้อมช่วยงานอยู่ครับ 🙂",
+    "ผมอยู่ในระบบนี่แหละครับ พร้อมช่วยเสมอ",
+    "กินอะไรก็ได้ที่อร่อยและมีความสุขครับ 😄",
+    "พักผ่อนบ้างนะครับ อย่าหักโหม"
+  ],
+
+  compliment: [
+    "ขอบคุณครับ ผมดีใจที่ช่วยได้ 🙂",
+    "พี่เก่งมากครับ ทำได้ดีมาก",
+    "สุดยอดไปเลยครับ 😄",
+    "ผมเป็นกำลังใจให้เสมอนะครับ"
+  ],
+
+  friendly: [
+    "ผมอยู่นี่ครับ ไม่หายไปไหน 🙂",
+    "คิดถึงเหมือนกันครับ",
+    "คุยได้เสมอนะครับ",
+    "ผมไม่ลืมไก่หรอกครับ 🙂"
+  ],
+
+  exclaim: [
+    "โหดจริงครับ แต่ไก่เก่งกว่าอีก 😄",
+    "สุดจัดเลยครับ!",
+    "ปังมากครับ!",
+    "จริงครับผม!"
+  ],
+
+  question: [
+  "ได้ครับ เดี๋ยวผมช่วยคิดให้ 🙂",
+  "โอเคครับ บอกผมเพิ่มได้นะ",
+  "ผมช่วยได้ครับ ลองเล่าเพิ่มหน่อย",
+  "ได้เลยครับ เดี๋ยวผมแนะนำให้"
+]
+
+};
+
+// ------------------------------
+// C) ฟังก์ชันสุ่มตอบ
+// ------------------------------
+function randomReply(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+// ------------------------------
+// D) ตัวจับหมวดคำ
+// ------------------------------
+for (const category in categories) {
+  if (categories[category].some(word => msg.includes(word))) {
+    return reply(event, randomReply(replies[category]));
+  }
+}
   // ------------------------------
   // 13) Fallback — แจ้งผู้พัฒนา + mention
   // ------------------------------
