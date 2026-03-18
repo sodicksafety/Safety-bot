@@ -1959,10 +1959,8 @@ Fluorescent lamps contain mercury and require special disposal.
 ศึกษาข้อมูลเพิ่มเติม:
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
 },
-
-];
-  // เพิ่ม Q&A อื่น ๆ ได้ที่นี่
-];
+]; // ปิด array แค่ครั้งเดียวเท่านั้น
+// เพิ่ม Q&A อื่น ๆ ได้ที่นี่ (ถ้าจะเพิ่ม ให้เพิ่มก่อนปิด array)
 
 // ------------------------------
 //  LINE WEBHOOK
@@ -1986,13 +1984,9 @@ function handleEvent(event) {
 
   // ⭐⭐⭐ เงื่อนไขใหม่สำหรับกลุ่ม ⭐⭐⭐
   if (event.source.type === "group") {
-
-    // 3 คำที่ต้องมีในข้อความ
     const triggers = ["บอท", "bot", "Bot"];
-
     const text = event.message.text;
 
-    // ถ้าไม่มีคำว่า บอท / bot / Bot → ไม่ตอบ
     const hasTrigger = triggers.some(word => text.includes(word));
     if (!hasTrigger) {
       return Promise.resolve(null);
