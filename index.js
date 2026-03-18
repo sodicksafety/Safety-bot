@@ -1611,7 +1611,7 @@ Hello! I am the Sodick Safety Bot 🙂`);
     msg.includes("yourname") ||
     msg.includes("whoareyou")
   ) {
-    return reply(event, `ผมชื่อ AI Sodick Safety ครับ  
+    return reply(event, `ผมชื่อ Sodicksafety AI Bot ครับ  
 You can call me the Sodick Safety Bot 🙂`);
   }
 
@@ -1687,7 +1687,7 @@ I can answer general questions for now.
     msg.includes("อยู่ที่ไหน") ||
     msg.includes("whereareyou")
   ) {
-    return reply(event, `ผมอยู่ในระบบครับ พร้อมช่วยเหลือเสมอ 🙂  
+    return reply(event, `ผมอยู่ในระบบครับ พร้อมช่วยเหลือเสมอและไปอยู่ในใจพี่ครับ 🙂  
 I'm always here in the system to support you 🙂`);
   }
 
@@ -1698,7 +1698,7 @@ if (
   msg.includes("กินข้าว") ||
   msg.includes("haveyoueaten")
 ) {
-  return reply(event, `ยังเลยครับ ช่วงนี้งานเยอะมาก 😅  
+  return reply(event, `ยังเลยครับ ช่วงนี้งานพี่เยอะมาก 😅  
 Not yet, I'm quite busy 😅  
 แล้วคุณล่ะครับ กินข้าวหรือยัง`);
 }
@@ -1750,19 +1750,42 @@ Please stay calm 🙂
 ผมพร้อมช่วยให้ข้อมูลเพิ่มเติมได้ครับ 🙂`);
   }
 
-  // ------------------------------
-  // 12) ค้นหาใน safetyQA
-  // ------------------------------
-  const found = safetyQA.find(q =>
-    msg.includes(q.question.replace(/\s+/g, ""))
-  );
+// ------------------------------
+// 12) ค้นหาใน safetyQA
+// ------------------------------
+const found = safetyQA.find(q =>
+  msg.includes(q.question.replace(/\s+/g, ""))
+);
 
-  if (found) {
-    return reply(event, found.answer);
-  }
+if (found) {
+  return reply(event, found.answer);
+}
 
 // ------------------------------
-// A) คลังคำ (categories) — เวอร์ชันแก้ไข
+// 12.1) จับคำอารมณ์แบบครอบจักรวาล (ขั้นเทพ)
+// ------------------------------
+if (msg.includes("คิดถึง")) {
+  return reply(event, randomReply(replies.feeling));
+}
+
+if (msg.includes("รัก")) {
+  return reply(event, randomReply(replies.friendly));
+}
+
+if (msg.includes("เหนื่อย")) {
+  return reply(event, randomReply(replies.feeling));
+}
+
+if (msg.includes("หิว")) {
+  return reply(event, randomReply(replies.daily));
+}
+
+if (msg.includes("ง่วง")) {
+  return reply(event, randomReply(replies.daily));
+}
+
+// ------------------------------
+// A) คลังคำ (categories) — เวอร์ชันเสถียร
 // ------------------------------
 const categories = {
   greeting: [
@@ -1770,8 +1793,8 @@ const categories = {
   ],
 
   feeling: [
-    "คิดถึง","เหงา","เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล",
-    "เหนื่อย","ท้อ","เบื่อ"
+    "เหงา","เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล",
+    "ท้อ","เบื่อ"
   ],
 
   daily: [
@@ -1848,12 +1871,11 @@ const replies = {
   ],
 
   question: [
-  "ได้ครับ เดี๋ยวผมช่วยคิดให้ 🙂",
-  "โอเคครับ บอกผมเพิ่มได้นะ",
-  "ผมช่วยได้ครับ ลองเล่าเพิ่มหน่อย",
-  "ได้เลยครับ เดี๋ยวผมแนะนำให้"
-]
-
+    "ได้ครับ เดี๋ยวผมช่วยคิดให้ 🙂",
+    "โอเคครับ บอกผมเพิ่มได้นะ",
+    "ผมช่วยได้ครับ ลองเล่าเพิ่มหน่อย",
+    "ได้เลยครับ เดี๋ยวผมแนะนำให้"
+  ]
 };
 
 // ------------------------------
@@ -1864,7 +1886,7 @@ function randomReply(list) {
 }
 
 // ------------------------------
-// D) ตัวจับหมวดคำ
+// D) ตัวจับหมวดคำ (หลังจากอารมณ์พิเศษ)
 // ------------------------------
 for (const category in categories) {
   if (categories[category].some(word => msg.includes(word))) {
