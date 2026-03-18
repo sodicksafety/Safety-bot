@@ -1226,10 +1226,15 @@ function handleEvent(event) {
   }
   // ⭐⭐⭐ จบส่วนที่แก้ ⭐⭐⭐
 
-  const msg = event.message.text
+
+  // ------------------------------
+  // เตรียมข้อความ msg ให้พร้อมใช้งาน
+  // ------------------------------
+  let msg = event.message.text
     .toLowerCase()
     .trim()
     .replace(/\s+/g, "");
+
 
   // ------------------------------
   // 1) ทักทายทั่วไป
@@ -1439,59 +1444,56 @@ Please stay calm 🙂
     return reply(event, found.answer);
   }
 
-// ------------------------------
-// 12.1) จับคำอารมณ์ (เวอร์ชันเรียบง่าย)
-// ------------------------------
+  // ------------------------------
+  // 12.1) จับคำอารมณ์ (เวอร์ชันเรียบง่าย)
+  // ------------------------------
 
-// คิดถึง
-if (msg.includes("คิดถึง")) {
-  if (msg.includes("คิดถึงมั้ย") || msg.includes("คิดถึงไหม")) {
+  // คิดถึง
+  if (msg.includes("คิดถึง")) {
+    if (msg.includes("คิดถึงมั้ย") || msg.includes("คิดถึงไหม")) {
+      return reply(event, randomReply(replies.friendly));
+    }
+    return reply(event, randomReply(replies.feeling));
+  }
+
+  // รัก (ยกเว้น "น่ารัก")
+  if (msg.includes("รัก") && !msg.includes("น่ารัก")) {
     return reply(event, randomReply(replies.friendly));
   }
-  return reply(event, randomReply(replies.feeling));
-}
 
-// รัก (ยกเว้น "น่ารัก")
-if (msg.includes("รัก") && !msg.includes("น่ารัก")) {
-  return reply(event, randomReply(replies.friendly));
-}
+  // ลืมเราหรือยัง
+  if (msg.includes("ลืมเราหรือยัง")) {
+    return reply(event, randomReply(replies.friendly));
+  }
 
-// ลืมเราหรือยัง
-if (msg.includes("ลืมเราหรือยัง")) {
-  return reply(event, randomReply(replies.friendly));
-}
+  // โหดจัง / จริงดิ / จริงป่ะ
+  if (
+    msg.includes("โหดจัง") ||
+    msg.includes("จริงดิ") ||
+    msg.includes("จริงป่ะ")
+  ) {
+    return reply(event, randomReply(replies.exclaim));
+  }
 
-// โหดจัง / จริงดิ / จริงป่ะ
-if (
-  msg.includes("โหดจัง") ||
-  msg.includes("จริงดิ") ||
-  msg.includes("จริงป่ะ")
-) {
-  return reply(event, randomReply(replies.exclaim));
-}
+  // เหนื่อย
+  if (msg.includes("เหนื่อย")) {
+    return reply(event, randomReply(replies.feeling));
+  }
 
-// เหนื่อย
-if (msg.includes("เหนื่อย")) {
-  return reply(event, randomReply(replies.feeling));
-}
+  // หิว
+  if (msg.includes("หิว")) {
+    return reply(event, randomReply(replies.daily));
+  }
 
-// หิว
-if (msg.includes("หิว")) {
-  return reply(event, randomReply(replies.daily));
-}
+  // ง่วง
+  if (msg.includes("ง่วง")) {
+    return reply(event, randomReply(replies.daily));
+  }
 
-// ง่วง
-if (msg.includes("ง่วง")) {
-  return reply(event, randomReply(replies.daily));
-}
-
-// ช่วยคิดหน่อย / แนะนำหน่อย
-if (
-  msg.includes("ช่วยคิด") ||
-  msg.includes("แนะนำหน่อย")
-) {
-  return reply(event, randomReply(replies.question));
-}
+  // ช่วยคิดหน่อย / แนะนำหน่อย
+  if (msg.includes("ช่วยคิด") || msg.includes("แนะนำหน่อย")) {
+    return reply(event, randomReply(replies.question));
+  }
 
   // ------------------------------
   // A) คลังคำ categories
