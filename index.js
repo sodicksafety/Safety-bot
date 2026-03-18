@@ -1440,10 +1440,10 @@ Please stay calm 🙂
   }
 
 // ------------------------------
-// 12.1) จับคำอารมณ์ (เวอร์ชันใหม่)
+// 12.1) จับคำอารมณ์ (เวอร์ชันเรียบง่าย)
 // ------------------------------
 
-// คิดถึงทุกรูปแบบ
+// คิดถึง
 if (msg.includes("คิดถึง")) {
   if (msg.includes("คิดถึงมั้ย") || msg.includes("คิดถึงไหม")) {
     return reply(event, randomReply(replies.friendly));
@@ -1451,11 +1451,8 @@ if (msg.includes("คิดถึง")) {
   return reply(event, randomReply(replies.feeling));
 }
 
-// รักทุกรูปแบบ (ยกเว้น "น่ารัก")
-if (
-  msg.includes("รัก") &&
-  !msg.includes("น่ารัก")
-) {
+// รัก (ยกเว้น "น่ารัก")
+if (msg.includes("รัก") && !msg.includes("น่ารัก")) {
   return reply(event, randomReply(replies.friendly));
 }
 
