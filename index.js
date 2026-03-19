@@ -240,8 +240,6 @@ const categories = {
 
   exclaim: ["โอ้โห", "โหดจัง", "จริงดิ", "สุดจัด"],
 
-  mood: ["งอน", "เขิน", "ดีใจมาก"],
-
   botinfo: ["ชื่ออะไร", "ชื่อบอท", "คุณคือใคร", "เป็นใคร", "แนะนำตัว", "ทำอะไรได้บ้าง"]
 };
 
@@ -305,12 +303,6 @@ const replies = {
     "สุดจัด": "สุดจัดเลยครับ!"
   },
 
-  mood: {
-    "งอน": "งอนเหรอครับ เดี๋ยว Safety ง้อให้ 💚",
-    "เขิน": "เขินเหมือนกันครับ 😳💚",
-    "ดีใจมาก": "ดีใจด้วยครับ! Safety ดีใจไปกับคุณด้วย 💚✨"
-  },
-
   botinfo: {
     "ชื่ออะไร": botIntro(),
     "ชื่อบอท": botIntro(),
@@ -348,68 +340,6 @@ and carried out with the highest level of safety.`
 }
 
 // --------------------------------------------------
-// STICKER RANDOMIZER
-// --------------------------------------------------
-const stickerMap = {
-  greeting: [
-    { packageId: "1", stickerId: "13" },
-    { packageId: "1", stickerId: "106" }
-  ],
-  feeling: [
-    { packageId: "1", stickerId: "110" },
-    { packageId: "1", stickerId: "111" },
-    { packageId: "1", stickerId: "104" }
-  ],
-  daily: [
-    { packageId: "2", stickerId: "144" },
-    { packageId: "2", stickerId: "34" }
-  ],
-  compliment: [
-    { packageId: "1", stickerId: "114" },
-    { packageId: "1", stickerId: "125" }
-  ],
-  friendly: [
-    { packageId: "1", stickerId: "13" },
-    { packageId: "1", stickerId: "2" }
-  ],
-  exclaim: [
-    { packageId: "1", stickerId: "138" },
-    { packageId: "1", stickerId: "141" }
-  ],
-  mood: [
-    { packageId: "1", stickerId: "9" },
-    { packageId: "1", stickerId: "4" },
-    { packageId: "1", stickerId: "21" }
-  ]
-};
-
-function randomSticker(category) {
-  const list = stickerMap[category];
-  if (!list) return null;
-  return list[Math.floor(Math.random() * list.length)];
-}
-
-// --------------------------------------------------
-// EMOTION AI
-// --------------------------------------------------
-function detectEmotion(msg) {
-  if (msg.includes("คิดถึง") || msg.includes("miss")) return "friendly";
-  if (msg.includes("รัก") || msg.includes("love")) return "friendly";
-  if (msg.includes("เศร้า") || msg.includes("sad")) return "feeling";
-  if (msg.includes("เหงา")) return "feeling";
-  if (msg.includes("ดีใจมาก") || msg.includes("ดีใจ") || msg.includes("happy")) return "mood";
-  if (msg.includes("เขิน")) return "mood";
-  if (msg.includes("งอน")) return "mood";
-  if (msg.includes("โกรธ") || msg.includes("โมโห")) return "feeling";
-  return null;
-}
-
-// --------------------------------------------------
-// MIDDLEWARE
-// --------------------------------------------------
-app.use(express.json());
-
-// --------------------------------------------------
 // MAIN WEBHOOK
 // --------------------------------------------------
 app.post("/webhook", line.middleware(config), async (req, res) => {
@@ -420,14 +350,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
   }
 
   let msg = event.message.text.toLowerCase().trim().replace(/\s+/g, "");
-
-  // ⭐ NEW: ขอ userId
-  if (msg === "ขอuserid" || msg === "ขอuserid" || msg === "ขอไอดี") {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: `userId ของคุณคือ: ${event.source.userId}`
-    });
-  }
 
   // 1) Emergency
   if (
@@ -457,17 +379,18 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
   }
 
-  // 4) Fallback (มี mention แต่ไม่มีลิงก์)
+  // 4) Fallback
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
 
-ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai`,
+ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
+เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
     mention: {
       mentionees: [
         {
           type: "user",
-          userId: "YOUR_USER_ID"   // <<== ไก่ใส่ทีหลัง
+          userId: "YOUR_USER_ID"
         }
       ]
     }
