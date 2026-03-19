@@ -351,6 +351,19 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
   let msg = event.message.text.toLowerCase().trim().replace(/\s+/g, "");
 
+// ⭐⭐⭐ เงื่อนไขใหม่สำหรับกลุ่ม ⭐⭐⭐
+if (event.source.type === "group") {
+  const triggers = ["บอท", "bot", "Bot", "safety", "Safety"];
+  const text = event.message.text;
+
+  const hasTrigger = triggers.some((word) => text.includes(word));
+  if (!hasTrigger) {
+    return res.status(200).end(); // ไม่ตอบถ้าไม่ได้เรียกชื่อบอท
+  }
+}
+// ⭐⭐⭐ จบส่วนที่แก้ ⭐⭐⭐
+
+
   // 1) Emergency
   if (
     msg.includes("อุบัติเหตุ") ||
