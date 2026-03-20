@@ -729,12 +729,14 @@ thai_safety@sodick.co.th`,
 
 ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
 เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
-    });
-  } catch (err) {
+  });
+
+    } catch (err) {
     console.error("Webhook Error:", err);
     return res.status(200).end();
   }
-});
+});   // ← ปิด webhook (ถูกต้อง)
+
 // --------------------------------------------------
 // Server
 // --------------------------------------------------
@@ -742,3 +744,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log("LINE Bot server running on port " + PORT)
 );
+
