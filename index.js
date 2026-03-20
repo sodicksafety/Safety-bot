@@ -409,24 +409,6 @@ if (
   );
 }
     // --------------------------------------------------
-    // 3) Safety Q&A (⭐ แก้ normalize แล้ว)
-    // --------------------------------------------------
-    const found = safetyQA.find((q) =>
-      msg.includes(normalize(q.question))
-    );
-    if (found) return reply(event, found.answer);
-
-    // --------------------------------------------------
-    // 4) Categories (⭐ แก้ normalize แล้ว)
-    // --------------------------------------------------
-    for (const category in categories) {
-      for (const word of categories[category]) {
-        if (msg.includes(normalize(word))) {
-          return reply(event, replies[category][word]);
-        }
-      }
-    }
-// --------------------------------------------------
 // ฟังก์ชัน Normalize ข้อความ (กันตายสำหรับกลุ่ม)
 // --------------------------------------------------
 function normalize(text) {
@@ -437,7 +419,34 @@ function normalize(text) {
     .trim();
 }
 
+// --------------------------------------------------
+// รับข้อความจาก LINE
+// --------------------------------------------------
+const text = event.message.text;
 const cleanText = normalize(text);
+const msg = cleanText; // สำหรับ Safety Q&A และ Categories
+
+
+// --------------------------------------------------
+// 3) Safety Q&A (⭐ ใช้ normalize แล้ว)
+// --------------------------------------------------
+const found = safetyQA.find((q) =>
+  msg.includes(normalize(q.question))
+);
+if (found) return reply(event, found.answer);
+
+
+// --------------------------------------------------
+// 4) Categories (⭐ ใช้ normalize แล้ว)
+// --------------------------------------------------
+for (const category in categories) {
+  for (const word of categories[category]) {
+    if (msg.includes(normalize(word))) {
+      return reply(event, replies[category][word]);
+    }
+  }
+}
+
 
 // --------------------------------------------------
 // ปุ่มที่ 4 : ผู้รับเหมา
@@ -647,7 +656,7 @@ if (
 // --------------------------------------------------
 if (
   cleanText.includes("ขอบัตรย้อนหลัง") ||
-  cleanText.includes("ขอบัตรย้อนหลัง") ||
+  cleanText.includes("ขอ้บัตรย้อนหลัง") ||
   cleanText.includes("บัตรย้อนหลัง")
 ) {
   return client.replyMessage(event.replyToken, {
@@ -655,6 +664,7 @@ if (
     text: "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
   });
 }
+
 // --------------------------------------------------
 // ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
 // --------------------------------------------------
