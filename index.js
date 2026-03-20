@@ -269,7 +269,6 @@ function reply(event, text) {
   });
 }
 
-
 /* --------------------------------------------------
    NORMALIZE (เวอร์ชันสุดท้าย)
 -------------------------------------------------- */
@@ -337,7 +336,7 @@ const FLEX_CONTACT_CARD = {
           {
             type: "button",
             style: "primary",
-            color: "#1E90FF",
+            color: "##1E90FF",
             action: { type: "uri", label: "โทรโรงงาน 2", uri: "tel:025293200" }
           }
         ]
@@ -361,6 +360,9 @@ const FLEX_CONTACT_CARD = {
   }
 };
 
+/* --------------------------------------------------
+   WEBHOOK
+-------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
@@ -374,7 +376,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const cleanText = msg;
 
     /* --------------------------------------------------
-       1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
+       1) เงื่อนไขเฉพาะในกลุ่ม
     -------------------------------------------------- */
     if (event.source.type === "group") {
       const triggers = ["บอท", "bot", "safety", "Safety"];
@@ -417,33 +419,34 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         }
       }
     }
-/* --------------------------------------------------
-   เบอร์ติดต่อ (Flex Message)
--------------------------------------------------- */
-if (
-  msg.includes("เบอร์ติดต่อ") ||
-  msg.includes("ขอเบอร์ติดต่อ") ||
-  msg.includes("ขอเบอร์") ||
-  msg.includes("เบอร์โทร") ||
-  msg.includes("ขอเบอร์โทร") ||
-  msg.includes("เบอร์บริษัท") ||
-  msg.includes("เบอร์โรงงาน") ||
-  msg.includes("เบอร์ภายใน") ||
-  msg.includes("โทรโรงงาน") ||
-  msg.includes("โทรบริษัท") ||
-  msg.includes("ติดต่อบริษัท") ||
-  msg.includes("contact") ||
-  msg.includes("call") ||
-  msg.includes("phone") ||
-  msg.includes("เบอร์")
-) {
-  return client.replyMessage(event.replyToken, {
-    type: "flex",
-    altText: "เบอร์ติดต่อบริษัท Sodick Thailand",
-    contents: FLEX_CONTACT_CARD
-  });
-}
 
+    /* --------------------------------------------------
+       เบอร์ติดต่อ (Flex Message)
+    -------------------------------------------------- */
+    if (
+      msg.includes("เบอร์ติดต่อ") ||
+      msg.includes("ขอเบอร์ติดต่อ") ||
+      msg.includes("ขอเบอร์") ||
+      msg.includes("เบอร์โทร") ||
+      msg.includes("ขอเบอร์โทร") ||
+      msg.includes("เบอร์บริษัท") ||
+      msg.includes("เบอร์โรงงาน") ||
+      msg.includes("เบอร์ภายใน") ||
+      msg.includes("โทรโรงงาน") ||
+      msg.includes("โทรบริษัท") ||
+      msg.includes("ติดต่อบริษัท") ||
+      msg.includes("contact") ||
+      msg.includes("call") ||
+      msg.includes("phone") ||
+      msg.includes("เบอร์")
+    ) {
+      return client.replyMessage(event.replyToken, {
+        type: "flex",
+        altText: "เบอร์ติดต่อบริษัท Sodick Thailand",
+        contents: FLEX_CONTACT_CARD
+      });
+    }
+    
 /* --------------------------------------------------
    ปุ่มที่ 4 : ผู้รับเหมา
 -------------------------------------------------- */
@@ -451,7 +454,6 @@ if (
   cleanText.includes("ข้อมูลผู้รับเหมา") ||
   cleanText.includes("ผู้รับเหมา")
 ) {
-
   const headerText = {
     type: "text",
     text: `ข้อมูลผู้รับเหมา  
@@ -506,8 +508,6 @@ thai_safety@sodick.co.th`
 
   return client.replyMessage(event.replyToken, [headerText, flex]);
 }
-
-
 /* --------------------------------------------------
    เมนูย่อย: ผู้รับ–ส่งสินค้า
 -------------------------------------------------- */
