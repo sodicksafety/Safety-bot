@@ -64,7 +64,8 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
     question: "ขยะมีกี่ประเภท",
     answer: `♻️ ขยะมี 5 ประเภท: ทั่วไป / ผลิต / อันตราย / ติดเชื้อ / Scrap`
   },
- {
+
+  {
     question: "ที่อยู่",
     answer: `📍 Sodick (Thailand)
 บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
@@ -72,6 +73,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
 โทร: 02-529-2450-6  
 Tax ID: 0105531085736`
   },
+
   {
     question: "ขอที่อยู่",
     answer: `📍 Sodick (Thailand)
@@ -89,7 +91,8 @@ Tax ID: 0105531085736`
 โทร: 02-529-2450-6  
 Tax ID: 0105531085736`
   },
-{
+
+  {
     question: "ชื่อบริษัท",
     answer: `📍 Sodick (Thailand)
 บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่) 
@@ -125,7 +128,6 @@ Tax ID: 0105531085736`
 Tax ID: 0105531085736`
   },
 
-
   {
     question: "บริษัท",
     answer: `🧾 ใบกำกับภาษี Sodick (Thailand)  
@@ -135,7 +137,6 @@ Tax ID: 0105531085736`
 Tax ID: 0105531085736`
   },
 
-  // ⭐ เบอร์โทร (5 เวอร์ชันคำถาม)
   {
     question: "เบอร์ติดต่อ",
     answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
@@ -231,10 +232,9 @@ Tax ID: 0105531085736`
 - น้องกี้: 094-938-0425`
   }
 ];
-
-// --------------------------------------------------
-// CATEGORIES
-// --------------------------------------------------
+/* --------------------------------------------------
+   CATEGORIES
+-------------------------------------------------- */
 const categories = {
   greeting: ["สวัสดี", "หวัดดี", "ดีครับ", "ดีค่ะ", "ดีจ้า", "ฮัลโหล"],
 
@@ -257,9 +257,10 @@ const categories = {
   botinfo: ["ชื่ออะไร", "ชื่อบอท", "คุณคือใคร", "เป็นใคร", "แนะนำตัว", "ทำอะไรได้บ้าง"]
 };
 
-// --------------------------------------------------
-// REPLIES
-// --------------------------------------------------
+
+/* --------------------------------------------------
+   REPLIES
+-------------------------------------------------- */
 const replies = {
   greeting: {
     "สวัสดี": "สวัสดีครับ 🙂",
@@ -326,10 +327,9 @@ const replies = {
     "ทำอะไรได้บ้าง": botIntro()
   }
 };
-
-// --------------------------------------------------
-// BOT INTRO FUNCTION
-// --------------------------------------------------
+/* --------------------------------------------------
+   BOT INTRO FUNCTION
+-------------------------------------------------- */
 function botIntro() {
   return (
 `สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
@@ -352,9 +352,11 @@ I am here to support you in ensuring that every step of your work is compliant, 
 and carried out with the highest level of safety.`
   );
 }
-// --------------------------------------------------
-// ⭐⭐ REPLY FUNCTION (ฟังก์ชันที่หายไป) ⭐⭐
-// --------------------------------------------------
+
+
+/* --------------------------------------------------
+   REPLY FUNCTION
+-------------------------------------------------- */
 function reply(event, text) {
   return client.replyMessage(event.replyToken, {
     type: "text",
@@ -362,9 +364,23 @@ function reply(event, text) {
   });
 }
 
-// --------------------------------------------------
-// MAIN WEBHOOK
-// --------------------------------------------------
+
+/* --------------------------------------------------
+   NORMALIZE (เวอร์ชันสุดท้าย)
+-------------------------------------------------- */
+function normalize(text) {
+  return text
+    .toLowerCase()
+    .replace(/\s/g, "")
+    .replace(/–/g, "-")
+    .replace(/—/g, "-")
+    .trim();
+}
+
+
+/* --------------------------------------------------
+   MAIN WEBHOOK
+-------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
@@ -374,83 +390,56 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     const text = event.message.text;
-
-    // ⭐ normalize ให้เหมือนกันทั้ง msg และคำใน categories/safetyQA
-    const normalize = (str) =>
-      str.toLowerCase().trim().replace(/\s+/g, "");
-
     const msg = normalize(text);
+    const cleanText = msg;
 
-    // --------------------------------------------------
-    // 1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
-    // --------------------------------------------------
+    /* --------------------------------------------------
+       1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
+    -------------------------------------------------- */
     if (event.source.type === "group") {
       const triggers = ["บอท", "bot", "safety", "Safety"];
       const hasTrigger = triggers.some((w) => text.includes(w));
       if (!hasTrigger) return res.status(200).end();
     }
 
- // --------------------------------------------------
-// 2) Emergency
-// --------------------------------------------------
-if (
-  msg.includes("อุบัติเหตุ") ||
-  msg.includes("ฉุกเฉิน") ||
-  msg.includes("ไฟไหม้") ||
-  msg.includes("บาดเจ็บ") ||
-  msg.includes("danger") ||
-  msg.includes("emergency")
-) {
-    return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
+    /* --------------------------------------------------
+       2) Emergency
+    -------------------------------------------------- */
+    if (
+      msg.includes("อุบัติเหตุ") ||
+      msg.includes("ฉุกเฉิน") ||
+      msg.includes("ไฟไหม้") ||
+      msg.includes("บาดเจ็บ") ||
+      msg.includes("danger") ||
+      msg.includes("emergency")
+    ) {
+      return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
 โรงงาน 1: 102 / 127 / 129  
 โรงงาน 2: 137  
-ผู้จัดการ: 100`
-
-  );
-}
-    // --------------------------------------------------
-// ฟังก์ชัน Normalize ข้อความ (กันตายสำหรับกลุ่ม)
-// --------------------------------------------------
-function normalize(text) {
-  return text
-    .replace(/\s/g, "")     // ลบช่องว่างทุกชนิด (รวม zero‑width space)
-    .replace(/–/g, "-")     // แปลง en dash
-    .replace(/—/g, "-")     // แปลง em dash
-    .trim();
-}
-
-// --------------------------------------------------
-// รับข้อความจาก LINE
-// --------------------------------------------------
-const text = event.message.text;
-const cleanText = normalize(text);
-const msg = cleanText; // สำหรับ Safety Q&A และ Categories
-
-
-// --------------------------------------------------
-// 3) Safety Q&A (⭐ ใช้ normalize แล้ว)
-// --------------------------------------------------
-const found = safetyQA.find((q) =>
-  msg.includes(normalize(q.question))
-);
-if (found) return reply(event, found.answer);
-
-
-// --------------------------------------------------
-// 4) Categories (⭐ ใช้ normalize แล้ว)
-// --------------------------------------------------
-for (const category in categories) {
-  for (const word of categories[category]) {
-    if (msg.includes(normalize(word))) {
-      return reply(event, replies[category][word]);
+ผู้จัดการ: 100`);
     }
-  }
-}
 
+    /* --------------------------------------------------
+       3) Safety Q&A
+    -------------------------------------------------- */
+    const found = safetyQA.find((q) =>
+      msg.includes(normalize(q.question))
+    );
+    if (found) return reply(event, found.answer);
 
-// --------------------------------------------------
-// ปุ่มที่ 4 : ผู้รับเหมา
-// --------------------------------------------------
+    /* --------------------------------------------------
+       4) Categories
+    -------------------------------------------------- */
+    for (const category in categories) {
+      for (const word of categories[category]) {
+        if (msg.includes(normalize(word))) {
+          return reply(event, replies[category][word]);
+        }
+      }
+    }
+/* --------------------------------------------------
+   ปุ่มที่ 4 : ผู้รับเหมา
+-------------------------------------------------- */
 if (
   cleanText.includes("ข้อมูลผู้รับเหมา") ||
   cleanText.includes("ผู้รับเหมา")
@@ -512,10 +501,9 @@ thai_safety@sodick.co.th`
 }
 
 
-
-// --------------------------------------------------
-// เมนูย่อย: ผู้รับ–ส่งสินค้า (3 ปุ่ม)
-// --------------------------------------------------
+/* --------------------------------------------------
+   เมนูย่อย: ผู้รับ–ส่งสินค้า
+-------------------------------------------------- */
 if (
   cleanText.includes("ผู้รับส่งสินค้า") ||
   cleanText.includes("ผู้รับ-ส่งสินค้า") ||
@@ -571,10 +559,9 @@ if (
 }
 
 
-
-// --------------------------------------------------
-// เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่ม)
-// --------------------------------------------------
+/* --------------------------------------------------
+   เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน
+-------------------------------------------------- */
 if (
   cleanText.includes("ผู้แก้ไขงาน") ||
   cleanText.includes("แก้ไขงาน") ||
@@ -650,10 +637,9 @@ if (
 }
 
 
-
-// --------------------------------------------------
-// ปุ่มที่ 3 : ขอบัตรย้อนหลัง
-// --------------------------------------------------
+/* --------------------------------------------------
+   ปุ่มที่ 3 : ขอบัตรย้อนหลัง
+-------------------------------------------------- */
 if (
   cleanText.includes("ขอบัตรย้อนหลัง") ||
   cleanText.includes("ขอ้บัตรย้อนหลัง") ||
@@ -665,19 +651,18 @@ if (
   });
 }
 
-// --------------------------------------------------
-// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
-// --------------------------------------------------
+
+/* --------------------------------------------------
+   ⭐ ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
+-------------------------------------------------- */
 if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
-  // ส่งรูป
   await client.replyMessage(event.replyToken, {
     type: "image",
     originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
     previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
   });
 
-  // ส่ง Flex ปุ่มโทร
   await client.pushMessage(event.source.userId, {
     type: "flex",
     altText: "เบอร์ติดต่อทีมเซฟตี้",
@@ -699,28 +684,28 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             type: "button",
             style: "primary",
             color: "#1E90FF",
-            action: { type: "uri", label: "พี่ช้าง ผู้จัดการ", uri: "tel:0813765583" }
+            action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
           },
           {
             type: "button",
             style: "primary",
             color: "#1E90FF",
-            action: { type: "uri", label: "พี่ไก่ (Factory1)", uri: "tel:0616455095" }
+            action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
           },
           {
             type: "button",
             style: "secondary",
-            action: { type: "uri", label: "น้องพิน (Factory2)", uri: "tel:0832374357" }
+            action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
           },
           {
             type: "button",
             style: "secondary",
-            action: { type: "uri", label: "น้องดุจ (Factory1)", uri: "tel:0816954474" }
+            action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
           },
           {
             type: "button",
             style: "secondary",
-            action: { type: "uri", label: "น้องกี้ (Environment)", uri: "tel:0949380425" }
+            action: { type: "uri", label: "น้องกี้ (Safety Environment)", uri: "tel:0949380425" }
           }
         ]
       }
@@ -729,25 +714,26 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
   return;
 }
-    // --------------------------------------------------
-    // 6) Fallback
-    // --------------------------------------------------
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
+/* --------------------------------------------------
+   6) Fallback
+-------------------------------------------------- */
+return client.replyMessage(event.replyToken, {
+  type: "text",
+  text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
 
 ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
 เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
-    });
-
-  } catch (err) {
-    console.error("Webhook Error:", err);
-    return res.status(200).end();
-  }
 });
 
-// --------------------------------------------------
-// Server
-// --------------------------------------------------
+} catch (err) {
+  console.error("Webhook Error:", err);
+  return res.status(200).end();
+}
+});
+
+
+/* --------------------------------------------------
+   Server
+-------------------------------------------------- */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("LINE Bot server running on port " + PORT));
