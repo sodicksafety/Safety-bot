@@ -411,15 +411,16 @@ if (
       }
     }
 // --------------------------------------------------
-// ปุ่มที่ 4 : ผู้รับเหมา  (ต้องอยู่เหนือปุ่มที่ 6 เท่านั้น)
+// ปุ่มที่ 4 : ผู้รับเหมา
 // --------------------------------------------------
 if (text.includes("ข้อมูลผู้รับเหมา")) {
 
-  await reply(event,
-`ข้อมูลผู้รับเหมา  
+  const headerText = {
+    type: "text",
+    text: `ข้อมูลผู้รับเหมา  
 กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
 thai_safety@sodick.co.th`
-  );
+  };
 
   const flex = {
     type: "flex",
@@ -456,10 +457,8 @@ thai_safety@sodick.co.th`
     }
   };
 
-  return client.replyMessage(event.replyToken, flex);
+  return client.replyMessage(event.replyToken, [headerText, flex]);
 }
-
-
 
 // --------------------------------------------------
 // เมนูย่อย: ผู้รับ–ส่งสินค้า (3 ปุ่ม)
