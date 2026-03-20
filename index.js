@@ -64,7 +64,8 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
     question: "ขยะมีกี่ประเภท",
     answer: `♻️ ขยะมี 5 ประเภท: ทั่วไป / ผลิต / อันตราย / ติดเชื้อ / Scrap`
   },
- {
+
+  {
     question: "ที่อยู่",
     answer: `📍 Sodick (Thailand)
 บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
@@ -72,6 +73,7 @@ https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
 โทร: 02-529-2450-6  
 Tax ID: 0105531085736`
   },
+
   {
     question: "ขอที่อยู่",
     answer: `📍 Sodick (Thailand)
@@ -89,7 +91,8 @@ Tax ID: 0105531085736`
 โทร: 02-529-2450-6  
 Tax ID: 0105531085736`
   },
-{
+
+  {
     question: "ชื่อบริษัท",
     answer: `📍 Sodick (Thailand)
 บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่) 
@@ -124,7 +127,6 @@ Tax ID: 0105531085736`
 โทร: 02-529-2450-6  
 Tax ID: 0105531085736`
   },
-
 
   {
     question: "บริษัท",
@@ -352,8 +354,9 @@ I am here to support you in ensuring that every step of your work is compliant, 
 and carried out with the highest level of safety.`
   );
 }
+
 // --------------------------------------------------
-// ⭐⭐ REPLY FUNCTION (ฟังก์ชันที่หายไป) ⭐⭐
+// ⭐⭐ REPLY FUNCTION ⭐⭐
 // --------------------------------------------------
 function reply(event, text) {
   return client.replyMessage(event.replyToken, {
@@ -362,6 +365,23 @@ function reply(event, text) {
   });
 }
 
+// --------------------------------------------------
+// ⭐⭐ OPTIMIZED LOOKUP TABLES ⭐⭐
+// --------------------------------------------------
+const normalize = (str) =>
+  str.toLowerCase().trim().replace(/\s+/g, "");
+
+const safetyMap = new Map();
+safetyQA.forEach((item) => {
+  safetyMap.set(normalize(item.question), item.answer);
+});
+
+const categoryMap = new Map();
+for (const category in categories) {
+  categories[category].forEach((word) => {
+    categoryMap.set(normalize(word), replies[category][word]);
+  });
+});
 // --------------------------------------------------
 // MAIN WEBHOOK
 // --------------------------------------------------
@@ -374,12 +394,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     const text = event.message.text;
-
-    // ⭐ normalize ให้เหมือนกันทั้ง msg และคำใน categories/safetyQA
-    const normalize = (str) =>
-      str.toLowerCase().trim().replace(/\s+/g, "");
-
-    const msg = normalize(text);
+    const msg = normalize(text); // ใช้ normalize จากด้านบน
 
     // --------------------------------------------------
     // 1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
@@ -390,306 +405,321 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       if (!hasTrigger) return res.status(200).end();
     }
 
- // --------------------------------------------------
-// 2) Emergency
-// --------------------------------------------------
-if (
-  msg.includes("อุบัติเหตุ") ||
-  msg.includes("ฉุกเฉิน") ||
-  msg.includes("ไฟไหม้") ||
-  msg.includes("บาดเจ็บ") ||
-  msg.includes("danger") ||
-  msg.includes("emergency")
-) {
-    return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
+    // --------------------------------------------------
+    // 2) Emergency
+    // --------------------------------------------------
+    if (
+      msg.includes("อุบัติเหตุ") ||
+      msg.includes("ฉุกเฉิน") ||
+      msg.includes("ไฟไหม้") ||
+      msg.includes("บาดเจ็บ") ||
+      msg.includes("danger") ||
+      msg.includes("emergency")
+    ) {
+      return reply(
+        event,
+        `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
 โรงงาน 1: 102 / 127 / 129  
 โรงงาน 2: 137  
 ผู้จัดการ: 100`
-
-  );
-}
-    // --------------------------------------------------
-    // 3) Safety Q&A (⭐ แก้ normalize แล้ว)
-    // --------------------------------------------------
-    const found = safetyQA.find((q) =>
-      msg.includes(normalize(q.question))
-    );
-    if (found) return reply(event, found.answer);
+      );
+    }
 
     // --------------------------------------------------
-    // 4) Categories (⭐ แก้ normalize แล้ว)
+    // 3) Safety Q&A (OPTIMIZED)
     // --------------------------------------------------
-    for (const category in categories) {
-      for (const word of categories[category]) {
-        if (msg.includes(normalize(word))) {
-          return reply(event, replies[category][word]);
-        }
+    for (const key of safetyMap.keys()) {
+      if (msg.includes(key)) {
+        return reply(event, safetyMap.get(key));
       }
     }
-// --------------------------------------------------
-// ปุ่มที่ 4 : ผู้รับเหมา
-// --------------------------------------------------
-if (text.includes("ข้อมูลผู้รับเหมา")) {
 
-  const headerText = {
-    type: "text",
-    text: `ข้อมูลผู้รับเหมา  
+    // --------------------------------------------------
+    // 4) Categories (OPTIMIZED)
+    // --------------------------------------------------
+    for (const key of categoryMap.keys()) {
+      if (msg.includes(key)) {
+        return reply(event, categoryMap.get(key));
+      }
+    }
+
+    // --------------------------------------------------
+    // ปุ่มที่ 4 : ผู้รับเหมา
+    // --------------------------------------------------
+    if (text.includes("ข้อมูลผู้รับเหมา")) {
+      const headerText = {
+        type: "text",
+        text: `ข้อมูลผู้รับเหมา  
 กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
-thai_safety@sodick.co.th`
-  };
+thai_safety@sodick.co.th`,
+      };
 
-  const flex = {
-    type: "flex",
-    altText: "ข้อมูลผู้รับเหมา",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "message",
-              label: "สำหรับ ผู้รับ–ส่งสินค้า",
-              text: "ผู้รับส่งสินค้า"
-            }
+      const flex = {
+        type: "flex",
+        altText: "ข้อมูลผู้รับเหมา",
+        contents: {
+          type: "bubble",
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "message",
+                  label: "สำหรับ ผู้รับ–ส่งสินค้า",
+                  text: "ผู้รับส่งสินค้า",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#32CD32",
+                action: {
+                  type: "message",
+                  label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
+                  text: "ผู้แก้ไขงาน",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#FF0000",
+                action: {
+                  type: "message",
+                  label: "ขอบัตรผู้รับเหมาย้อนหลัง",
+                  text: "ขอบัตรผู้รับเหมาย้อนหลัง",
+                },
+              },
+            ],
           },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "message",
-              label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
-              text: "ผู้แก้ไขงาน"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#FF0000",
-            action: {
-              type: "message",
-              label: "ขอใบเซอร์ย้อนหลัง",
-              text: "ขอใบเซอร์ย้อนหลัง"
-            }
-          }
-        ]
-      }
+        },
+      };
+
+      return client.replyMessage(event.replyToken, [headerText, flex]);
     }
-  };
 
-  return client.replyMessage(event.replyToken, [headerText, flex]);
-}
-
-
-
-// --------------------------------------------------
-// เมนูย่อย: ผู้รับ–ส่งสินค้า (3 ปุ่ม)
-// --------------------------------------------------
-if (text.includes("ผู้รับส่งสินค้า")) {
-
-  const flex = {
-    type: "flex",
-    altText: "ผู้รับ–ส่งสินค้า",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "วีดีโออบรม",
-              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
-            }
+    // --------------------------------------------------
+    // เมนูย่อย: ผู้รับ–ส่งสินค้า (3 ปุ่ม)
+    // --------------------------------------------------
+    if (text.includes("ผู้รับส่งสินค้า")) {
+      const flex = {
+        type: "flex",
+        altText: "ผู้รับ–ส่งสินค้า",
+        contents: {
+          type: "bubble",
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "วีดีโออบรม",
+                  uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "ทำแบบทดสอบ",
+                  uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "เอกสารบันทึกการอบรม",
+                  uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk",
+                },
+              },
+            ],
           },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "ทำแบบทดสอบ",
-              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "เอกสารบันทึกการอบรม",
-              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
-            }
-          }
-        ]
-      }
+        },
+      };
+
+      return client.replyMessage(event.replyToken, flex);
     }
-  };
 
-  return client.replyMessage(event.replyToken, flex);
-}
-
-
-
-// --------------------------------------------------
-// เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่ม)
-// --------------------------------------------------
-if (text.includes("ผู้แก้ไขงาน")) {
-
-  const flex = {
-    type: "flex",
-    altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "วีดีโออบรม",
-              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
-            }
+    // --------------------------------------------------
+    // เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่ม)
+    // --------------------------------------------------
+    if (text.includes("ผู้แก้ไขงาน")) {
+      const flex = {
+        type: "flex",
+        altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
+        contents: {
+          type: "bubble",
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#32CD32",
+                action: {
+                  type: "uri",
+                  label: "วีดีโออบรม",
+                  uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#32CD32",
+                action: {
+                  type: "uri",
+                  label: "ทำแบบทดสอบ",
+                  uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#32CD32",
+                action: {
+                  type: "uri",
+                  label: "เอกสารบันทึกการอบรม",
+                  uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#32CD32",
+                action: {
+                  type: "uri",
+                  label: "ใบขอเข้ามาทำงาน",
+                  uri: "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drivesdk",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#32CD32",
+                action: {
+                  type: "uri",
+                  label: "ใบตรวจสอบเครื่องมือ",
+                  uri: "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drivesdk",
+                },
+              },
+            ],
           },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "ทำแบบทดสอบ",
-              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "เอกสารบันทึกการอบรม",
-              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "ใบขอเข้ามาทำงาน",
-              uri: "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drivesdk"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "ใบตรวจสอบเครื่องมือ",
-              uri: "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drivesdk"
-            }
-          }
-        ]
-      }
+        },
+      };
+
+      return client.replyMessage(event.replyToken, flex);
     }
-  };
 
-  return client.replyMessage(event.replyToken, flex);
-}
-
-// --------------------------------------------------
-// ปุ่มที่ 3 : ขอใบเซอร์ย้อนหลัง (ตอบแบบยังไม่เชื่อม Apps Script)
-// --------------------------------------------------
-if (text.includes("ขอใบเซอร์ย้อนหลัง")) {
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
-  });
-}
-
-// --------------------------------------------------
-// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
-// --------------------------------------------------
-if (msg.includes("ติดต่อทีมเซฟตี้")) {
-
-  // ส่งรูป
-  await client.replyMessage(event.replyToken, {
-    type: "image",
-    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-  });
-
-  // ส่ง Flex ปุ่มโทร
-  await client.pushMessage(event.source.userId, {
-    type: "flex",
-    altText: "เบอร์ติดต่อทีมเซฟตี้",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "text",
-            text: "เลือกเบอร์ที่ต้องการโทร",
-            weight: "bold",
-            size: "lg",
-            align: "center"
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: { type: "uri", label: "พี่ช้าง ผู้จัดการ", uri: "tel:0813765583" }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: { type: "uri", label: "พี่ไก่ (Factory1)", uri: "tel:0616455095" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องพิน (Factory2)", uri: "tel:0832374357" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องดุจ (Factory1)", uri: "tel:0816954474" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องกี้ (Environment)", uri: "tel:0949380425" }
-          }
-        ]
-      }
+    // --------------------------------------------------
+    // ปุ่มที่ 3 : ขอบัตรผู้รับเหมาย้อนหลัง
+    // --------------------------------------------------
+    if (text.includes("ขอบัตรผู้รับเหมาย้อนหลัง")) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "ระบบAIกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ",
+      });
     }
-  });
 
-  return;
-}
+    // --------------------------------------------------
+    // ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
+    // --------------------------------------------------
+    if (msg.includes("ติดต่อทีมเซฟตี้")) {
+      await client.replyMessage(event.replyToken, {
+        type: "image",
+        originalContentUrl:
+          "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+        previewImageUrl:
+          "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+      });
+
+      await client.pushMessage(event.source.userId, {
+        type: "flex",
+        altText: "เบอร์ติดต่อทีมเซฟตี้",
+        contents: {
+          type: "bubble",
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "เลือกเบอร์ที่ต้องการโทร",
+                weight: "bold",
+                size: "lg",
+                align: "center",
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "พี่ช้าง ผู้จัดการ (Safety Mgr. Dept.)",
+                  uri: "tel:0813765583",
+                },
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "พี่ไก่ (Safety Factory1)",
+                  uri: "tel:0616455095",
+                },
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "น้องพิน (Safety Factory2)",
+                  uri: "tel:0832374357",
+                },
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "น้องดุจ (Safety Factory1)",
+                  uri: "tel:0816954474",
+                },
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "น้องกี้ (Sodick Environment)",
+                  uri: "tel:0949380425",
+                },
+              },
+            ],
+          },
+        },
+      });
+
+      return;
+    }
+
     // --------------------------------------------------
     // 6) Fallback
     // --------------------------------------------------
@@ -700,15 +730,15 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
 ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
 เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
     });
-
   } catch (err) {
     console.error("Webhook Error:", err);
     return res.status(200).end();
   }
 });
-
 // --------------------------------------------------
 // Server
 // --------------------------------------------------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("LINE Bot server running on port " + PORT));
+app.listen(PORT, () =>
+  console.log("LINE Bot server running on port " + PORT)
+);
