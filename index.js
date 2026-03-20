@@ -119,8 +119,6 @@ Tax ID: 0105531085736`
 Tax ID: 0105531085736`
   },
 
-
-
   // ⭐ เบอร์โทร (5 เวอร์ชันคำถาม)
   {
     question: "เบอร์ติดต่อ",
@@ -346,13 +344,17 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
 
-    // ถ้าไม่ใช่ข้อความ → จบ
     if (!event || event.type !== "message" || event.message.type !== "text") {
       return res.status(200).end();
     }
 
     const text = event.message.text;
-    const msg = text.toLowerCase().trim().replace(/\s+/g, "");
+
+    // ⭐ normalize ให้เหมือนกันทั้ง msg และคำใน categories/safetyQA
+    const normalize = (str) =>
+      str.toLowerCase().trim().replace(/\s+/g, "");
+
+    const msg = normalize(text);
 
     // --------------------------------------------------
     // 1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
@@ -360,10 +362,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     if (event.source.type === "group") {
       const triggers = ["บอท", "bot", "safety", "Safety"];
       const hasTrigger = triggers.some((w) => text.includes(w));
-
-      if (!hasTrigger) {
-        return res.status(200).end();
-      }
+      if (!hasTrigger) return res.status(200).end();
     }
 
     // --------------------------------------------------
@@ -384,26 +383,26 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     // --------------------------------------------------
-    // 3) Safety Q&A
+    // 3) Safety Q&A (⭐ แก้ normalize แล้ว)
     // --------------------------------------------------
     const found = safetyQA.find((q) =>
-      msg.includes(q.question.replace(/\s+/g, ""))
+      msg.includes(normalize(q.question))
     );
     if (found) return reply(event, found.answer);
 
     // --------------------------------------------------
-    // 4) Categories
+    // 4) Categories (⭐ แก้ normalize แล้ว)
     // --------------------------------------------------
     for (const category in categories) {
       for (const word of categories[category]) {
-        if (msg.includes(word)) {
+        if (msg.includes(normalize(word))) {
           return reply(event, replies[category][word]);
         }
       }
     }
 
-    // --------------------------------------------------
-// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร (Flex 2 แถว + ภาษาอังกฤษ)
+// --------------------------------------------------
+// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร (Flex แบบ C: ปุ่มเต็มกว้างทีละปุ่ม)
 // --------------------------------------------------
 if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
@@ -414,7 +413,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
     previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
   });
 
-  // ส่ง Flex Message ปุ่มโทร 2 แถว
+  // ส่ง Flex Message ปุ่มเต็มกว้างทีละปุ่ม
   await client.pushMessage(event.source.userId, {
     type: "flex",
     altText: "เบอร์ติดต่อทีมเซฟตี้",
@@ -435,69 +434,61 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             align: "center"
           },
 
-          // แถวบน (2 ปุ่ม)
+          // ปุ่ม 1
           {
-            type: "box",
-            layout: "horizontal",
-            spacing: "md",
-            contents: [
-              {
-                type: "button",
-                style: "primary",
-                color: "#1E90FF",
-                action: {
-                  type: "uri",
-                  label: "ผู้จัดการ (Dept Manager)",
-                  uri: "tel:0813765583"
-                }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#1E90FF",
-                action: {
-                  type: "uri",
-                  label: "พี่ไก่ (Kai – Safety)",
-                  uri: "tel:0616455095"
-                }
-              }
-            ]
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "ผู้จัดการ (Manager)",
+              uri: "tel:0813765583"
+            }
           },
 
-          // แถวล่าง (3 ปุ่ม)
+          // ปุ่ม 2
           {
-            type: "box",
-            layout: "horizontal",
-            spacing: "md",
-            contents: [
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "uri",
-                  label: "น้องพิน (Pin – Safety Fac.2)",
-                  uri: "tel:0832374357"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "uri",
-                  label: "น้องดุจ (Duj – Safety Fac.1)",
-                  uri: "tel:0816954474"
-                }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "uri",
-                  label: "น้องกี้ (Kie – Envi.)",
-                  uri: "tel:0949380425"
-                }
-              }
-            ]
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "พี่ไก่ (Kai – Safety Lead)",
+              uri: "tel:0616455095"
+            }
+          },
+
+          // ปุ่ม 3
+          {
+            type: "button",
+            style: "secondary",
+            action: {
+              type: "uri",
+              label: "น้องพิน (Pin – Staff)",
+              uri: "tel:0832374357"
+            }
+          },
+
+          // ปุ่ม 4
+          {
+            type: "button",
+            style: "secondary",
+            action: {
+              type: "uri",
+              label: "น้องดุจ (Duj – Staff)",
+              uri: "tel:0816954474"
+            }
+          },
+
+          // ปุ่ม 5
+          {
+            type: "button",
+            style: "secondary",
+            action: {
+              type: "uri",
+              label: "น้องกี้ (Kee – Staff)",
+              uri: "tel:0949380425"
+            }
           }
         ]
       }
@@ -506,7 +497,6 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
   return;
 }
-
     // --------------------------------------------------
     // 6) Fallback
     // --------------------------------------------------
