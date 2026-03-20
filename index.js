@@ -333,7 +333,7 @@ const FLEX_CONTACT_CARD = {
           {
             type: "button",
             style: "primary",
-            color: "##1E90FF",
+            color: "#1E90FF",
             action: { type: "uri", label: "โทรโรงงาน 2", uri: "tel:025293200" }
           }
         ]
@@ -355,7 +355,7 @@ const FLEX_CONTACT_CARD = {
       }
     ]
   }
-};
+};   // ← ปิดครบ 100%
 
 /* --------------------------------------------------
    WEBHOOK
