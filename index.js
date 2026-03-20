@@ -489,37 +489,37 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       const msg = event.message.text;
 
       // -------------------------------
-// ลำดับการตรวจปุ่มต่าง ๆ
-// -------------------------------
-if (handleCardHistory(event, msg)) continue;
-if (await handleSafetyTeam(event, msg)) continue;
-if (handleMap(event, msg)) continue;
+      // ลำดับการตรวจปุ่มต่าง ๆ
+      // -------------------------------
+      if (handleCardHistory(event, msg)) continue;
+      if (await handleSafetyTeam(event, msg)) continue;
+      if (handleMap(event, msg)) continue;
 
-// FLEX ผู้รับเหมา
-if (msg.includes("ข้อมูลผู้รับเหมา")) {
-  return reply(event, flexContractorMain());
-}
+      // FLEX ผู้รับเหมา
+      if (msg.includes("ข้อมูลผู้รับเหมา")) {
+        return reply(event, flexContractorMain());
+      }
 
-// FLEX ผู้รับ–ส่งสินค้า
-if (msg.includes("ผู้รับส่งสินค้า") || msg.includes("ผู้รับ-ส่งสินค้า")) {
-  return reply(event, flexDelivery());
-}
+      // FLEX ผู้รับ–ส่งสินค้า
+      if (msg.includes("ผู้รับส่งสินค้า") || msg.includes("ผู้รับ-ส่งสินค้า")) {
+        return reply(event, flexDelivery());
+      }
 
-// FLEX ผู้เข้ามาทำงาน–แก้ไขงาน
-if (msg.includes("ผู้แก้ไขงาน") || msg.includes("ผู้เข้ามาทำงาน")) {
-  return reply(event, flexRepair());
-}
+      // FLEX ผู้เข้ามาทำงาน–แก้ไขงาน
+      if (msg.includes("ผู้แก้ไขงาน") || msg.includes("ผู้เข้ามาทำงาน")) {
+        return reply(event, flexRepair());
+      }
 
-// FLEX เบอร์ 02 (เมนูติดต่อบริษัท)
-if (msg.includes("ติดต่อบริษัท") || msg.includes("เบอร์บริษัท")) {
-  return reply(event, flexContact);
-}
+      // FLEX เบอร์ 02 (เมนูติดต่อบริษัท)
+      if (msg.includes("ติดต่อบริษัท") || msg.includes("เบอร์บริษัท")) {
+        return reply(event, flexContact);
+      }
 
-/* --------------------------------------------------
-   10) Fallback — ตอบเมื่อไม่พบคำสั่ง
--------------------------------------------------- */
-return reply(
-  event,
+      /* --------------------------------------------------
+         10) Fallback — ตอบเมื่อไม่พบคำสั่ง
+      -------------------------------------------------- */
+      return reply(
+        event,
 `━━━━━━━━━━━━━━━━━━━━
 ❗ ไม่พบข้อมูลคำถามนี้ในระบบ
 ━━━━━━━━━━━━━━━━━━━━
@@ -533,15 +533,16 @@ return reply(
 
 ➕ เพิ่มเพื่อนผู้ดูแล  
 https://line.me/ti/p/_T4H-3TKUa`
-);
+      );
+    } // ← ปิด for-loop ตรงนี้
 
-res.status(200).send("OK");
-} catch (err) {
-  console.error("Webhook Error:", err);
-  res.status(500).send("Error");
-}
+    res.status(200).send("OK");
+
+  } catch (err) {   // ← ตอนนี้ catch อยู่ถูกที่แล้ว
+    console.error("Webhook Error:", err);
+    res.status(500).send("Error");
+  }
 });
-
 /* --------------------------------------------------
    START SERVER
 -------------------------------------------------- */
