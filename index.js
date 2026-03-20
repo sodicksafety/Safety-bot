@@ -562,36 +562,43 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       // -------------------------------
       // ลำดับการตรวจปุ่มต่าง ๆ
       // -------------------------------
-      if (handleCardHistory(event, msg)) continue;
       if (await handleSafetyTeam(event, msg)) continue;
       if (handleMap(event, msg)) continue;
 
-      // FLEX ผู้รับเหมา
+      /* --------------------------------------------------
+         FLEX ผู้รับเหมา
+      -------------------------------------------------- */
       if (msg.includes("ข้อมูลผู้รับเหมา")) {
-        return reply(event, flexContractorMain());
-      }
-
-      // FLEX ผู้รับ–ส่งสินค้า
-      if (msg.includes("ผู้รับส่งสินค้า") || msg.includes("ผู้รับ-ส่งสินค้า")) {
-        return reply(event, flexDelivery());
-      }
-
-      // FLEX ผู้เข้ามาทำงาน–แก้ไขงาน
-      if (msg.includes("ผู้แก้ไขงาน") || msg.includes("ผู้เข้ามาทำงาน")) {
-        return reply(event, flexRepair());
-      }
-
-      // FLEX เบอร์ 02 (เมนูติดต่อบริษัท)
-      if (msg.includes("ติดต่อบริษัท") || msg.includes("เบอร์บริษัท")) {
-        return reply(event, flexContact);
+        return client.replyMessage(event.replyToken, flexContractorMain());
       }
 
       /* --------------------------------------------------
-         10) Fallback — ตอบเมื่อไม่พบคำสั่ง
+         FLEX ผู้รับ–ส่งสินค้า
       -------------------------------------------------- */
-      return reply(
-        event,
-`━━━━━━━━━━━━━━━━━━━━
+      if (msg.includes("ผู้รับส่งสินค้า") || msg.includes("ผู้รับ-ส่งสินค้า")) {
+        return client.replyMessage(event.replyToken, flexDelivery());
+      }
+
+      /* --------------------------------------------------
+         FLEX ผู้เข้ามาทำงาน–แก้ไขงาน
+      -------------------------------------------------- */
+      if (msg.includes("ผู้แก้ไขงาน") || msg.includes("ผู้เข้ามาทำงาน")) {
+        return client.replyMessage(event.replyToken, flexRepair());
+      }
+
+      /* --------------------------------------------------
+         FLEX เบอร์ 02 (เมนูติดต่อบริษัท)
+      -------------------------------------------------- */
+      if (msg.includes("ติดต่อบริษัท") || msg.includes("เบอร์บริษัท")) {
+        return client.replyMessage(event.replyToken, flexContact);
+      }
+
+      /* --------------------------------------------------
+         Fallback — ไม่พบคำสั่ง
+      -------------------------------------------------- */
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: `━━━━━━━━━━━━━━━━━━━━
 ❗ ไม่พบข้อมูลคำถามนี้ในระบบ
 ━━━━━━━━━━━━━━━━━━━━
 
@@ -604,12 +611,12 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
 ➕ เพิ่มเพื่อนผู้ดูแล  
 https://line.me/ti/p/_T4H-3TKUa`
-      );
-    } // ← ปิด for-loop ตรงนี้
+      });
+    }
 
     res.status(200).send("OK");
 
-  } catch (err) {   // ← ตอนนี้ catch อยู่ถูกที่แล้ว
+  } catch (err) {
     console.error("Webhook Error:", err);
     res.status(500).send("Error");
   }
