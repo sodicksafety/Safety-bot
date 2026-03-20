@@ -33,7 +33,7 @@ function normalize(text) {
 }
 
 /* --------------------------------------------------
-   STATIC DATA — SAFETY Q&A
+   STATIC DATA — SAFETY Q&A (ลบกลุ่มเบอร์โทรออกแล้ว)
 -------------------------------------------------- */
 const safetyQA = [
   { question: "ทำไมต้องอบรม", answer: `เพราะบริษัทต้องให้แน่ใจว่าผู้รับเหมารู้กฎความปลอดภัยก่อนเริ่มงาน  
@@ -134,16 +134,7 @@ function botIntro() {
 เอกสารที่จำเป็น รวมถึงข้อมูลที่เกี่ยวข้องกับการปฏิบัติงานในพื้นที่ของเรา  
 
 ผมพร้อมสนับสนุนให้ทุกขั้นตอนของงานเป็นไปอย่างถูกต้อง มีมาตรฐาน  
-และปลอดภัยสูงสุดครับ
-
-Hello, my name is Sodick Safety AI Bot 🤖💚  
-An intelligent safety assistant designed for contractors working within Sodick Thailand.  
-
-My purpose is to help all vendors easily access essential information, including safety regulations,  
-work procedures, required training, and important documents related to on-site operations.  
-
-I am here to support you in ensuring that every step of your work is compliant, efficient,  
-and carried out with the highest level of safety.`
+และปลอดภัยสูงสุดครับ`
   );
 }
 
@@ -359,200 +350,127 @@ function flexRepair() {
     }
   };
 }
-/* --------------------------------------------------
-   ปุ่มที่ 3 : ขอบัตรย้อนหลัง
--------------------------------------------------- */
-function handleCardHistory(event, msg) {
-  if (
-    msg.includes("ขอบัตรย้อนหลัง") ||
-    msg.includes("ขอ้บัตรย้อนหลัง") ||
-    msg.includes("บัตรย้อนหลัง")
-  ) {
-    return reply(event,
-      "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
-    );
-  }
-  return false;
-}
-/* --------------------------------------------------
-   ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
--------------------------------------------------- */
-async function handleSafetyTeam(event, msg) {
-  if (!msg.includes("ติดต่อทีมเซฟตี้")) return false;
 
-  await client.replyMessage(event.replyToken, {
-    type: "image",
-    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-  });
-
-  await client.pushMessage(event.source.userId, {
+/* --------------------------------------------------
+   FLEX CONTACT (แทน safetyQA เบอร์โทร)
+-------------------------------------------------- */
+function flexContact() {
+  return {
     type: "flex",
-    altText: "เบอร์ติดต่อทีมเซฟตี้",
+    altText: "เบอร์ติดต่อบริษัท Sodick Thailand",
     contents: {
       type: "bubble",
-      body: {
+      header: {
         type: "box",
-        layout: "vertical",
-        spacing: "md",
+        layout: "horizontal",
+        paddingAll: "16px",
+        backgroundColor: "#1E90FF",
         contents: [
           {
             type: "text",
-            text: "เลือกเบอร์ที่ต้องการโทร",
+            text: "📞 Sodick Thailand – Contact",
             weight: "bold",
-            size: "lg",
+            size: "md",
+            color: "#FFFFFF"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        contents: [
+
+          /* โรงงาน 1 */
+          {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              { type: "text", text: "🏭 โรงงาน 1 (Factory 1)", weight: "bold", size: "md" },
+              { type: "text", text: "เบอร์บริษัท: 02-529-2450 ถึง 6", size: "sm", color: "#555555" },
+              { type: "text", text: "เบอร์ภายใน: 102, 127, 129", size: "sm", color: "#555555" }
+            ]
+          },
+
+          { type: "separator" },
+
+          /* โรงงาน 2 */
+          {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              { type: "text", text: "🏭 โรงงาน 2 (Factory 2)", weight: "bold", size: "md" },
+              { type: "text", text: "เบอร์บริษัท: 02-529-3200 ถึง 6", size: "sm", color: "#555555" },
+              { type: "text", text: "เบอร์ภายใน: 137", size: "sm", color: "#555555" }
+            ]
+          },
+
+          { type: "separator" },
+
+          /* เบอร์มือถือ */
+          {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              { type: "text", text: "📱 เบอร์มือถือทีมเซฟตี้", weight: "bold", size: "md" },
+
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: { type: "uri", label: "พี่ไก่", uri: "tel:0616455095" }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: { type: "uri", label: "น้องดุจ", uri: "tel:0816954474" }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: { type: "uri", label: "น้องพิน", uri: "tel:0832374357" }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: { type: "uri", label: "น้องกี้", uri: "tel:0949380425" }
+              }
+            ]
+          }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: "กดปุ่มเพื่อโทรออกทันที",
+            size: "xs",
+            color: "#888888",
             align: "center"
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องกี้ (Safety Environment)", uri: "tel:0949380425" }
           }
         ]
       }
     }
-  });
-
-  return true;
+  };
 }
 /* --------------------------------------------------
-   แผนที่บริษัท (Flex Message)
+   HANDLER: CONTACT (แทน safetyQA เบอร์โทร)
 -------------------------------------------------- */
-function handleMap(event, msg) {
-  if (
-    msg.includes("แผนที่") ||
-    msg.includes("map") ||
-    msg.includes("location") ||
-    msg.includes("โลเคชั่น") ||
-    msg.includes("โรงงานอยู่ไหน") ||
-    msg.includes("ไปโรงงาน") ||
-    msg.includes("factory")
-  ) {
-    return client.replyMessage(event.replyToken, {
-      type: "flex",
-      altText: "แผนที่บริษัท Sodick Thailand",
-      contents: {
-        type: "bubble",
-        header: {
-          type: "box",
-          layout: "horizontal",
-          paddingAll: "16px",
-          backgroundColor: "#1E90FF",
-          contents: [
-            {
-              type: "text",
-              text: "📍 Sodick Thailand – Map Guide",
-              weight: "bold",
-              size: "md",
-              color: "#FFFFFF"
-            }
-          ]
-        },
-        body: {
-          type: "box",
-          layout: "vertical",
-          spacing: "lg",
-          contents: [
-            {
-              type: "box",
-              layout: "vertical",
-              spacing: "sm",
-              contents: [
-                {
-                  type: "text",
-                  text: "🏭 โรงงาน 1 (Factory 1)",
-                  weight: "bold",
-                  size: "md"
-                },
-                {
-                  type: "text",
-                  text: "Google Maps อัปเดตล่าสุด: เม.ย. 2022",
-                  size: "sm",
-                  color: "#555555"
-                },
-                {
-                  type: "button",
-                  style: "primary",
-                  color: "#1E90FF",
-                  action: {
-                    type: "uri",
-                    label: "เปิดแผนที่โรงงาน 1",
-                    uri: "https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8"
-                  }
-                }
-              ]
-            },
+function handleContact(event, msg) {
+  const triggers = [
+    "เบอร์ติดต่อ", "ขอเบอร์ติดต่อ", "ขอเบอร์", "ขอเบอร์โทร",
+    "เบอร์โทร", "โทร", "ติดต่อ", "เบอร์บริษัท", "เบอร์โรงงาน",
+    "เบอร์เซฟตี้", "เบอร์เซฟตี้", "เบอร์เซฟตี้",
+    "safety phone", "contact", "call"
+  ];
 
-            { type: "separator" },
-
-            {
-              type: "box",
-              layout: "vertical",
-              spacing: "sm",
-              contents: [
-                {
-                  type: "text",
-                  text: "🏭 โรงงาน 2 (Factory 2)",
-                  weight: "bold",
-                  size: "md"
-                },
-                {
-                  type: "text",
-                  text: "Google Maps อัปเดตล่าสุด: เม.ย. 2025",
-                  size: "sm",
-                  color: "#555555"
-                },
-                {
-                  type: "button",
-                  style: "primary",
-                  color: "#1E90FF",
-                  action: {
-                    type: "uri",
-                    label: "เปิดแผนที่โรงงาน 2",
-                    uri: "https://maps.app.goo.gl/keZxD798z9ZwKXE7A"
-                  }
-                }
-              ]
-            }
-          ]
-        },
-        footer: {
-          type: "box",
-          layout: "vertical",
-          contents: [
-            {
-              type: "text",
-              text: "กดปุ่มเพื่อเปิดเส้นทางใน Google Maps",
-              size: "xs",
-              color: "#888888",
-              align: "center"
-            }
-          ]
-        }
-      }
-    });
+  if (triggers.some(t => msg.includes(normalize(t)))) {
+    return client.replyMessage(event.replyToken, flexContact());
   }
 
   return false;
@@ -564,7 +482,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
 
-    // ไม่ใช่ข้อความ → จบ
     if (!event || event.type !== "message" || event.message.type !== "text") {
       return res.status(200).end();
     }
@@ -616,7 +533,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       4) เมนูผู้รับเหมา (ปุ่มหลัก)
+       4) เมนูผู้รับเหมา
     -------------------------------------------------- */
     if (msg.includes("ข้อมูลผู้รับเหมา") || msg.includes("ผู้รับเหมา")) {
       const headerText = {
@@ -669,7 +586,13 @@ thai_safety@sodick.co.th`
     if (map) return;
 
     /* --------------------------------------------------
-       10) Fallback
+       10) เบอร์ติดต่อ (Flex ใหม่)
+    -------------------------------------------------- */
+    const contact = handleContact(event, msg);
+    if (contact) return;
+
+    /* --------------------------------------------------
+       11) Fallback
     -------------------------------------------------- */
     return reply(event,
 `━━━━━━━━━━━━━━━━━━━━
@@ -693,7 +616,10 @@ https://line.me/ti/p/_T4H-3TKUa`
   }
 });
 /* --------------------------------------------------
-   Server
+   START SERVER
 -------------------------------------------------- */
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("LINE Bot server running on port " + PORT));
+
+app.listen(PORT, () => {
+  console.log("LINE Bot server running on port " + PORT);
+});
