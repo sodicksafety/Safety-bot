@@ -119,10 +119,21 @@ and carried out with the highest level of safety.
 `;
 
 /* --------------------------------------------------
-   FLEX FUNCTIONS
+   ปุ่มที่ 4 : ผู้รับเหมา → แสดง 3 ปุ่ม
 -------------------------------------------------- */
-function flexContractorMain() {
-  return {
+if (
+  cleanText.includes("ข้อมูลผู้รับเหมา") ||   // จาก Rich Menu
+  cleanText.includes("ผู้รับเหมา")             // กันคำเก่า
+) {
+
+  const headerText = {
+    type: "text",
+    text: `ข้อมูลผู้รับเหมา  
+กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
+thai_safety@sodick.co.th`
+  };
+
+  const flex = {
     type: "flex",
     altText: "ข้อมูลผู้รับเหมา",
     contents: {
@@ -136,28 +147,51 @@ function flexContractorMain() {
             type: "button",
             style: "primary",
             color: "#1E90FF",
-            action: { type: "message", label: "สำหรับ ผู้รับ–ส่งสินค้า", text: "ผู้รับส่งสินค้า" }
+            action: {
+              type: "message",
+              label: "สำหรับ ผู้รับ–ส่งสินค้า",
+              text: "ผู้รับส่งสินค้า"
+            }
           },
           {
             type: "button",
             style: "primary",
             color: "#32CD32",
-            action: { type: "message", label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน", text: "ผู้แก้ไขงาน" }
+            action: {
+              type: "message",
+              label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
+              text: "ผู้แก้ไขงาน"
+            }
           },
           {
             type: "button",
             style: "primary",
             color: "#FF0000",
-            action: { type: "message", label: "ขอบัตรย้อนหลัง", text: "ขอบัตรย้อนหลัง" }
+            action: {
+              type: "message",
+              label: "ขอบัตรย้อนหลัง",
+              text: "ขอบัตรย้อนหลัง"
+            }
           }
         ]
       }
     }
   };
+
+  return client.replyMessage(event.replyToken, [headerText, flex]);
 }
 
-function flexDelivery() {
-  return {
+
+/* --------------------------------------------------
+   เมนูย่อย: ผู้รับ–ส่งสินค้า
+-------------------------------------------------- */
+if (
+  cleanText.includes("ผู้รับส่งสินค้า") ||
+  cleanText.includes("ผู้รับ-ส่งสินค้า") ||
+  cleanText.includes("รับส่งสินค้า")
+) {
+
+  const flex = {
     type: "flex",
     altText: "ผู้รับ–ส่งสินค้า",
     contents: {
@@ -201,10 +235,21 @@ function flexDelivery() {
       }
     }
   };
+
+  return client.replyMessage(event.replyToken, flex);
 }
 
-function flexRepair() {
-  return {
+
+/* --------------------------------------------------
+   เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน
+-------------------------------------------------- */
+if (
+  cleanText.includes("ผู้แก้ไขงาน") ||
+  cleanText.includes("แก้ไขงาน") ||
+  cleanText.includes("ผู้เข้ามาทำงาน")
+) {
+
+  const flex = {
     type: "flex",
     altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
     contents: {
@@ -268,36 +313,38 @@ function flexRepair() {
       }
     }
   };
+
+  return client.replyMessage(event.replyToken, flex);
 }
+
 
 /* --------------------------------------------------
    ปุ่มที่ 3 : ขอบัตรย้อนหลัง
 -------------------------------------------------- */
-function handleCardHistory(event, msg) {
-  if (
-    msg.includes("ขอบัตรย้อนหลัง") ||
-    msg.includes("ขอ้บัตรย้อนหลัง") ||
-    msg.includes("บัตรย้อนหลัง")
-  ) {
-    return reply(
-      event,
-      "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
-    );
-  }
-  return false;
+if (
+  cleanText.includes("ขอบัตรย้อนหลัง") ||
+  cleanText.includes("ขอ้บัตรย้อนหลัง") ||
+  cleanText.includes("บัตรย้อนหลัง")
+) {
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
+  });
 }
 /* --------------------------------------------------
-   ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
+   ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร + เบอร์ 02
 -------------------------------------------------- */
 async function handleSafetyTeam(event, msg) {
   if (!msg.includes("ติดต่อทีมเซฟตี้")) return false;
 
+  // 1) ส่งรูปก่อน
   await client.replyMessage(event.replyToken, {
     type: "image",
     originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
     previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
   });
 
+  // 2) ส่งเบอร์ 5 คน
   await client.pushMessage(event.source.userId, {
     type: "flex",
     altText: "เบอร์ติดต่อทีมเซฟตี้",
@@ -345,6 +392,13 @@ async function handleSafetyTeam(event, msg) {
         ]
       }
     }
+  });
+
+  // 3) ส่งเบอร์ 02 + เบอร์ภายใน (flexContact)
+  await client.pushMessage(event.source.userId, {
+    type: "flex",
+    altText: "เบอร์ติดต่อบริษัท",
+    contents: flexContact.contents
   });
 
   return true;
