@@ -1,132 +1,102 @@
-require("dotenv").config();
-const express = require("express");
-const line = require("@line/bot-sdk");
+/* --------------------------------------------------
+   IMPORTS & CONFIG
+-------------------------------------------------- */
+import express from "express";
+import line from "@line/bot-sdk";
 
 const app = express();
 
-/* --------------------------------------------------
-   CONFIG
--------------------------------------------------- */
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-  channelSecret: process.env.CHANNEL_SECRET,
+  channelSecret: process.env.CHANNEL_SECRET
 };
+
 const client = new line.Client(config);
 
 /* --------------------------------------------------
    UTILITIES
 -------------------------------------------------- */
-function reply(event, text) {
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text,
-  });
-}
-
 function normalize(text) {
   return text
     .toLowerCase()
-    .replace(/\s/g, "")
-    .replace(/–/g, "-")
-    .replace(/—/g, "-")
-    .trim();
+    .replace(/\s+/g, "")
+    .replace(/[^\u0E00-\u0E7Fa-z0-9]/gi, "");
+}
+
+function reply(event, text) {
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text
+  });
 }
 
 /* --------------------------------------------------
-   STATIC DATA — SAFETY Q&A (ลบกลุ่มเบอร์โทรออกแล้ว)
+   SAFETY Q&A DATABASE
 -------------------------------------------------- */
 const safetyQA = [
-  { question: "ทำไมต้องอบรม", answer: `เพราะบริษัทต้องให้แน่ใจว่าผู้รับเหมารู้กฎความปลอดภัยก่อนเริ่มงาน  
-ศึกษาข้อมูล:  
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view` },
-
-  { question: "ppeคืออะไร", answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ  
-ศึกษาข้อมูล:  
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view` },
-
-  { question: "งานที่สูงคืออะไร", answer: `งานที่ทำบนที่สูงเกิน 2 เมตร ต้องใช้อุปกรณ์กันตก  
-ศึกษาข้อมูล:  
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view` },
-
-  { question: "สารเคมีคืออะไร", answer: `ของเหลวหรือของแข็งที่อาจเป็นพิษ ระคายเคือง หรือไวไฟ  
-ศึกษาข้อมูล:  
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view` },
-
-  { question: "ที่อับอากาศคืออะไร", answer: `พื้นที่แคบ อากาศไม่พอ อาจมีแก๊สพิษหรือออกไม่ได้ อันตรายถึงชีวิต  
-ศึกษาข้อมูล:  
-https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view` },
-
-  { question: "จุดสูบบุหรี่", answer: `📍 จุดสูบบุหรี่  
-โรงงาน 1: สนามฟุตบอล / หลังอาคาร 4  
-โรงงาน 2: ข้างโรงขยะ` },
-
-  { question: "ขยะมีกี่ประเภท", answer: `♻️ ขยะมี 5 ประเภท: ทั่วไป / ผลิต / อันตราย / ติดเชื้อ / Scrap` },
-
-  { question: "ที่อยู่", answer: `📍 Sodick (Thailand)
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
-
-  { question: "ขอที่อยู่", answer: `📍 Sodick (Thailand)
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
-
-  { question: "ที่อยู่บริษัท", answer: `📍 Sodick (Thailand)
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่)  
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
-
-  { question: "ชื่อบริษัท", answer: `📍 Sodick (Thailand)
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่) 
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
-
-  { question: "ใบกำกับภาษี", answer: `🧾 ใบกำกับภาษี Sodick (Thailand)  
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่) 
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
-
-  { question: "ข้อมูลบริษัท", answer: `🧾 ใบกำกับภาษี Sodick (Thailand)  
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่) 
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
-
-  { question: "อยากได้ที่อยู่บริษัท", answer: `🧾 ใบกำกับภาษี Sodick (Thailand)  
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่) 
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
-
-  { question: "บริษัท", answer: `🧾 ใบกำกับภาษี Sodick (Thailand)  
-บริษัท โซดิก (ประเทศไทย) จำกัด (สำนักงานใหญ่) 
-60/84 หมู่ 19 ซอย 19 ถนนพหลโยธิน คลองหนึ่ง คลองหลวง ปทุมธานี 12120  
-โทร: 02-529-2450-6  
-Tax ID: 0105531085736` },
+  {
+    question: "ppeคืออะไร",
+    answer: "PPE คืออุปกรณ์ป้องกันอันตรายส่วนบุคคล เช่น หมวกนิรภัย แว่นตา ถุงมือ รองเท้าเซฟตี้ เป็นต้น"
+  },
+  {
+    question: "ทำไมต้องใส่หมวกนิรภัย",
+    answer: "เพื่อป้องกันศีรษะจากการกระแทก วัตถุตกหล่น หรืออุบัติเหตุในพื้นที่ทำงาน"
+  },
+  {
+    question: "เข้าเขตผลิตต้องทำอย่างไร",
+    answer: "ต้องสวม PPE ให้ครบ ตรวจสอบอุปกรณ์ และปฏิบัติตามกฎความปลอดภัยของพื้นที่"
+  }
+  // เพิ่มคำถามอื่น ๆ ได้ตามต้องการ
 ];
-
 /* --------------------------------------------------
-   STATIC DATA — CATEGORIES + REPLIES + botIntro
+   CATEGORIES (หมวดหมู่คำถาม)
 -------------------------------------------------- */
 const categories = {
-  greeting: ["สวัสดี", "หวัดดี", "ดีครับ", "ดีค่ะ", "ดีจ้า", "ฮัลโหล"],
-  feeling: ["เศร้า","ร้องไห้","เสียใจ","เครียด","กังวล","ท้อ","ผิดหวัง","เหนื่อย","เหนื่อยไหม","กำลังใจ"],
-  daily: ["ทำไรอยู่","ทำอะไรอยู่","อยู่ไหน","ไปไหนมา","กินข้าวยัง","กินข้าวหรือยัง","ง่วงไหม","นอนยัง","หิว"],
-  compliment: ["เก่งมาก","สุดยอด","ดีมาก","เยี่ยมเลย","น่ารักจัง"],
-  friendly: ["คิดถึง","รัก","เหงา","เบื่อ"],
-  exclaim: ["โอ้โห","โหดจัง","จริงดิ","สุดจัด"],
-  botinfo: ["ชื่ออะไร","ชื่อบอท","คุณคือใคร","เป็นใคร","แนะนำตัว","ทำอะไรได้บ้าง"]
+  ppe: ["ppe", "อุปกรณ์ป้องกัน", "เซฟตี้", "หมวกนิรภัย", "รองเท้าเซฟตี้"],
+  rule: ["กฎความปลอดภัย", "กฎโรงงาน", "เข้าเขตผลิต", "ข้อห้าม"],
+  fire: ["ไฟไหม้", "ดับเพลิง", "ถังดับเพลิง", "fire"],
+  chemical: ["สารเคมี", "msds", "เคมี", "chemical"]
 };
 
-function botIntro() {
-  return (
-`สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
+/* --------------------------------------------------
+   REPLIES (คำตอบตามหมวดหมู่)
+-------------------------------------------------- */
+const replies = {
+  ppe: {
+    ppe: "PPE คืออุปกรณ์ป้องกันอันตรายส่วนบุคคล เช่น หมวกนิรภัย แว่นตา ถุงมือ รองเท้าเซฟตี้",
+    อุปกรณ์ป้องกัน: "อุปกรณ์ป้องกันมีหลายชนิด เช่น หมวกนิรภัย แว่นตา ถุงมือ หน้ากาก และรองเท้าเซฟตี้",
+    เซฟตี้: "การใส่ PPE ช่วยลดความเสี่ยงจากอุบัติเหตุในพื้นที่ทำงาน",
+    หมวกนิรภัย: "หมวกนิรภัยช่วยป้องกันศีรษะจากการกระแทกและวัตถุตกหล่น",
+    รองเท้าเซฟตี้: "รองเท้าเซฟตี้ช่วยป้องกันเท้าจากการกระแทก การบาดเจ็บ และของมีคม"
+  },
+
+  rule: {
+    กฎความปลอดภัย: "โปรดปฏิบัติตามกฎความปลอดภัยของบริษัทอย่างเคร่งครัด",
+    กฎโรงงาน: "เข้าเขตผลิตต้องสวม PPE ให้ครบ ตรวจสอบอุปกรณ์ และปฏิบัติตามป้ายเตือน",
+    เข้าเขตผลิต: "ต้องสวม PPE ครบ ตรวจสอบอุปกรณ์ และปฏิบัติตามกฎพื้นที่",
+    ข้อห้าม: "ห้ามวิ่ง ห้ามหยอกล้อ ห้ามใช้โทรศัพท์ในพื้นที่เสี่ยง"
+  },
+
+  fire: {
+    ไฟไหม้: "กรณีไฟไหม้ ให้รีบแจ้งหัวหน้างานและใช้ถังดับเพลิงประเภทที่เหมาะสม",
+    ดับเพลิง: "ถังดับเพลิงมีหลายประเภท เช่น A B C โปรดเลือกใช้ให้ถูกต้อง",
+    ถังดับเพลิง: "ถังดับเพลิงต้องตรวจสอบแรงดันและสภาพถังทุกเดือน",
+    fire: "Fire emergency: Follow evacuation plan and notify safety team immediately"
+  },
+
+  chemical: {
+    สารเคมี: "การทำงานกับสารเคมีต้องสวม PPE และอ่าน MSDS ก่อนใช้งาน",
+    msds: "MSDS คือเอกสารข้อมูลความปลอดภัยของสารเคมี",
+    เคมี: "สารเคมีบางชนิดอาจเป็นอันตราย ต้องปฏิบัติตามคู่มือความปลอดภัย",
+    chemical: "Chemical handling requires PPE and proper ventilation"
+  }
+};
+
+/* --------------------------------------------------
+   BOT INTRO (ข้อความแนะนำตัวเวอร์ชันเต็ม)
+-------------------------------------------------- */
+const botIntro = `
+สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
 ผู้ช่วยอัจฉริยะด้านความปลอดภัยสำหรับผู้รับเหมาที่เข้ามาปฏิบัติงานในบริษัท Sodick Thailand  
 
 ผมถูกออกแบบมาเพื่อช่วยให้ผู้รับเหมาทุกบริษัทเข้าถึงข้อมูลสำคัญได้อย่างสะดวก  
@@ -134,70 +104,19 @@ function botIntro() {
 เอกสารที่จำเป็น รวมถึงข้อมูลที่เกี่ยวข้องกับการปฏิบัติงานในพื้นที่ของเรา  
 
 ผมพร้อมสนับสนุนให้ทุกขั้นตอนของงานเป็นไปอย่างถูกต้อง มีมาตรฐาน  
-และปลอดภัยสูงสุดครับ`
-  );
-}
+และปลอดภัยสูงสุดครับ
 
-const replies = {
-  greeting: {
-    "สวัสดี": "สวัสดีครับ 🙂",
-    "หวัดดี": "หวัดดีครับ 🙂",
-    "ดีครับ": "ดีครับผม Safety พร้อมช่วยครับ",
-    "ดีค่ะ": "ดีค่ะ 🙂",
-    "ดีจ้า": "ดีจ้าาา 🙂",
-    "ฮัลโหล": "ฮัลโหลครับ 🙂"
-  },
-  feeling: {
-    "เศร้า": "ไม่ต้องเศร้านะครับ Safety อยู่ตรงนี้💚 🙂",
-    "ร้องไห้": "ไม่เป็นไรนะครับ ผมอยู่ตรงนี้ครับ",
-    "เสียใจ": "เดี๋ยวทุกอย่างดีขึ้นนะครับ สู้ ๆ ครับ",
-    "เครียด": "พักก่อนก็ได้นะครับ อย่ากดดันตัวเองมาก",
-    "กังวล": "ไม่ต้องกังวลนะครับ ผมอยู่เป็นเพื่อนครับ",
-    "ท้อ": "พักก่อนนะครับ เดี๋ยวค่อยลุยใหม่ได้ครับ",
-    "ผิดหวัง": "ไม่เป็นไรนะครับ ทุกอย่างเริ่มใหม่ได้เสมอ 🙂",
-    "เหนื่อย": "พักหน่อยนะครับ เดี๋ยวค่อยลุยใหม่ได้ครับ",
-    "เหนื่อยไหม": "เหนื่อยมากครับช่วงนี้งานเยอะมาก 💚แต่ยังพร้อมช่วยอยู่ครับ💚 🙂",
-    "กำลังใจ": "ส่งกำลังใจให้ครับ ✨ สู้ไปด้วยกันนะครับ"
-  },
-  daily: {
-    "ทำไรอยู่": "Safety กำลัง standby พร้อมช่วยครับ 🙂",
-    "ทำอะไรอยู่": "Safety กำลัง standby พร้อมช่วยครับ 🙂",
-    "อยู่ไหน": "Safety 💚อยู่ในระบบนี่แหละครับ พร้อมช่วยเสมอ",
-    "ไปไหนมา": "Safety 💚ยังอยู่ตรงนี้เลยครับ 🙂",
-    "กินข้าวยัง": "ยังเลยครับ ช่วงนี้ Safety งานเยอะ 😅",
-    "กินข้าวหรือยัง": "ยังเลยครับ ช่วงนี้ Safety งานเยอะ 😅",
-    "ง่วงไหม": "ง่วงนิดหน่อยครับ💚 แต่ยังช่วยได้ครับ 🙂",
-    "นอนยัง": "ยังครับ Safety standby อยู่ครับ",
-    "หิว": "หิวเหมือนกันครับ 😅 กินอะไรอร่อย ๆ หน่อยไหม"
-  },
-  compliment: {
-    "เก่งมาก": "พี่เก่งมากครับ 🙂",
-    "สุดยอด": "สุดยอดไปเลยครับ!",
-    "ดีมาก": "ดีมากครับผม!",
-    "เยี่ยมเลย": "เยี่ยมจริง ๆ ครับ!",
-    "น่ารักจัง": "ขอบคุณครับ เขินเลย 😳"
-  },
-  friendly: {
-    "คิดถึง": "Safety 💚คิดถึงเหมือนกันครับ 🙂",
-    "รัก": "Safety 💚 รักๆๆๆๆเหมือนกันครับ 💚",
-    "เหงา": "ไม่ต้องเหงานะครับ Safety อยู่ตรงนี้ 🙂",
-    "เบื่อ": "อย่าเบื่อ 💚Safety💚 นะครับ 😅"
-  },
-  exclaim: {
-    "โอ้โห": "โอ้โหจริงครับ!",
-    "โหดจัง": "โหดมากครับ!",
-    "จริงดิ": "จริงครับ!",
-    "สุดจัด": "สุดจัดเลยครับ!"
-  },
-  botinfo: {
-    "ชื่ออะไร": botIntro(),
-    "ชื่อบอท": botIntro(),
-    "คุณคือใคร": botIntro(),
-    "เป็นใคร": botIntro(),
-    "แนะนำตัว": botIntro(),
-    "ทำอะไรได้บ้าง": botIntro()
-  }
-};
+----------------------------------------------
+
+Hello, my name is Sodick Safety AI Bot 🤖💚  
+An intelligent safety assistant designed for contractors working within Sodick Thailand.  
+
+My purpose is to help all vendors easily access essential information, including safety regulations,  
+work procedures, required training, and important documents related to on-site operations.  
+
+I am here to support you in ensuring that every step of your work is compliant, efficient,  
+and carried out with the highest level of safety.
+`;
 
 /* --------------------------------------------------
    FLEX FUNCTIONS
@@ -352,249 +271,255 @@ function flexRepair() {
 }
 
 /* --------------------------------------------------
-   FLEX CONTACT (แทน safetyQA เบอร์โทร)
+   ปุ่มที่ 3 : ขอบัตรย้อนหลัง
 -------------------------------------------------- */
-function flexContact() {
-  return {
-    type: "flex",
-    altText: "เบอร์ติดต่อบริษัท Sodick Thailand",
-    contents: {
-      type: "bubble",
-      header: {
-        type: "box",
-        layout: "horizontal",
-        paddingAll: "16px",
-        backgroundColor: "#1E90FF",
-        contents: [
-          {
-            type: "text",
-            text: "📞 Sodick Thailand – Contact",
-            weight: "bold",
-            size: "md",
-            color: "#FFFFFF"
-          }
-        ]
-      },
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "lg",
-        contents: [
-
-          /* โรงงาน 1 */
-          {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              { type: "text", text: "🏭 โรงงาน 1 (Factory 1)", weight: "bold", size: "md" },
-              { type: "text", text: "เบอร์บริษัท: 02-529-2450 ถึง 6", size: "sm", color: "#555555" },
-              { type: "text", text: "เบอร์ภายใน: 102, 127, 129", size: "sm", color: "#555555" }
-            ]
-          },
-
-          { type: "separator" },
-
-          /* โรงงาน 2 */
-          {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              { type: "text", text: "🏭 โรงงาน 2 (Factory 2)", weight: "bold", size: "md" },
-              { type: "text", text: "เบอร์บริษัท: 02-529-3200 ถึง 6", size: "sm", color: "#555555" },
-              { type: "text", text: "เบอร์ภายใน: 137", size: "sm", color: "#555555" }
-            ]
-          },
-
-          { type: "separator" },
-
-          /* เบอร์มือถือ */
-          {
-            type: "box",
-            layout: "vertical",
-            spacing: "sm",
-            contents: [
-              { type: "text", text: "📱 เบอร์มือถือทีมเซฟตี้", weight: "bold", size: "md" },
-
-              {
-                type: "button",
-                style: "primary",
-                color: "#1E90FF",
-                action: { type: "uri", label: "พี่ไก่", uri: "tel:0616455095" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องดุจ", uri: "tel:0816954474" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องพิน", uri: "tel:0832374357" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องกี้", uri: "tel:0949380425" }
-              }
-            ]
-          }
-        ]
-      },
-      footer: {
-        type: "box",
-        layout: "vertical",
-        contents: [
-          {
-            type: "text",
-            text: "กดปุ่มเพื่อโทรออกทันที",
-            size: "xs",
-            color: "#888888",
-            align: "center"
-          }
-        ]
-      }
-    }
-  };
-}
-/* --------------------------------------------------
-   HANDLER: CONTACT (แทน safetyQA เบอร์โทร)
--------------------------------------------------- */
-function handleContact(event, msg) {
-  const triggers = [
-    "เบอร์ติดต่อ", "ขอเบอร์ติดต่อ", "ขอเบอร์", "ขอเบอร์โทร",
-    "เบอร์โทร", "โทร", "ติดต่อ", "เบอร์บริษัท", "เบอร์โรงงาน",
-    "เบอร์เซฟตี้", "เบอร์เซฟตี้", "เบอร์เซฟตี้",
-    "safety phone", "contact", "call"
-  ];
-
-  if (triggers.some(t => msg.includes(normalize(t)))) {
-    return client.replyMessage(event.replyToken, flexContact());
+function handleCardHistory(event, msg) {
+  if (
+    msg.includes("ขอบัตรย้อนหลัง") ||
+    msg.includes("ขอ้บัตรย้อนหลัง") ||
+    msg.includes("บัตรย้อนหลัง")
+  ) {
+    return reply(
+      event,
+      "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
+    );
   }
-
   return false;
 }
 /* --------------------------------------------------
-   WEBHOOK
+   ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
+-------------------------------------------------- */
+async function handleSafetyTeam(event, msg) {
+  if (!msg.includes("ติดต่อทีมเซฟตี้")) return false;
+
+  await client.replyMessage(event.replyToken, {
+    type: "image",
+    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
+  });
+
+  await client.pushMessage(event.source.userId, {
+    type: "flex",
+    altText: "เบอร์ติดต่อทีมเซฟตี้",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกเบอร์ที่ต้องการโทร",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องกี้ (Safety Environment)", uri: "tel:0949380425" }
+          }
+        ]
+      }
+    }
+  });
+
+  return true;
+}
+/* --------------------------------------------------
+   FLEX: CONTACT (เบอร์ 02 + เบอร์ภายใน)
+-------------------------------------------------- */
+const flexContact = {
+  type: "flex",
+  altText: "เบอร์ติดต่อบริษัท",
+  contents: {
+    type: "bubble",
+    size: "mega",
+    body: {
+      type: "box",
+      layout: "vertical",
+      spacing: "md",
+      contents: [
+        {
+          type: "text",
+          text: "เบอร์ติดต่อบริษัท",
+          weight: "bold",
+          size: "lg",
+          color: "#0A4D0A"
+        },
+        {
+          type: "separator",
+          margin: "md"
+        },
+
+        /* -------------------------
+           โรงงาน 1
+        ------------------------- */
+        {
+          type: "text",
+          text: "🏭 โรงงาน 1",
+          weight: "bold",
+          size: "md",
+          margin: "md"
+        },
+        {
+          type: "text",
+          text: "โทร: 02-529-2450 ถึง 6",
+          wrap: true
+        },
+        {
+          type: "text",
+          text: "ภายใน: 102 / 127 / 129",
+          wrap: true,
+          margin: "sm"
+        },
+
+        {
+          type: "separator",
+          margin: "md"
+        },
+
+        /* -------------------------
+           โรงงาน 2
+        ------------------------- */
+        {
+          type: "text",
+          text: "🏭 โรงงาน 2",
+          weight: "bold",
+          size: "md",
+          margin: "md"
+        },
+        {
+          type: "text",
+          text: "โทร: 02-529-3200 ถึง 6",
+          wrap: true
+        },
+        {
+          type: "text",
+          text: "ภายใน: 137",
+          wrap: true,
+          margin: "sm"
+        }
+      ]
+    }
+  }
+};
+/* --------------------------------------------------
+   ปุ่มที่ 7 : แผนที่โรงงาน
+-------------------------------------------------- */
+function handleMap(event, msg) {
+  if (
+    msg.includes("แผนที่") ||
+    msg.includes("map") ||
+    msg.includes("โรงงานอยู่ไหน") ||
+    msg.includes("ไปยังโรงงาน")
+  ) {
+    return reply(event, {
+      type: "flex",
+      altText: "แผนที่โรงงาน Sodick Thailand",
+      contents: {
+        type: "bubble",
+        size: "mega",
+        body: {
+          type: "box",
+          layout: "vertical",
+          spacing: "md",
+          contents: [
+            {
+              type: "text",
+              text: "แผนที่โรงงาน Sodick Thailand",
+              weight: "bold",
+              size: "lg",
+              color: "#0A4D0A"
+            },
+            {
+              type: "separator",
+              margin: "md"
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#1E90FF",
+              action: {
+                type: "uri",
+                label: "เปิดแผนที่ (Google Maps)",
+                uri: "https://maps.app.goo.gl/7x1q8y8q8x1q8y8q8"
+              }
+            }
+          ]
+        }
+      }
+    });
+  }
+  return false;
+}
+/* --------------------------------------------------
+   WEBHOOK — จุดรับข้อความจาก LINE
 -------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
-    const event = req.body.events[0];
+    const events = req.body.events;
 
-    if (!event || event.type !== "message" || event.message.type !== "text") {
-      return res.status(200).end();
-    }
+    for (const event of events) {
+      if (event.type !== "message" || !event.message.text) continue;
 
-    const text = event.message.text;
-    const msg = normalize(text);
+      const msg = event.message.text;
 
-    /* --------------------------------------------------
-       เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
-    -------------------------------------------------- */
-    if (event.source.type === "group") {
-      const triggers = ["บอท", "bot", "safety", "Safety"];
-      const hasTrigger = triggers.some((w) => text.includes(w));
-      if (!hasTrigger) return res.status(200).end();
-    }
+      // -------------------------------
+// ลำดับการตรวจปุ่มต่าง ๆ
+// -------------------------------
+if (handleCardHistory(event, msg)) continue;
+if (await handleSafetyTeam(event, msg)) continue;
+if (handleMap(event, msg)) continue;
 
-    /* --------------------------------------------------
-       1) Emergency
-    -------------------------------------------------- */
-    if (
-      msg.includes("อุบัติเหตุ") ||
-      msg.includes("ฉุกเฉิน") ||
-      msg.includes("ไฟไหม้") ||
-      msg.includes("บาดเจ็บ") ||
-      msg.includes("danger") ||
-      msg.includes("emergency")
-    ) {
-      return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
-โรงงาน 1: 102 / 127 / 129  
-โรงงาน 2: 137  
-ผู้จัดการ: 100`);
-    }
+// FLEX ผู้รับเหมา
+if (msg.includes("ข้อมูลผู้รับเหมา")) {
+  return reply(event, flexContractorMain());
+}
 
-    /* --------------------------------------------------
-       2) Safety Q&A
-    -------------------------------------------------- */
-    const found = safetyQA.find((q) => msg.includes(normalize(q.question)));
-    if (found) return reply(event, found.answer);
+// FLEX ผู้รับ–ส่งสินค้า
+if (msg.includes("ผู้รับส่งสินค้า") || msg.includes("ผู้รับ-ส่งสินค้า")) {
+  return reply(event, flexDelivery());
+}
 
-    /* --------------------------------------------------
-       3) Categories
-    -------------------------------------------------- */
-    for (const category in categories) {
-      for (const word of categories[category]) {
-        if (msg.includes(normalize(word))) {
-          return reply(event, replies[category][word]);
-        }
-      }
-    }
+// FLEX ผู้เข้ามาทำงาน–แก้ไขงาน
+if (msg.includes("ผู้แก้ไขงาน") || msg.includes("ผู้เข้ามาทำงาน")) {
+  return reply(event, flexRepair());
+}
 
-    /* --------------------------------------------------
-       4) เมนูผู้รับเหมา
-    -------------------------------------------------- */
-    if (msg.includes("ข้อมูลผู้รับเหมา") || msg.includes("ผู้รับเหมา")) {
-      const headerText = {
-        type: "text",
-        text: `ข้อมูลผู้รับเหมา  
-กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
-thai_safety@sodick.co.th`
-      };
-      return client.replyMessage(event.replyToken, [headerText, flexContractorMain()]);
-    }
+// FLEX เบอร์ 02 (เมนูติดต่อบริษัท)
+if (msg.includes("ติดต่อบริษัท") || msg.includes("เบอร์บริษัท")) {
+  return reply(event, flexContact);
+}
 
-    /* --------------------------------------------------
-       5) เมนูย่อย: ผู้รับ–ส่งสินค้า
-    -------------------------------------------------- */
-    if (
-      msg.includes("ผู้รับส่งสินค้า") ||
-      msg.includes("ผู้รับ-ส่งสินค้า") ||
-      msg.includes("รับส่งสินค้า")
-    ) {
-      return client.replyMessage(event.replyToken, flexDelivery());
-    }
-
-    /* --------------------------------------------------
-       6) เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน
-    -------------------------------------------------- */
-    if (
-      msg.includes("ผู้แก้ไขงาน") ||
-      msg.includes("แก้ไขงาน") ||
-      msg.includes("ผู้เข้ามาทำงาน")
-    ) {
-      return client.replyMessage(event.replyToken, flexRepair());
-    }
-
-    /* --------------------------------------------------
-       7) ขอบัตรย้อนหลัง
-    -------------------------------------------------- */
-    const cardHistory = handleCardHistory(event, msg);
-    if (cardHistory) return;
-
-    /* --------------------------------------------------
-       8) ติดต่อทีมเซฟตี้
-    -------------------------------------------------- */
-    const safetyTeam = await handleSafetyTeam(event, msg);
-    if (safetyTeam) return;
-
-    /* --------------------------------------------------
-       9) แผนที่บริษัท
-    -------------------------------------------------- */
-    const map = handleMap(event, msg);
-    if (map) return;
-
-    /* --------------------------------------------------
-       10) เบอร์ติดต่อ (Flex ใหม่)
-    -------------------------------------------------- */
-    const contact = handleContact(event, msg);
-    if (contact) return;
-
-    /* --------------------------------------------------
-       11) Fallback
-    -------------------------------------------------- */
-    return reply(event,
+/* --------------------------------------------------
+   10) Fallback — ตอบเมื่อไม่พบคำสั่ง
+-------------------------------------------------- */
+return reply(
+  event,
 `━━━━━━━━━━━━━━━━━━━━
 ❗ ไม่พบข้อมูลคำถามนี้ในระบบ
 ━━━━━━━━━━━━━━━━━━━━
@@ -608,18 +533,18 @@ thai_safety@sodick.co.th`
 
 ➕ เพิ่มเพื่อนผู้ดูแล  
 https://line.me/ti/p/_T4H-3TKUa`
-    );
+);
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).end();
-  }
+res.status(200).send("OK");
+} catch (err) {
+  console.error("Webhook Error:", err);
+  res.status(500).send("Error");
+}
 });
+
 /* --------------------------------------------------
    START SERVER
 -------------------------------------------------- */
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("LINE Bot server running on port " + PORT);
+app.listen(process.env.PORT || 3000, () => {
+  console.log("BOT SERVER RUNNING...");
 });
