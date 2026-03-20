@@ -1,8 +1,3 @@
-+117
--104
-Lines changed: 117 additions & 104 deletions
-Original file line number	Diff line number	Diff line change
-@@ -1,237 +1,142 @@
 require("dotenv").config();
 const express = require("express");
 const line = require("@line/bot-sdk");
