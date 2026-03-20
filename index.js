@@ -724,12 +724,12 @@ thai_safety@sodick.co.th`,
     // 6) Fallback
     // --------------------------------------------------
     return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
+  type: "text",
+  text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
 
 ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
-เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
-  });
+เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`
+});
 
     } catch (err) {
     console.error("Webhook Error:", err);
