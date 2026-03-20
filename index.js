@@ -410,105 +410,8 @@ if (
         }
       }
     }
-
 // --------------------------------------------------
-// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร (Flex แบบ C: ปุ่มเต็มกว้างทีละปุ่ม)
-// --------------------------------------------------
-if (msg.includes("ติดต่อทีมเซฟตี้")) {
-
-  // ส่งรูป (ดูเฉย ๆ)
-  await client.replyMessage(event.replyToken, {
-    type: "image",
-    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-  });
-
-  // ส่ง Flex Message ปุ่มเต็มกว้างทีละปุ่ม
-  await client.pushMessage(event.source.userId, {
-    type: "flex",
-    altText: "เบอร์ติดต่อทีมเซฟตี้",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-
-          // ข้อความหัวข้อ
-          {
-            type: "text",
-            text: "เลือกเบอร์ที่ต้องการโทร",
-            weight: "bold",
-            size: "lg",
-            align: "center"
-          },
-
-          // ปุ่ม 1
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "พี่ช้าง ผู้จัดการ (Safety Manager)",
-              uri: "tel:0813765583"
-            }
-          },
-
-          // ปุ่ม 2
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "พี่ไก่ (Kai – Safety Factory1)",
-              uri: "tel:0616455095"
-            }
-          },
-
-          // ปุ่ม 3
-          {
-            type: "button",
-            style: "secondary",
-            action: {
-              type: "uri",
-              label: "น้องพิน (Pin – Safety Factory2)",
-              uri: "tel:0832374357"
-            }
-          },
-
-          // ปุ่ม 4
-          {
-            type: "button",
-            style: "secondary",
-            action: {
-              type: "uri",
-              label: "น้องดุจ (Duj – Safety Factory1)",
-              uri: "tel:0816954474"
-            }
-          },
-
-          // ปุ่ม 5
-          {
-            type: "button",
-            style: "secondary",
-            action: {
-              type: "uri",
-              label: "น้องกี้ (Kie – Safety Environment)",
-              uri: "tel:0949380425"
-            }
-          }
-        ]
-      }
-    }
-  });
-
-  return;
-}
-// --------------------------------------------------
-// ปุ่มที่ 4 : ผู้รับเหมา
+// ปุ่มที่ 4 : ผู้รับเหมา  (ต้องอยู่เหนือปุ่มที่ 6 เท่านั้น)
 // --------------------------------------------------
 if (msg.includes("ข้อมูลผู้รับเหมา")) {
 
@@ -613,6 +516,8 @@ if (msg.includes("ผู้รับส่งสินค้า")) {
   return client.replyMessage(event.replyToken, flex);
 }
 
+
+
 // --------------------------------------------------
 // เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่ม)
 // --------------------------------------------------
@@ -686,6 +591,72 @@ if (msg.includes("ผู้แก้ไขงาน")) {
   return client.replyMessage(event.replyToken, flex);
 }
 
+
+
+// --------------------------------------------------
+// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
+// --------------------------------------------------
+if (msg.includes("ติดต่อทีมเซฟตี้")) {
+
+  // ส่งรูป
+  await client.replyMessage(event.replyToken, {
+    type: "image",
+    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
+  });
+
+  // ส่ง Flex ปุ่มโทร
+  await client.pushMessage(event.source.userId, {
+    type: "flex",
+    altText: "เบอร์ติดต่อทีมเซฟตี้",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกเบอร์ที่ต้องการโทร",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ช้าง ผู้จัดการ", uri: "tel:0813765583" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ไก่ (Factory1)", uri: "tel:0616455095" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องพิน (Factory2)", uri: "tel:0832374357" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องดุจ (Factory1)", uri: "tel:0816954474" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องกี้ (Environment)", uri: "tel:0949380425" }
+          }
+        ]
+      }
+    }
+  });
+
+  return;
+}
     // --------------------------------------------------
     // 6) Fallback
     // --------------------------------------------------
