@@ -137,101 +137,8 @@ Tax ID: 0105531085736`
 Tax ID: 0105531085736`
   },
 
-  {
-    question: "เบอร์ติดต่อ",
-    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
+];   // ← ต้องมีอันนี้!!!
 
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุจ: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-  },
-
-  {
-    question: "ขอเบอร์ติดต่อ",
-    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
-
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุจ: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-  },
-
-  {
-    question: "ขอเบอร์",
-    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
-
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุจ: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-  },
-
-  {
-    question: "ขอเบอร์โทร",
-    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
-
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุจ: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-  },
-
-  {
-    question: "เบอร์โทร",
-    answer: `📞 **เบอร์ติดต่อบริษัท Sodick (Thailand)**
-
-🏭 **โรงงาน 1**  
-เบอร์ติดต่อบริษัท: 02-529-2450 ถึง 6  
-เบอร์ภายใน: 102, 127, 129  
-
-🏭 **โรงงาน 2**  
-เบอร์ติดต่อบริษัท: 02-529-3200 ถึง 6  
-เบอร์ภายใน: 137  
-
-📱 **เบอร์มือถือ**  
-- พี่ไก่: 061-645-5095  
-- น้องดุจ: 081-695-4474  
-- น้องพิน: 083-237-4357  
-- น้องกี้: 094-938-0425`
-  }
-];
 /* --------------------------------------------------
    CATEGORIES
 -------------------------------------------------- */
@@ -331,8 +238,7 @@ const replies = {
    BOT INTRO FUNCTION
 -------------------------------------------------- */
 function botIntro() {
-  return (
-`สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
+  return `สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
 ผู้ช่วยอัจฉริยะด้านความปลอดภัยสำหรับผู้รับเหมาที่เข้ามาปฏิบัติงานในบริษัท Sodick Thailand  
 
 ผมถูกออกแบบมาเพื่อช่วยให้ผู้รับเหมาทุกบริษัทเข้าถึงข้อมูลสำคัญได้อย่างสะดวก  
@@ -349,10 +255,8 @@ My purpose is to help all vendors easily access essential information, including
 work procedures, required training, and important documents related to on-site operations.  
 
 I am here to support you in ensuring that every step of your work is compliant, efficient,  
-and carried out with the highest level of safety.`
-  );
+and carried out with the highest level of safety.`;
 }
-
 
 /* --------------------------------------------------
    REPLY FUNCTION
@@ -363,7 +267,6 @@ function reply(event, text) {
     text,
   });
 }
-
 
 /* --------------------------------------------------
    NORMALIZE (เวอร์ชันสุดท้าย)
@@ -377,7 +280,88 @@ function normalize(text) {
     .trim();
 }
 
+/* --------------------------------------------------
+   FLEX: CONTACT CARD
+-------------------------------------------------- */
+const FLEX_CONTACT_CARD = {
+  type: "bubble",
+  header: {
+    type: "box",
+    layout: "vertical",
+    paddingAll: "16px",
+    backgroundColor: "#1E90FF",
+    contents: [
+      {
+        type: "text",
+        text: "📞 Sodick Thailand – Contact",
+        weight: "bold",
+        size: "md",
+        color: "#FFFFFF"
+      }
+    ]
+  },
+  body: {
+    type: "box",
+    layout: "vertical",
+    spacing: "lg",
+    contents: [
+      {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        contents: [
+          { type: "text", text: "🏭 โรงงาน 1", weight: "bold", size: "md" },
+          { type: "text", text: "เบอร์บริษัท: 02-529-2450 ถึง 6", size: "sm", color: "#555555" },
+          { type: "text", text: "เบอร์ภายใน: 102, 127, 129", size: "sm", color: "#555555" },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "โทรโรงงาน 1", uri: "tel:025292450" }
+          }
+        ]
+      },
 
+      { type: "separator" },
+
+      {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        contents: [
+          { type: "text", text: "🏭 โรงงาน 2", weight: "bold", size: "md" },
+          { type: "text", text: "เบอร์บริษัท: 02-529-3200 ถึง 6", size: "sm", color: "#555555" },
+          { type: "text", text: "เบอร์ภายใน: 137", size: "sm", color: "#555555" },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "โทรโรงงาน 2", uri: "tel:025293200" }
+          }
+        ]
+      },
+
+      { type: "separator" },
+
+      {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        contents: [
+          { type: "text", text: "📱 เบอร์มือถือทีมเซฟตี้", weight: "bold", size: "md" },
+          { type: "text", text: "พี่ไก่: 061-645-5095", size: "sm", color: "#555555" },
+          { type: "text", text: "น้องดุจ: 081-695-4474", size: "sm", color: "#555555" },
+          { type: "text", text: "น้องพิน: 083-237-4357", size: "sm", color: "#555555" },
+          { type: "text", text: "น้องกี้: 094-938-0425", size: "sm", color: "#555555" }
+        ]
+      }
+    ]
+  }
+};   // ← ปิดครบ 100%
+
+/* --------------------------------------------------
+   WEBHOOK
+-------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
@@ -391,7 +375,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const cleanText = msg;
 
     /* --------------------------------------------------
-       1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
+       1) เงื่อนไขเฉพาะในกลุ่ม
     -------------------------------------------------- */
     if (event.source.type === "group") {
       const triggers = ["บอท", "bot", "safety", "Safety"];
@@ -434,6 +418,34 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         }
       }
     }
+
+    /* --------------------------------------------------
+       เบอร์ติดต่อ (Flex Message)
+    -------------------------------------------------- */
+    if (
+      msg.includes("เบอร์ติดต่อ") ||
+      msg.includes("ขอเบอร์ติดต่อ") ||
+      msg.includes("ขอเบอร์") ||
+      msg.includes("เบอร์โทร") ||
+      msg.includes("ขอเบอร์โทร") ||
+      msg.includes("เบอร์บริษัท") ||
+      msg.includes("เบอร์โรงงาน") ||
+      msg.includes("เบอร์ภายใน") ||
+      msg.includes("โทรโรงงาน") ||
+      msg.includes("โทรบริษัท") ||
+      msg.includes("ติดต่อบริษัท") ||
+      msg.includes("contact") ||
+      msg.includes("call") ||
+      msg.includes("phone") ||
+      msg.includes("เบอร์")
+    ) {
+      return client.replyMessage(event.replyToken, {
+        type: "flex",
+        altText: "เบอร์ติดต่อบริษัท Sodick Thailand",
+        contents: FLEX_CONTACT_CARD
+      });
+    }
+    
 /* --------------------------------------------------
    ปุ่มที่ 4 : ผู้รับเหมา
 -------------------------------------------------- */
@@ -441,7 +453,6 @@ if (
   cleanText.includes("ข้อมูลผู้รับเหมา") ||
   cleanText.includes("ผู้รับเหมา")
 ) {
-
   const headerText = {
     type: "text",
     text: `ข้อมูลผู้รับเหมา  
@@ -496,8 +507,6 @@ thai_safety@sodick.co.th`
 
   return client.replyMessage(event.replyToken, [headerText, flex]);
 }
-
-
 /* --------------------------------------------------
    เมนูย่อย: ผู้รับ–ส่งสินค้า
 -------------------------------------------------- */
@@ -835,22 +844,20 @@ if (
    6) Fallback
 -------------------------------------------------- */
 return client.replyMessage(event.replyToken, {
-  type: "text",
-  text:
+    type: "text",
+    text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
 
-❗ ไม่พบข้อมูลคำถามนี้ในระบบ
-
-
-ขออภัยครับ 🙂  
-ระบบยังไม่มีคำตอบสำหรับคำถามนี้  
-แต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ
-
-📞 ติดต่อผู้พัฒนาระบบ  
-@Trerasak_K (พี่ไก่)
-
-➕ เพิ่มเพื่อนผู้ดูแล  
-https://line.me/ti/p/_T4H-3TKUa`
-});
+ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
+เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
+    mention: {
+      mentionees: [
+        {
+          type: "user",
+          userId: "YOUR_USER_ID"
+        },
+      ],
+    },
+  });
 
 /* --------------------------------------------------
    Server
