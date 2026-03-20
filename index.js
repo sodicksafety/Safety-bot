@@ -427,12 +427,25 @@ if (
       }
     }
 // --------------------------------------------------
+// ฟังก์ชัน Normalize ข้อความ (กันตายสำหรับกลุ่ม)
+// --------------------------------------------------
+function normalize(text) {
+  return text
+    .replace(/\s/g, "")     // ลบช่องว่างทุกชนิด (รวม zero‑width space)
+    .replace(/–/g, "-")     // แปลง en dash
+    .replace(/—/g, "-")     // แปลง em dash
+    .trim();
+}
+
+const cleanText = normalize(text);
+
+// --------------------------------------------------
 // ปุ่มที่ 4 : ผู้รับเหมา
 // --------------------------------------------------
 if (
-  text.includes("ข้อมูลผู้รับเหมา") ||
-  text.includes("ข้อมูล ผู้รับเหมา") ||
-  text.includes("ผู้รับเหมา")
+  cleanText.includes("ข้อมูลผู้รับเหมา") ||
+  cleanText.includes("ข้อมูลผู้รับเหมา") ||
+  cleanText.includes("ผู้รับเหมา")
 ) {
 
   const headerText = {
@@ -496,9 +509,9 @@ thai_safety@sodick.co.th`
 // เมนูย่อย: ผู้รับ–ส่งสินค้า (3 ปุ่ม)
 // --------------------------------------------------
 if (
-  text.includes("ผู้รับส่งสินค้า") ||
-  text.includes("ผู้รับ-ส่งสินค้า") ||
-  text.includes("รับส่งสินค้า")
+  cleanText.includes("ผู้รับส่งสินค้า") ||
+  cleanText.includes("ผู้รับ-ส่งสินค้า") ||
+  cleanText.includes("รับส่งสินค้า")
 ) {
 
   const flex = {
@@ -548,8 +561,6 @@ if (
 
   return client.replyMessage(event.replyToken, flex);
 }
-
-
 
 // --------------------------------------------------
 // เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่ม)
