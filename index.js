@@ -92,10 +92,23 @@ const replies = {
   }
 };
 
-/* --------------------------------------------------
-   BOT INTRO (ข้อความแนะนำตัวเวอร์ชันเต็ม)
--------------------------------------------------- */
-const botIntro = `
+// ===============================
+// ฟังก์ชันหลักที่รับข้อความจากผู้ใช้
+// ===============================
+async function handleEvent(event) {
+
+  if (event.type !== "message" || event.message.type !== "text") {
+    return;
+  }
+
+  const msg = event.message.text;
+  const cleanText = msg.trim();
+
+
+  /* --------------------------------------------------
+     BOT INTRO (ข้อความแนะนำตัว)
+  -------------------------------------------------- */
+  const botIntro = `
 สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
 ผู้ช่วยอัจฉริยะด้านความปลอดภัยสำหรับผู้รับเหมาที่เข้ามาปฏิบัติงานในบริษัท Sodick Thailand  
 
@@ -118,218 +131,221 @@ I am here to support you in ensuring that every step of your work is compliant, 
 and carried out with the highest level of safety.
 `;
 
-/* --------------------------------------------------
-   ปุ่มที่ 4 : ผู้รับเหมา
--------------------------------------------------- */
-if (
-  cleanText.includes("ข้อมูลผู้รับเหมา") ||
-  cleanText.includes("ผู้รับเหมา")
-) {
 
-  const headerText = {
-    type: "text",
-    text: `ข้อมูลผู้รับเหมา  
+  /* --------------------------------------------------
+     ปุ่มที่ 4 : ผู้รับเหมา → แสดง 3 ปุ่ม
+  -------------------------------------------------- */
+  if (
+    cleanText.includes("ข้อมูลผู้รับเหมา") ||
+    cleanText.includes("ผู้รับเหมา")
+  ) {
+
+    const headerText = {
+      type: "text",
+      text: `ข้อมูลผู้รับเหมา  
 กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
 thai_safety@sodick.co.th`
-  };
+    };
 
-  const flex = {
-    type: "flex",
-    altText: "ข้อมูลผู้รับเหมา",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "message",
-              label: "สำหรับ ผู้รับ–ส่งสินค้า",
-              text: "ผู้รับส่งสินค้า"
+    const flex = {
+      type: "flex",
+      altText: "ข้อมูลผู้รับเหมา",
+      contents: {
+        type: "bubble",
+        body: {
+          type: "box",
+          layout: "vertical",
+          spacing: "md",
+          contents: [
+            {
+              type: "button",
+              style: "primary",
+              color: "#1E90FF",
+              action: {
+                type: "message",
+                label: "สำหรับ ผู้รับ–ส่งสินค้า",
+                text: "ผู้รับส่งสินค้า"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#32CD32",
+              action: {
+                type: "message",
+                label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
+                text: "ผู้แก้ไขงาน"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#FF0000",
+              action: {
+                type: "message",
+                label: "ขอบัตรย้อนหลัง",
+                text: "ขอบัตรย้อนหลัง"
+              }
             }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "message",
-              label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
-              text: "ผู้แก้ไขงาน"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#FF0000",
-            action: {
-              type: "message",
-              label: "ขอบัตรย้อนหลัง",
-              text: "ขอบัตรย้อนหลัง"
-            }
-          }
-        ]
+          ]
+        }
       }
-    }
-  };
+    };
 
-  return client.replyMessage(event.replyToken, [headerText, flex]);
-}
+    return client.replyMessage(event.replyToken, [headerText, flex]);
+  }
 
 
-/* --------------------------------------------------
-   เมนูย่อย: ผู้รับ–ส่งสินค้า
--------------------------------------------------- */
-if (
-  cleanText.includes("ผู้รับส่งสินค้า") ||
-  cleanText.includes("ผู้รับ-ส่งสินค้า") ||
-  cleanText.includes("รับส่งสินค้า")
-) {
+  /* --------------------------------------------------
+     เมนูย่อย: ผู้รับ–ส่งสินค้า
+  -------------------------------------------------- */
+  if (
+    cleanText.includes("ผู้รับส่งสินค้า") ||
+    cleanText.includes("ผู้รับ-ส่งสินค้า") ||
+    cleanText.includes("รับส่งสินค้า")
+  ) {
 
-  const flex = {
-    type: "flex",
-    altText: "ผู้รับ–ส่งสินค้า",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "วีดีโออบรม",
-              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+    const flex = {
+      type: "flex",
+      altText: "ผู้รับ–ส่งสินค้า",
+      contents: {
+        type: "bubble",
+        body: {
+          type: "box",
+          layout: "vertical",
+          spacing: "md",
+          contents: [
+            {
+              type: "button",
+              style: "primary",
+              color: "#1E90FF",
+              action: {
+                type: "uri",
+                label: "วีดีโออบรม",
+                uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#1E90FF",
+              action: {
+                type: "uri",
+                label: "ทำแบบทดสอบ",
+                uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#1E90FF",
+              action: {
+                type: "uri",
+                label: "เอกสารบันทึกการอบรม",
+                uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
+              }
             }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "ทำแบบทดสอบ",
-              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "เอกสารบันทึกการอบรม",
-              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
-            }
-          }
-        ]
+          ]
+        }
       }
-    }
-  };
+    };
 
-  return client.replyMessage(event.replyToken, flex);
-}
+    return client.replyMessage(event.replyToken, flex);
+  }
 
 
-/* --------------------------------------------------
-   เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน
--------------------------------------------------- */
-if (
-  cleanText.includes("ผู้แก้ไขงาน") ||
-  cleanText.includes("แก้ไขงาน") ||
-  cleanText.includes("ผู้เข้ามาทำงาน")
-) {
+  /* --------------------------------------------------
+     เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน
+  -------------------------------------------------- */
+  if (
+    cleanText.includes("ผู้แก้ไขงาน") ||
+    cleanText.includes("แก้ไขงาน") ||
+    cleanText.includes("ผู้เข้ามาทำงาน")
+  ) {
 
-  const flex = {
-    type: "flex",
-    altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "วีดีโออบรม",
-              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+    const flex = {
+      type: "flex",
+      altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
+      contents: {
+        type: "bubble",
+        body: {
+          type: "box",
+          layout: "vertical",
+          spacing: "md",
+          contents: [
+            {
+              type: "button",
+              style: "primary",
+              color: "#32CD32",
+              action: {
+                type: "uri",
+                label: "วีดีโออบรม",
+                uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#32CD32",
+              action: {
+                type: "uri",
+                label: "ทำแบบทดสอบ",
+                uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#32CD32",
+              action: {
+                type: "uri",
+                label: "เอกสารบันทึกการอบรม",
+                uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#32CD32",
+              action: {
+                type: "uri",
+                label: "ใบขอเข้ามาทำงาน",
+                uri: "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drivesdk"
+              }
+            },
+            {
+              type: "button",
+              style: "primary",
+              color: "#32CD32",
+              action: {
+                type: "uri",
+                label: "ใบตรวจสอบเครื่องมือ",
+                uri: "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drivesdk"
+              }
             }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "ทำแบบทดสอบ",
-              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "เอกสารบันทึกการอบรม",
-              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "ใบขอเข้ามาทำงาน",
-              uri: "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drivesdk"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#32CD32",
-            action: {
-              type: "uri",
-              label: "ใบตรวจสอบเครื่องมือ",
-              uri: "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drivesdk"
-            }
-          }
-        ]
+          ]
+        }
       }
-    }
-  };
+    };
 
-  return client.replyMessage(event.replyToken, flex);
-}
+    return client.replyMessage(event.replyToken, flex);
+  }
 
 
-/* --------------------------------------------------
-   ปุ่มที่ 3 : ขอบัตรย้อนหลัง
--------------------------------------------------- */
-if (
-  cleanText.includes("ขอบัตรย้อนหลัง") ||
-  cleanText.includes("ขอ้บัตรย้อนหลัง") ||
-  cleanText.includes("บัตรย้อนหลัง")
-) {
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
-  });
+  /* --------------------------------------------------
+     ปุ่มที่ 3 : ขอบัตรย้อนหลัง
+  -------------------------------------------------- */
+  if (
+    cleanText.includes("ขอบัตรย้อนหลัง") ||
+    cleanText.includes("ขอ้บัตรย้อนหลัง") ||
+    cleanText.includes("บัตรย้อนหลัง")
+  ) {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
+    });
+  }
+
 }
 
 /* --------------------------------------------------
