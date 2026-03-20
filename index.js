@@ -378,9 +378,6 @@ function normalize(text) {
 }
 
 
-/* --------------------------------------------------
-   MAIN WEBHOOK
--------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
@@ -715,39 +712,122 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
   return;
 }
 /* --------------------------------------------------
-   แผนที่บริษัท / map / location / โลเคชั่น
+   แผนที่บริษัท (Flex Message)
 -------------------------------------------------- */
 if (
   msg.includes("แผนที่") ||
-  msg.includes("ขอแผนที่") ||
-  msg.includes("แผนที่บริษัท") ||
-  msg.includes("ขอแผนที่บริษัท") ||
-  msg.includes("โลเคชั่น") ||
-  msg.includes("ขอโลเคชั่น") ||
-  msg.includes("โลเคชั่นบริษัท") ||
-  msg.includes("location") ||
   msg.includes("map") ||
-  msg.includes("factory map") ||
+  msg.includes("location") ||
+  msg.includes("โลเคชั่น") ||
+  msg.includes("โรงงานอยู่ไหน") ||
   msg.includes("ไปโรงงาน") ||
-  msg.includes("ไปยังโรงงาน") ||
-  msg.includes("ไปยังบริษัท") ||
-  msg.includes("ที่อยู่บริษัท") ||
-  msg.includes("ปักหมุดบริษัท") ||
-  msg.includes("ปักหมุดโรงงาน")
+  msg.includes("factory")
 ) {
 
   return client.replyMessage(event.replyToken, {
-    type: "text",
-    text:
-`📍 แผนที่บริษัท Sodick Thailand
+    type: "flex",
+    altText: "แผนที่บริษัท Sodick Thailand",
+    contents: {
+      type: "bubble",
+      header: {
+        type: "box",
+        layout: "horizontal",
+        paddingAll: "16px",
+        backgroundColor: "#1E90FF",
+        contents: [
+          {
+            type: "text",
+            text: "📍 Sodick Thailand – Map Guide",
+            weight: "bold",
+            size: "md",
+            color: "#FFFFFF"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        contents: [
+          {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              {
+                type: "text",
+                text: "🏭 โรงงาน 1 (Factory 1)",
+                weight: "bold",
+                size: "md"
+              },
+              {
+                type: "text",
+                text: "Google Maps อัปเดตล่าสุด: เม.ย. 2022",
+                size: "sm",
+                color: "#555555"
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "เปิดแผนที่โรงงาน 1",
+                  uri: "https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8"
+                }
+              }
+            ]
+          },
 
-🏭 โรงงาน 1 (Factory 1)
-Google Maps (อัปเดตล่าสุด: เมษายน 2022)
-https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8
+          {
+            type: "separator"
+          },
 
-🏭 โรงงาน 2 (Factory 2)
-Google Maps (อัปเดตล่าสุด: เมษายน 2025)
-https://maps.app.goo.gl/keZxD798z9ZwKXE7A`
+          {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              {
+                type: "text",
+                text: "🏭 โรงงาน 2 (Factory 2)",
+                weight: "bold",
+                size: "md"
+              },
+              {
+                type: "text",
+                text: "Google Maps อัปเดตล่าสุด: เม.ย. 2025",
+                size: "sm",
+                color: "#555555"
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "เปิดแผนที่โรงงาน 2",
+                  uri: "https://maps.app.goo.gl/keZxD798z9ZwKXE7A"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: "กดปุ่มเพื่อเปิดเส้นทางใน Google Maps",
+            size: "xs",
+            color: "#888888",
+            align: "center"
+          }
+        ]
+      }
+    }
   });
 }
 
