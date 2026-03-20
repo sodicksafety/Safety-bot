@@ -355,127 +355,111 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const msg = text.toLowerCase().trim().replace(/\s+/g, "");
 
     // --------------------------------------------------
-// 1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
-// --------------------------------------------------
-if (event.source.type === "group") {
-  const triggers = ["บอท", "bot", "safety", "Safety"];
-  const hasTrigger = triggers.some((w) => text.includes(w));
+    // 1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
+    // --------------------------------------------------
+    if (event.source.type === "group") {
+      const triggers = ["บอท", "bot", "safety", "Safety"];
+      const hasTrigger = triggers.some((w) => text.includes(w));
 
-  if (!hasTrigger) {
-    return res.status(200).end(); // ไม่ตอบถ้าไม่ได้เรียกบอท
-  }
-}
+      if (!hasTrigger) {
+        return res.status(200).end();
+      }
+    }
 
-// --------------------------------------------------
-// 2) Emergency
-// --------------------------------------------------
-if (
-  msg.includes("อุบัติเหตุ") ||
-  msg.includes("ฉุกเฉิน") ||
-  msg.includes("ไฟไหม้") ||
-  msg.includes("บาดเจ็บ") ||
-  msg.includes("danger") ||
-  msg.includes("emergency")
-) {
-  return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
+    // --------------------------------------------------
+    // 2) Emergency
+    // --------------------------------------------------
+    if (
+      msg.includes("อุบัติเหตุ") ||
+      msg.includes("ฉุกเฉิน") ||
+      msg.includes("ไฟไหม้") ||
+      msg.includes("บาดเจ็บ") ||
+      msg.includes("danger") ||
+      msg.includes("emergency")
+    ) {
+      return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
 โรงงาน 1: 102 / 127 / 129  
 โรงงาน 2: 137  
 ผู้จัดการ: 100`);
-}
-
-// --------------------------------------------------
-// 3) Safety Q&A
-// --------------------------------------------------
-const found = safetyQA.find((q) =>
-  msg.includes(q.question.replace(/\s+/g, ""))
-);
-if (found) return reply(event, found.answer);
-
-// --------------------------------------------------
-// 4) Categories
-// --------------------------------------------------
-for (const category in categories) {
-  for (const word of categories[category]) {
-    if (msg.includes(word)) {
-      return reply(event, replies[category][word]);
     }
-  }
-}
 
-// --------------------------------------------------
-// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
-// --------------------------------------------------
-if (msg.includes("ติดต่อทีมเซฟตี้")) {
+    // --------------------------------------------------
+    // 3) Safety Q&A
+    // --------------------------------------------------
+    const found = safetyQA.find((q) =>
+      msg.includes(q.question.replace(/\s+/g, ""))
+    );
+    if (found) return reply(event, found.answer);
 
-  // ส่งรูปตาราง 6 ช่อง
-  await client.replyMessage(event.replyToken, {
-    type: "image",
-    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-  });
-
-  // ส่งปุ่มโทร 5 ปุ่ม
-  await client.pushMessage(event.source.userId, {
-    type: "text",
-    text: "เลือกเบอร์ที่ต้องการโทร",
-    quickReply: {
-      items: [
-        {
-          type: "action",
-          action: {
-            type: "uri",
-            label: "ผู้จัดการ",
-            uri: "tel:0813765583"
-          }
-        },
-        {
-          type: "action",
-          action: {
-            type: "uri",
-            label: "พี่ไก่",
-            uri: "tel:0616455095"
-          }
-        },
-        {
-          type: "action",
-          action: {
-            type: "uri",
-            label: "น้องพิน",
-            uri: "tel:0832374357"
-          }
-        },
-        {
-          type: "action",
-          action: {
-            type: "uri",
-            label: "น้องดุจ",
-            uri: "tel:0816954474"
-          }
-        },
-        {
-          type: "action",
-          action: {
-            type: "uri",
-            label: "น้องกี้",
-            uri: "tel:0949380425"
-          }
+    // --------------------------------------------------
+    // 4) Categories
+    // --------------------------------------------------
+    for (const category in categories) {
+      for (const word of categories[category]) {
+        if (msg.includes(word)) {
+          return reply(event, replies[category][word]);
         }
-      ]
+      }
     }
-  });
 
-  return;
-}
+    // --------------------------------------------------
+    // ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
+    // --------------------------------------------------
+    if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
-// --------------------------------------------------
-// 6) Fallback
-// --------------------------------------------------
-return client.replyMessage(event.replyToken, {
-  type: "text",
-  text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
+      await client.replyMessage(event.replyToken, {
+        type: "image",
+        originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+        previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
+      });
+
+      await client.pushMessage(event.source.userId, {
+        type: "text",
+        text: "เลือกเบอร์ที่ต้องการโทร",
+        quickReply: {
+          items: [
+            {
+              type: "action",
+              action: { type: "uri", label: "ผู้จัดการ", uri: "tel:0813765583" }
+            },
+            {
+              type: "action",
+              action: { type: "uri", label: "พี่ไก่", uri: "tel:0616455095" }
+            },
+            {
+              type: "action",
+              action: { type: "uri", label: "น้องพิน", uri: "tel:0832374357" }
+            },
+            {
+              type: "action",
+              action: { type: "uri", label: "น้องดุจ", uri: "tel:0816954474" }
+            },
+            {
+              type: "action",
+              action: { type: "uri", label: "น้องกี้", uri: "tel:0949380425" }
+            }
+          ]
+        }
+      });
+
+      return;
+    }
+
+    // --------------------------------------------------
+    // 6) Fallback
+    // --------------------------------------------------
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
 
 ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
 เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
+    });
+
+  } catch (err) {
+    console.error("Webhook Error:", err);
+    return res.status(200).end();
+  }
 });
 
 // --------------------------------------------------
