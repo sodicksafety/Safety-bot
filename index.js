@@ -547,6 +547,7 @@ function handleMap(event, msg) {
   }
   return false;
 }
+
 /* --------------------------------------------------
    WEBHOOK — จุดรับข้อความจาก LINE
 -------------------------------------------------- */
@@ -558,6 +559,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       if (event.type !== "message" || !event.message.text) continue;
 
       const msg = event.message.text;
+      const cleanText = msg.trim();
 
       // -------------------------------
       // ลำดับการตรวจปุ่มต่าง ๆ
@@ -566,10 +568,66 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       if (handleMap(event, msg)) continue;
 
       /* --------------------------------------------------
-         FLEX ผู้รับเหมา
+         FLEX ผู้รับเหมา (ปุ่มช่อง 4)
       -------------------------------------------------- */
-      if (msg.includes("ข้อมูลผู้รับเหมา")) {
-        return client.replyMessage(event.replyToken, flexContractorMain());
+      if (
+        cleanText.includes("ข้อมูลผู้รับเหมา") ||
+        cleanText.includes("ผู้รับเหมา")
+      ) {
+
+        const headerText = {
+          type: "text",
+          text: `ข้อมูลผู้รับเหมา  
+กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
+thai_safety@sodick.co.th`
+        };
+
+        const flex = {
+          type: "flex",
+          altText: "ข้อมูลผู้รับเหมา",
+          contents: {
+            type: "bubble",
+            body: {
+              type: "box",
+              layout: "vertical",
+              spacing: "md",
+              contents: [
+                {
+                  type: "button",
+                  style: "primary",
+                  color: "#1E90FF",
+                  action: {
+                    type: "message",
+                    label: "สำหรับ ผู้รับ–ส่งสินค้า",
+                    text: "ผู้รับส่งสินค้า"
+                  }
+                },
+                {
+                  type: "button",
+                  style: "primary",
+                  color: "#32CD32",
+                  action: {
+                    type: "message",
+                    label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
+                    text: "ผู้แก้ไขงาน"
+                  }
+                },
+                {
+                  type: "button",
+                  style: "primary",
+                  color: "#FF0000",
+                  action: {
+                    type: "message",
+                    label: "ขอบัตรย้อนหลัง",
+                    text: "ขอบัตรย้อนหลัง"
+                  }
+                }
+              ]
+            }
+          }
+        };
+
+        return client.replyMessage(event.replyToken, [headerText, flex]);
       }
 
       /* --------------------------------------------------
