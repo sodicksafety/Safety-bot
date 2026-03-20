@@ -507,6 +507,185 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
   return;
 }
+// --------------------------------------------------
+// ปุ่มที่ 4 : ผู้รับเหมา
+// --------------------------------------------------
+if (msg.includes("ข้อมูลผู้รับเหมา")) {
+
+  // ส่งข้อความหัวข้อก่อน
+  await reply(event,
+`ข้อมูลผู้รับเหมา  
+กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
+thai_safety@sodick.co.th`
+  );
+
+  // ส่ง Flex 2 ปุ่ม (เลือกประเภทผู้รับเหมา)
+  const flex = {
+    type: "flex",
+    altText: "ข้อมูลผู้รับเหมา",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "message",
+              label: "สำหรับ ผู้รับ–ส่งสินค้า",
+              text: "ผู้รับส่งสินค้า"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "message",
+              label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
+              text: "ผู้แก้ไขงาน"
+            }
+          }
+        ]
+      }
+    }
+  };
+
+  return client.replyMessage(event.replyToken, flex);
+}
+
+
+
+// --------------------------------------------------
+// เมนูย่อย: ผู้รับ–ส่งสินค้า (3 ปุ่ม)
+// --------------------------------------------------
+if (msg.includes("ผู้รับส่งสินค้า")) {
+
+  const flex = {
+    type: "flex",
+    altText: "ผู้รับ–ส่งสินค้า",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "วีดีโออบรม",
+              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "ทำแบบทดสอบ",
+              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "เอกสารบันทึกการอบรม",
+              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
+            }
+          }
+        ]
+      }
+    }
+  };
+
+  return client.replyMessage(event.replyToken, flex);
+}
+
+// --------------------------------------------------
+// เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่ม)
+// --------------------------------------------------
+if (msg.includes("ผู้แก้ไขงาน")) {
+
+  const flex = {
+    type: "flex",
+    altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "วีดีโออบรม",
+              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "ทำแบบทดสอบ",
+              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "เอกสารบันทึกการอบรม",
+              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "ใบขอเข้ามาทำงาน",
+              uri: "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "ใบตรวจสอบเครื่องมือ",
+              uri: "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drivesdk"
+            }
+          }
+        ]
+      }
+    }
+  };
+
+  return client.replyMessage(event.replyToken, flex);
+}
+
     // --------------------------------------------------
     // 6) Fallback
     // --------------------------------------------------
