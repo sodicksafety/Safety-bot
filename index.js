@@ -715,6 +715,43 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
   return;
 }
 /* --------------------------------------------------
+   แผนที่บริษัท / map / location / โลเคชั่น
+-------------------------------------------------- */
+if (
+  msg.includes("แผนที่") ||
+  msg.includes("ขอแผนที่") ||
+  msg.includes("แผนที่บริษัท") ||
+  msg.includes("ขอแผนที่บริษัท") ||
+  msg.includes("โลเคชั่น") ||
+  msg.includes("ขอโลเคชั่น") ||
+  msg.includes("โลเคชั่นบริษัท") ||
+  msg.includes("location") ||
+  msg.includes("map") ||
+  msg.includes("factory map") ||
+  msg.includes("ไปโรงงาน") ||
+  msg.includes("ไปยังโรงงาน") ||
+  msg.includes("ไปยังบริษัท") ||
+  msg.includes("ที่อยู่บริษัท") ||
+  msg.includes("ปักหมุดบริษัท") ||
+  msg.includes("ปักหมุดโรงงาน")
+) {
+
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text:
+`📍 แผนที่บริษัท Sodick Thailand
+
+🏭 โรงงาน 1 (Factory 1)
+Google Maps (อัปเดตล่าสุด: เมษายน 2022)
+https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8
+
+🏭 โรงงาน 2 (Factory 2)
+Google Maps (อัปเดตล่าสุด: เมษายน 2025)
+https://maps.app.goo.gl/keZxD798z9ZwKXE7A`
+  });
+}
+
+/* --------------------------------------------------
    6) Fallback
 -------------------------------------------------- */
 return client.replyMessage(event.replyToken, {
