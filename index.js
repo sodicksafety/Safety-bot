@@ -403,47 +403,109 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     // --------------------------------------------------
-    // ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
-    // --------------------------------------------------
-    if (msg.includes("ติดต่อทีมเซฟตี้")) {
+// ⭐ 5) ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร (Flex 2 แถว + ภาษาอังกฤษ)
+// --------------------------------------------------
+if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
-      await client.replyMessage(event.replyToken, {
-        type: "image",
-        originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-        previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-      });
+  // ส่งรูป (ดูเฉย ๆ)
+  await client.replyMessage(event.replyToken, {
+    type: "image",
+    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
+  });
 
-      await client.pushMessage(event.source.userId, {
-        type: "text",
-        text: "เลือกเบอร์ที่ต้องการโทร",
-        quickReply: {
-          items: [
-            {
-              type: "action",
-              action: { type: "uri", label: "ผู้จัดการ", uri: "tel:0813765583" }
-            },
-            {
-              type: "action",
-              action: { type: "uri", label: "พี่ไก่", uri: "tel:0616455095" }
-            },
-            {
-              type: "action",
-              action: { type: "uri", label: "น้องพิน", uri: "tel:0832374357" }
-            },
-            {
-              type: "action",
-              action: { type: "uri", label: "น้องดุจ", uri: "tel:0816954474" }
-            },
-            {
-              type: "action",
-              action: { type: "uri", label: "น้องกี้", uri: "tel:0949380425" }
-            }
-          ]
-        }
-      });
+  // ส่ง Flex Message ปุ่มโทร 2 แถว
+  await client.pushMessage(event.source.userId, {
+    type: "flex",
+    altText: "เบอร์ติดต่อทีมเซฟตี้",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
 
-      return;
+          // ข้อความหัวข้อ
+          {
+            type: "text",
+            text: "เลือกเบอร์ที่ต้องการโทร",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+
+          // แถวบน (2 ปุ่ม)
+          {
+            type: "box",
+            layout: "horizontal",
+            spacing: "md",
+            contents: [
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "ผู้จัดการ (Dept Manager)",
+                  uri: "tel:0813765583"
+                }
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "พี่ไก่ (Kai – Safety)",
+                  uri: "tel:0616455095"
+                }
+              }
+            ]
+          },
+
+          // แถวล่าง (3 ปุ่ม)
+          {
+            type: "box",
+            layout: "horizontal",
+            spacing: "md",
+            contents: [
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "น้องพิน (Pin – Safety Fac.2)",
+                  uri: "tel:0832374357"
+                }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "น้องดุจ (Duj – Safety Fac.1)",
+                  uri: "tel:0816954474"
+                }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "uri",
+                  label: "น้องกี้ (Kie – Envi.)",
+                  uri: "tel:0949380425"
+                }
+              }
+            ]
+          }
+        ]
+      }
     }
+  });
+
+  return;
+}
 
     // --------------------------------------------------
     // 6) Fallback
