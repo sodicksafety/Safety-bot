@@ -236,8 +236,7 @@ const replies = {
    BOT INTRO FUNCTION
 -------------------------------------------------- */
 function botIntro() {
-  return (
-`สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
+  return `สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
 ผู้ช่วยอัจฉริยะด้านความปลอดภัยสำหรับผู้รับเหมาที่เข้ามาปฏิบัติงานในบริษัท Sodick Thailand  
 
 ผมถูกออกแบบมาเพื่อช่วยให้ผู้รับเหมาทุกบริษัทเข้าถึงข้อมูลสำคัญได้อย่างสะดวก  
@@ -254,10 +253,8 @@ My purpose is to help all vendors easily access essential information, including
 work procedures, required training, and important documents related to on-site operations.  
 
 I am here to support you in ensuring that every step of your work is compliant, efficient,  
-and carried out with the highest level of safety.`
-  );
+and carried out with the highest level of safety.`;
 }
-
 
 /* --------------------------------------------------
    REPLY FUNCTION
