@@ -367,21 +367,23 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     // --------------------------------------------------
-    // 2) Emergency
-    // --------------------------------------------------
-    if (
-      msg.includes("อุบัติเหตุ") ||
-      msg.includes("ฉุกเฉิน") ||
-      msg.includes("ไฟไหม้") ||
-      msg.includes("บาดเจ็บ") ||
-      msg.includes("danger") ||
-      msg.includes("emergency")
-    ) {
-      return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
+// 2) Emergency
+// --------------------------------------------------
+if (
+  msg.includes("อุบัติเหตุ") ||
+  msg.includes("ฉุกเฉิน") ||
+  msg.includes("ไฟไหม้") ||
+  msg.includes("บาดเจ็บ") ||
+  msg.includes("danger") ||
+  msg.includes("emergency")
+) {
+  return reply(event,
+`⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
 โรงงาน 1: 102 / 127 / 129  
 โรงงาน 2: 137  
-ผู้จัดการ: 100`);
-    }
+ผู้จัดการ: 100`
+  );
+}
 
     // --------------------------------------------------
     // 3) Safety Q&A (⭐ แก้ normalize แล้ว)
@@ -442,7 +444,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             color: "#1E90FF",
             action: {
               type: "uri",
-              label: "ผู้จัดการ (Manager)",
+              label: "พี่ช้าง ผู้จัดการ (Safety Manager)",
               uri: "tel:0813765583"
             }
           },
@@ -454,7 +456,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             color: "#1E90FF",
             action: {
               type: "uri",
-              label: "พี่ไก่ (Kai – Safety Lead)",
+              label: "พี่ไก่ (Kai – Safety Factory1)",
               uri: "tel:0616455095"
             }
           },
@@ -465,7 +467,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             style: "secondary",
             action: {
               type: "uri",
-              label: "น้องพิน (Pin – Staff)",
+              label: "น้องพิน (Pin – Safety Factory2)",
               uri: "tel:0832374357"
             }
           },
@@ -476,7 +478,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             style: "secondary",
             action: {
               type: "uri",
-              label: "น้องดุจ (Duj – Staff)",
+              label: "น้องดุจ (Duj – Safety Factory1)",
               uri: "tel:0816954474"
             }
           },
@@ -487,7 +489,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             style: "secondary",
             action: {
               type: "uri",
-              label: "น้องกี้ (Kee – Staff)",
+              label: "น้องกี้ (Kie – Safety Environment)",
               uri: "tel:0949380425"
             }
           }
