@@ -1,8 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const line = require("@line/bot-sdk");
-const cron = require("node-cron");
-const axios = require("axios");
 
 const app = express();
 
@@ -15,59 +13,6 @@ const config = {
 };
 
 const client = new line.Client(config);
-
-// --------------------------------------------------
-// ฟังก์ชันส่งข้อความอัตโนมัติ (Push Message)
-// --------------------------------------------------
-async function pushMessage(userId, message) {
-  try {
-    await axios.post(
-      "https://api.line.me/v2/bot/message/push",
-      {
-        to: userId,
-        messages: [{ type: "text", text: message }],
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.CHANNEL_ACCESS_TOKEN}`,
-        },
-      }
-    );
-  } catch (error) {
-    console.error("Error sending message:", error.response?.data || error);
-  }
-}
-
-// --------------------------------------------------
-// ดึงรายชื่อเพื่อน OA ทั้งหมด
-// --------------------------------------------------
-async function getAllUsers() {
-  try {
-    const res = await axios.get(
-      "https://api.line.me/v2/bot/followers/ids",
-      {
-        headers: {
-          Authorization: `Bearer ${process.env.CHANNEL_ACCESS_TOKEN}`,
-        },
-      }
-    );
-    return res.data.userIds || [];
-  } catch (error) {
-    console.error("Error fetching users:", error.response?.data || error);
-    return [];
-  }
-}
-
-// --------------------------------------------------
-// ส่งข้อความให้เพื่อน OA ทุกคน
-// --------------------------------------------------
-async function broadcastToAll(message) {
-  const users = await getAllUsers();
-  for (const userId of users) {
-    await pushMessage(userId, message);
-  }
-}
 
 // --------------------------------------------------
 // SAFETY Q&A
@@ -288,37 +233,6 @@ Tax ID: 0105531085736`
 ];
 
 // --------------------------------------------------
-// CRON JOB – ส่งข้อความอัตโนมัติ 3 เวลา
-// --------------------------------------------------
-
-// 09:00 น. — รอบเช้า
-cron.schedule("0 9 * * *", () => {
-  broadcastToAll(
-    "💚 Safety Reminder 💚 \nสวัสดีครับทุกท่าน 😊\nนี่คือระบบอัตโนมัติจาก Sodick Safety AI\nขอให้เริ่มงานวันนี้ด้วยความปลอดภัยนะครับ\nอย่าลืมตรวจ PPE และอุปกรณ์ก่อนเริ่มงานครับ 🦺✨"
-  );
-}, {
-  timezone: "Asia/Bangkok"
-});
-
-// 13:00 น. — รอบเที่ยง
-cron.schedule("0 13 * * *", () => {
-  broadcastToAll(
-    "💚 Safety Reminder 💚 \nนี่คือระบบอัตโนมัติจาก Sodick Safety AI\nหวังว่าทุกท่านจะได้พักเต็มที่นะครับ 🍱🌤️\nก่อนกลับเข้าทำงาน อย่าลืมตรวจความพร้อมของอุปกรณ์\nและทำงานอย่างปลอดภัยเสมอครับ 💼🛠️"
-  );
-}, {
-  timezone: "Asia/Bangkok"
-});
-
-// 16:15 น. — รอบบ่าย (แก้ตามที่ไก่ขอ)
-cron.schedule("15 16 * * *", () => {
-  broadcastToAll(
-    "💚 Safety Reminder 💚 \nนี่คือระบบอัตโนมัติจาก Sodick Safety AI\nใกล้เลิกงานแล้วครับ สู้ ๆ นะครับทุกท่าน 💪🙂\nอย่าลืมตรวจความเรียบร้อยของพื้นที่ทำงาน\nและดูแลความปลอดภัยจนจบงานนะครับ 🧹🟢"
-  );
-}, {
-  timezone: "Asia/Bangkok"
-});
-
-// --------------------------------------------------
 // CATEGORIES
 // --------------------------------------------------
 const categories = {
@@ -515,7 +429,11 @@ if (
 // --------------------------------------------------
 // ปุ่มที่ 4 : ผู้รับเหมา
 // --------------------------------------------------
-if (text.includes("ข้อมูลผู้รับเหมา")) {
+if (
+  text.includes("ข้อมูลผู้รับเหมา") ||
+  text.includes("ข้อมูล ผู้รับเหมา") ||
+  text.includes("ผู้รับเหมา")
+) {
 
   const headerText = {
     type: "text",
@@ -572,10 +490,16 @@ thai_safety@sodick.co.th`
   return client.replyMessage(event.replyToken, [headerText, flex]);
 }
 
+
+
 // --------------------------------------------------
 // เมนูย่อย: ผู้รับ–ส่งสินค้า (3 ปุ่ม)
 // --------------------------------------------------
-if (text.includes("ผู้รับส่งสินค้า")) {
+if (
+  text.includes("ผู้รับส่งสินค้า") ||
+  text.includes("ผู้รับ-ส่งสินค้า") ||
+  text.includes("รับส่งสินค้า")
+) {
 
   const flex = {
     type: "flex",
@@ -625,10 +549,16 @@ if (text.includes("ผู้รับส่งสินค้า")) {
   return client.replyMessage(event.replyToken, flex);
 }
 
+
+
 // --------------------------------------------------
 // เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่ม)
 // --------------------------------------------------
-if (text.includes("ผู้แก้ไขงาน")) {
+if (
+  text.includes("ผู้แก้ไขงาน") ||
+  text.includes("แก้ไขงาน") ||
+  text.includes("ผู้เข้ามาทำงาน")
+) {
 
   const flex = {
     type: "flex",
@@ -698,10 +628,16 @@ if (text.includes("ผู้แก้ไขงาน")) {
   return client.replyMessage(event.replyToken, flex);
 }
 
+
+
 // --------------------------------------------------
-// ปุ่มที่ 3 : ขอบัตรย้อนหลัง (ตอบแบบยังไม่เชื่อม Apps Script)
+// ปุ่มที่ 3 : ขอบัตรย้อนหลัง
 // --------------------------------------------------
-if (text.includes("ขอบัตรย้อนหลัง")) {
+if (
+  text.includes("ขอบัตรย้อนหลัง") ||
+  text.includes("ขอ บัตรย้อนหลัง") ||
+  text.includes("บัตรย้อนหลัง")
+) {
   return client.replyMessage(event.replyToken, {
     type: "text",
     text: "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
@@ -772,22 +708,21 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
   return;
 }
-
- // --------------------------------------------------
-// 6) Fallback
-// --------------------------------------------------
-return client.replyMessage(event.replyToken, {
-  type: "text",
-  text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
+    // --------------------------------------------------
+    // 6) Fallback
+    // --------------------------------------------------
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: `ยังไม่มีข้อมูลคำถามในระบบครับ 🙂  
 
 ติดต่อผู้พัฒนาระบบ: @Trerasak_K P'Kai  
 เพิ่มเพื่อนผู้ดูแล: https://line.me/ti/p/_T4H-3TKUa`,
-});
+    });
 
-} catch (err) {
-  console.error("Webhook Error:", err);
-  return res.status(200).end();
-}
+  } catch (err) {
+    console.error("Webhook Error:", err);
+    return res.status(200).end();
+  }
 });
 
 // --------------------------------------------------
@@ -795,4 +730,3 @@ return client.replyMessage(event.replyToken, {
 // --------------------------------------------------
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("LINE Bot server running on port " + PORT));
-
