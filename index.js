@@ -326,15 +326,16 @@ function botIntro() {
 ผมพร้อมสนับสนุนให้ทุกขั้นตอนของงานเป็นไปอย่างถูกต้อง มีมาตรฐาน  
 และปลอดภัยสูงสุดครับ
 
-Hello, my name is Sodick Safety AI Bot 🤖💚  
-An intelligent safety assistant designed for contractors working within Sodick Thailand.  
+}
 
-My purpose is to help all vendors easily access essential information, including safety regulations,  
-work procedures, required training, and important documents related to on-site operations.  
-
-I am here to support you in ensuring that every step of your work is compliant, efficient,  
-and carried out with the highest level of safety.`
-  );
+// --------------------------------------------------
+// ⭐⭐ REPLY FUNCTION (ฟังก์ชันที่หายไป) ⭐⭐
+// --------------------------------------------------
+function reply(event, text) {
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text,
+  });
 }
 
 // --------------------------------------------------
