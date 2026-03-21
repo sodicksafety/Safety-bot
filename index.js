@@ -341,7 +341,9 @@ function normalize(text) {
     .trim();
 }
 
-
+/* --------------------------------------------------
+   LINE Webhook (SDK v3 ใช้แบบนี้เท่านั้น)
+-------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
@@ -386,9 +388,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const found = safetyQA.find((q) =>
       msg.includes(normalize(q.question))
     );
-    if (found) return reply(event, found.answer);
+    if (found) return reply(event, found.answer);    
 
-    /* --------------------------------------------------
+/* --------------------------------------------------
        4) Categories
     -------------------------------------------------- */
     for (const category in categories) {
