@@ -712,7 +712,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
   return;
 }
 /* --------------------------------------------------
-   แผนที่บริษัท (Flex Message)
+   แผนที่บริษัท (Flex Message) + เบอร์โทร
 -------------------------------------------------- */
 if (
   msg.includes("แผนที่") ||
@@ -724,7 +724,7 @@ if (
   msg.includes("factory")
 ) {
 
-  return client.replyMessage(event.replyToken, {
+  const mapFlex = {
     type: "flex",
     altText: "แผนที่บริษัท Sodick Thailand",
     contents: {
@@ -779,9 +779,7 @@ if (
             ]
           },
 
-          {
-            type: "separator"
-          },
+          { type: "separator" },
 
           {
             type: "box",
@@ -828,9 +826,70 @@ if (
         ]
       }
     }
-  });
-}
+  };
 
+  const phoneFlex = {
+    type: "flex",
+    altText: "เบอร์โทรโรงงาน Sodick Thailand",
+    contents: {
+      type: "bubble",
+      header: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "16px",
+        backgroundColor: "#32CD32",
+        contents: [
+          {
+            type: "text",
+            text: "📞 เบอร์โทรโรงงาน Sodick Thailand",
+            weight: "bold",
+            size: "md",
+            color: "#FFFFFF"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "🏭 โรงงาน 1",
+            weight: "bold",
+            size: "md"
+          },
+          {
+            type: "text",
+            text: "เบอร์บริษัท: 02-529-2450 ถึง 6\nภายใน: 102 / 127 / 129",
+            size: "sm",
+            color: "#333333"
+          },
+
+          { type: "separator" },
+
+          {
+            type: "text",
+            text: "🏭 โรงงาน 2",
+            weight: "bold",
+            size: "md"
+          },
+          {
+            type: "text",
+            text: "เบอร์บริษัท: 02-529-3200 ถึง 6\nภายใน: 137",
+            size: "sm",
+            color: "#333333"
+          }
+        ]
+      }
+    }
+  };
+
+  return client.replyMessage(event.replyToken, [
+    mapFlex,
+    phoneFlex
+  ]);
+}
 /* --------------------------------------------------
    6) Fallback
 -------------------------------------------------- */
