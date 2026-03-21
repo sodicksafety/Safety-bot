@@ -21,15 +21,12 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
 
-    // ถ้าไม่ใช่ข้อความ → ไม่ตอบ
     if (!event || event.type !== "message" || event.message.type !== "text") {
       return res.status(200).end();
     }
 
-    // ดึง userId
     const userId = event.source.userId;
 
-    // ส่ง userId กลับไปให้ผู้ใช้
     await client.replyMessage(event.replyToken, {
       type: "text",
       text: "Your userId: " + userId
@@ -44,8 +41,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 });
 
 // --------------------------------------------------
-// START SERVER
+// START SERVER (ต้องใช้ PORT ของ Render เท่านั้น)
 // --------------------------------------------------
-app.listen(3000, () => {
-  console.log("Server running");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
 });
