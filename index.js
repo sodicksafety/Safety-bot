@@ -15,7 +15,7 @@ const config = {
 const client = new line.Client(config);
 
 // --------------------------------------------------
-// WEBHOOK (SDK v3 ใช้แบบนี้เท่านั้น)
+// WEBHOOK (SDK v3)
 // --------------------------------------------------
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
@@ -41,9 +41,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 });
 
 // --------------------------------------------------
-// START SERVER (ต้องใช้ PORT ของ Render เท่านั้น)
+// START SERVER (Render ต้องการแบบนี้เท่านั้น)
 // --------------------------------------------------
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, "0.0.0.0", () => {
   console.log("Server running on port " + PORT);
 });
