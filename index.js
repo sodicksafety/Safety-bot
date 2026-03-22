@@ -399,8 +399,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
     /* --------------------------------------------------
        1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
-    -------------------------------------------------- */
-    if (event.source.type === "group") {
+    -------------------------------------------------- */    if (event.source.type === "group") {
       const triggers = ["บอท", "bot", "safety", "Safety"];
       const hasTrigger = triggers.some((w) => text.includes(w));
       if (!hasTrigger) return res.status(200).end();
@@ -441,7 +440,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         }
       }
     }
-
 /* --------------------------------------------------
    ปุ่มที่ 4 : ผู้รับเหมา
 -------------------------------------------------- */
@@ -720,7 +718,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
   return;
 }
 /* --------------------------------------------------
-   แผนที่บริษัท (Flex Message)
+   แผนที่บริษัท (Flex Message) + เบอร์โทร
 -------------------------------------------------- */
 if (
   msg.includes("แผนที่") ||
@@ -732,7 +730,7 @@ if (
   msg.includes("factory")
 ) {
 
-  return client.replyMessage(event.replyToken, {
+  const mapFlex = {
     type: "flex",
     altText: "แผนที่บริษัท Sodick Thailand",
     contents: {
@@ -787,9 +785,7 @@ if (
             ]
           },
 
-          {
-            type: "separator"
-          },
+          { type: "separator" },
 
           {
             type: "box",
@@ -836,9 +832,70 @@ if (
         ]
       }
     }
-  });
-}
+  };
 
+  const phoneFlex = {
+    type: "flex",
+    altText: "เบอร์โทรโรงงาน Sodick Thailand",
+    contents: {
+      type: "bubble",
+      header: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "16px",
+        backgroundColor: "#32CD32",
+        contents: [
+          {
+            type: "text",
+            text: "📞 เบอร์โทรโรงงาน Sodick Thailand",
+            weight: "bold",
+            size: "md",
+            color: "#FFFFFF"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "🏭 โรงงาน 1",
+            weight: "bold",
+            size: "md"
+          },
+          {
+            type: "text",
+            text: "02-529-2450-6\nต่อ:102-127-129",
+            size: "sm",
+            color: "#333333"
+          },
+
+          { type: "separator" },
+
+          {
+            type: "text",
+            text: "🏭 โรงงาน 2",
+            weight: "bold",
+            size: "md"
+          },
+          {
+            type: "text",
+            text: "02-529-3200-6\nต่อ:137",
+            size: "sm",
+            color: "#333333"
+          }
+        ]
+      }
+    }
+  };
+
+  return client.replyMessage(event.replyToken, [
+    mapFlex,
+    phoneFlex
+  ]);
+}
 /* --------------------------------------------------
    6) Fallback
 -------------------------------------------------- */
