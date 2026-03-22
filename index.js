@@ -635,8 +635,8 @@ thai_safety@sodick.co.th`
             color: "#FF0000",
             action: {
               type: "message",
-              label: "ขอบัตรย้อนหลัง",
-              text: "ขอบัตรย้อนหลัง"
+              label: "สื่ออบรมผู้รับเหมา",
+              text: "สื่ออบรมผู้รับเหมา"
             }
           }
         ]
@@ -785,19 +785,81 @@ if (
 
 
 /* --------------------------------------------------
-   ปุ่มที่ 3 : ขอบัตรย้อนหลัง
+   เมนูย่อยใหม่ : สื่ออบรมผู้รับเหมา
 -------------------------------------------------- */
 if (
-  cleanText.includes("ขอบัตรย้อนหลัง") ||
-  cleanText.includes("ขอ้บัตรย้อนหลัง") ||
-  cleanText.includes("บัตรย้อนหลัง")
+  cleanText.includes("สื่ออบรมผู้รับเหมา") ||
+  cleanText.includes("สื่ออบรม") ||
+  cleanText.includes("อบรมผู้รับเหมา")
 ) {
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: "ระบบกำลังตรวจสอบข้อมูลของคุณ...\nขณะนี้ยังไม่พบข้อมูลใบเซอร์ย้อนหลังของคุณในระบบ"
-  });
-}
 
+  const flex = {
+    type: "flex",
+    altText: "สื่ออบรมผู้รับเหมา",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "1) ความปลอดภัยในการทำงาน",
+              uri: "https://youtu.be/MGbZGFtQCLQ?si=S7Xg3pxeOqkQCyx5"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "2) ความปลอดภัยงานเชื่อม",
+              uri: "https://youtu.be/gpUlIKyjSQM?si=QctBbVhlth2bbmDt"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "3) การใช้ถังดับเพลิง",
+              uri: "https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "4) ขับขี่ปลอดภัย",
+              uri: "https://youtu.be/tBjP23-cbiw?si=1J7i2k-sqoeg0gg8"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "5) การแยกขยะ",
+              uri: "https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9"
+            }
+          }
+        ]
+      }
+    }
+  };
+
+  return client.replyMessage(event.replyToken, flex);
+}
 
 /* --------------------------------------------------
    ⭐ ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
