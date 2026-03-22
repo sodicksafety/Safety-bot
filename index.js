@@ -1066,6 +1066,17 @@ if (
   ]);
 }
 /* --------------------------------------------------
+   4) Categories Matching
+-------------------------------------------------- */
+for (const category in categories) {
+  for (const word of categories[category]) {
+    if (msg.includes(normalize(word))) {
+      return reply(event, replies[category][word]);
+    }
+  }
+}
+
+/* --------------------------------------------------
    6) Fallback
 -------------------------------------------------- */
 return client.replyMessage(event.replyToken, {
