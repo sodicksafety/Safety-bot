@@ -233,6 +233,33 @@ Tax ID: 0105531085736`
   }
 ];
 /* --------------------------------------------------
+   BOT INTRO FUNCTION (ต้องอยู่ก่อน replies)
+-------------------------------------------------- */
+function botIntro() {
+  return (
+`สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
+ผู้ช่วยอัจฉริยะด้านความปลอดภัยสำหรับผู้รับเหมาที่เข้ามาปฏิบัติงานในบริษัท Sodick Thailand  
+
+ผมถูกออกแบบมาเพื่อช่วยให้ผู้รับเหมาทุกบริษัทเข้าถึงข้อมูลสำคัญได้อย่างสะดวก  
+ไม่ว่าจะเป็นกฎระเบียบด้านความปลอดภัย ขั้นตอนการทำงาน การอบรม  
+เอกสารที่จำเป็น รวมถึงข้อมูลที่เกี่ยวข้องกับการปฏิบัติงานในพื้นที่ของเรา  
+
+ผมพร้อมสนับสนุนให้ทุกขั้นตอนของงานเป็นไปอย่างถูกต้อง มีมาตรฐาน  
+และปลอดภัยสูงสุดครับ
+
+Hello, my name is Sodick Safety AI Bot 🤖💚  
+An intelligent safety assistant designed for contractors working within Sodick Thailand.  
+
+My purpose is to help all vendors easily access essential information, including safety regulations,  
+work procedures, required training, and important documents related to on-site operations.  
+
+I am here to support you in ensuring that every step of your work is compliant, efficient,  
+and carried out with the highest level of safety.`
+  );
+}
+
+
+/* --------------------------------------------------
    REPLIES (ทุกคำตอบเป็น array เพื่อสุ่ม)
 -------------------------------------------------- */
 const replies = {
@@ -491,33 +518,7 @@ const replies = {
       "กำลังใจมาแล้วครับพี่ 🤗💚 ลุยต่อได้เลย!"
     ]
   }
-};  // ← ปิด replies ทั้งก้อนให้ครบ
-
-/* --------------------------------------------------
-   BOT INTRO FUNCTION
--------------------------------------------------- */
-function botIntro() {
-  return (
-`สวัสดีครับ ผมชื่อ Sodick Safety AI Bot 🤖💚  
-ผู้ช่วยอัจฉริยะด้านความปลอดภัยสำหรับผู้รับเหมาที่เข้ามาปฏิบัติงานในบริษัท Sodick Thailand  
-
-ผมถูกออกแบบมาเพื่อช่วยให้ผู้รับเหมาทุกบริษัทเข้าถึงข้อมูลสำคัญได้อย่างสะดวก  
-ไม่ว่าจะเป็นกฎระเบียบด้านความปลอดภัย ขั้นตอนการทำงาน การอบรม  
-เอกสารที่จำเป็น รวมถึงข้อมูลที่เกี่ยวข้องกับการปฏิบัติงานในพื้นที่ของเรา  
-
-ผมพร้อมสนับสนุนให้ทุกขั้นตอนของงานเป็นไปอย่างถูกต้อง มีมาตรฐาน  
-และปลอดภัยสูงสุดครับ
-
-Hello, my name is Sodick Safety AI Bot 🤖💚  
-An intelligent safety assistant designed for contractors working within Sodick Thailand.  
-
-My purpose is to help all vendors easily access essential information, including safety regulations,  
-work procedures, required training, and important documents related to on-site operations.  
-
-I am here to support you in ensuring that every step of your work is compliant, efficient,  
-and carried out with the highest level of safety.`
-  );
-}
+};  // ปิด replies ทั้งก้อนครบ
 
 
 /* --------------------------------------------------
@@ -529,7 +530,6 @@ function reply(event, text) {
     text,
   });
 }
-
 
 /* --------------------------------------------------
    NORMALIZE (เวอร์ชันสุดท้าย)
