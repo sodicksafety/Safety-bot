@@ -540,6 +540,10 @@ async function sendDocumentsByType(event, userId) {
   return client.replyMessage(event.replyToken, flexVendor);
 }
 
+
+  return client.replyMessage(event.replyToken, flexVendor);
+}
+
 if (msg.includes("ดาวน์โหลดบัตร")) {
   await handleDownloadCertificate(event, userId);
   return sendDocumentsByType(event, userId);
