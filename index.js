@@ -637,7 +637,7 @@ if (
             action: {
               type: "uri",
               label: "4) ขับขี่ปลอดภัย",
-              uri: "https://youtu.be/tBjP23-cbiw?si=1J7i2k-sqoeg0gg8"
+              uri: "https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF"
             }
           },
           {
