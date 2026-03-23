@@ -545,20 +545,19 @@ if (msg.includes("ดาวน์โหลดบัตร")) {
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
-
     if (!event) return res.status(200).end();
 
     const userId = event.source.userId;
-    const messageType = event.message?.type;
     const text = event.message?.text || "";
     const msg = normalize(text);
-    // --------------------------------------------------
-    // ถ้า user อยู่ในโหมดสอบ / PDPA / FORM / WAITING
-    // --------------------------------------------------
+
+    // -------------------------------
+    // USER อยู่ในโหมดสอบ
+    // -------------------------------
     if (userState[userId]) {
       const state = userState[userId];
 
-      // ---------------- PDPA ----------------
+      // PDPA
       if (state.mode === "pdpa") {
         if (event.postback?.data === "pdpa_accept") {
           state.mode = "form";
@@ -568,12 +567,12 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         return;
       }
 
-      // ---------------- FORM ----------------
+      // FORM
       if (state.mode === "form") {
         return handleFormAnswer(event, userId, text);
       }
 
-      // ---------------- EXAM ----------------
+      // EXAM
       if (state.mode === "exam") {
         if (event.postback?.data?.startsWith("answer_")) {
           return handleExamAnswer(event, userId, event.postback.data);
@@ -581,7 +580,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         return;
       }
 
-      // ---------------- WAITING CERTIFICATE ----------------
+      // WAITING CERTIFICATE
       if (state.mode === "waiting_certificate") {
         if (msg.includes("ดาวน์โหลดบัตร")) {
           await handleDownloadCertificate(event, userId);
@@ -590,13 +589,14 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
         return client.replyMessage(event.replyToken, {
           type: "text",
-          text: "พิมพ์คำว่า \"ดาวน์โหลดบัตร\" เพื่อรับบัตรผู้รับเหมา"
+          text: "พิมพ์ \"ดาวน์โหลดบัตร\" เพื่อรับบัตรผู้รับเหมา"
         });
       }
     }
-    // --------------------------------------------------
-    // เริ่มทำแบบทดสอบ (ผู้รับ–ส่งสินค้า)
-    // --------------------------------------------------
+
+    // -------------------------------
+    // เริ่มทำแบบทดสอบ
+    // -------------------------------
     if (msg.includes("ผู้รับส่งสินค้า") || msg.includes("ผู้รับ-ส่งสินค้า")) {
       userState[userId] = {
         mode: "pdpa",
@@ -606,13 +606,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         currentQuestion: 1,
         score: 0
       };
-
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
-    // --------------------------------------------------
-    // เริ่มทำแบบทดสอบ (ผู้เข้ามาทำงาน–แก้ไขงาน)
-    // --------------------------------------------------
     if (msg.includes("ผู้แก้ไขงาน") || msg.includes("ผู้เข้ามาทำงาน")) {
       userState[userId] = {
         mode: "pdpa",
@@ -622,17 +618,20 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         currentQuestion: 1,
         score: 0
       };
-
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
-    // --------------------------------------------------
+
+    // -------------------------------
     // คำสั่งดาวน์โหลดบัตร (สำรอง)
-    // --------------------------------------------------
+    // -------------------------------
     if (msg.includes("ดาวน์โหลดบัตร")) {
       await handleDownloadCertificate(event, userId);
       return sendDocumentsByType(event, userId);
     }
-    // ถ้าไม่เข้าเงื่อนไขใดเลย → ตอบ fallback
+
+    // -------------------------------
+    // FALLBACK
+    // -------------------------------
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "พิมพ์ \"ผู้รับส่งสินค้า\" หรือ \"ผู้เข้ามาทำงาน\" เพื่อเริ่มทำแบบทดสอบ"
