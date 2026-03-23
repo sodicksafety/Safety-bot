@@ -347,6 +347,7 @@ async function sendToGoogleSheet(userId, passStatus) {
     console.error("❌ ERROR sending to Google Sheet:", err);
   }
 }
+
 // --------------------------------------------------
 // GET CERTIFICATE URL FROM GOOGLE SHEET
 // --------------------------------------------------
@@ -359,6 +360,7 @@ async function getCertificateUrl(userId) {
     return null;
   }
 }
+
 // --------------------------------------------------
 // CERTIFICATE FLEX
 // --------------------------------------------------
@@ -403,6 +405,7 @@ function certificateFlex(url) {
     }
   };
 }
+
 // --------------------------------------------------
 // HANDLE DOWNLOAD CERTIFICATE
 // --------------------------------------------------
@@ -421,6 +424,7 @@ async function handleDownloadCertificate(event, userId) {
   const flex = certificateFlex(url);
   return client.replyMessage(event.replyToken, flex);
 }
+
 // --------------------------------------------------
 // SEND DOCUMENTS BY CONTRACTOR TYPE
 // --------------------------------------------------
@@ -535,6 +539,7 @@ async function sendDocumentsByType(event, userId) {
 
   return client.replyMessage(event.replyToken, flexVendor);
 }
+
 if (msg.includes("ดาวน์โหลดบัตร")) {
   await handleDownloadCertificate(event, userId);
   return sendDocumentsByType(event, userId);
@@ -551,13 +556,13 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const text = event.message?.text || "";
     const msg = normalize(text);
 
-    // -------------------------------
+    // --------------------------------------------------
     // USER อยู่ในโหมดสอบ
-    // -------------------------------
+    // --------------------------------------------------
     if (userState[userId]) {
       const state = userState[userId];
 
-      // PDPA
+      // ---------------- PDPA ----------------
       if (state.mode === "pdpa") {
         if (event.postback?.data === "pdpa_accept") {
           state.mode = "form";
@@ -567,12 +572,12 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         return;
       }
 
-      // FORM
+      // ---------------- FORM ----------------
       if (state.mode === "form") {
         return handleFormAnswer(event, userId, text);
       }
 
-      // EXAM
+      // ---------------- EXAM ----------------
       if (state.mode === "exam") {
         if (event.postback?.data?.startsWith("answer_")) {
           return handleExamAnswer(event, userId, event.postback.data);
@@ -580,7 +585,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         return;
       }
 
-      // WAITING CERTIFICATE
+      // ---------------- WAITING CERTIFICATE ----------------
       if (state.mode === "waiting_certificate") {
         if (msg.includes("ดาวน์โหลดบัตร")) {
           await handleDownloadCertificate(event, userId);
@@ -594,9 +599,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       }
     }
 
-    // -------------------------------
-    // เริ่มทำแบบทดสอบ
-    // -------------------------------
+    // --------------------------------------------------
+    // เริ่มทำแบบทดสอบ (Delivery)
+    // --------------------------------------------------
     if (msg.includes("ผู้รับส่งสินค้า") || msg.includes("ผู้รับ-ส่งสินค้า")) {
       userState[userId] = {
         mode: "pdpa",
@@ -609,6 +614,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
+    // --------------------------------------------------
+    // เริ่มทำแบบทดสอบ (Vendor)
+    // --------------------------------------------------
     if (msg.includes("ผู้แก้ไขงาน") || msg.includes("ผู้เข้ามาทำงาน")) {
       userState[userId] = {
         mode: "pdpa",
@@ -621,17 +629,17 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
-    // -------------------------------
+    // --------------------------------------------------
     // คำสั่งดาวน์โหลดบัตร (สำรอง)
-    // -------------------------------
+    // --------------------------------------------------
     if (msg.includes("ดาวน์โหลดบัตร")) {
       await handleDownloadCertificate(event, userId);
       return sendDocumentsByType(event, userId);
     }
 
-    // -------------------------------
+    // --------------------------------------------------
     // FALLBACK
-    // -------------------------------
+    // --------------------------------------------------
     return client.replyMessage(event.replyToken, {
       type: "text",
       text: "พิมพ์ \"ผู้รับส่งสินค้า\" หรือ \"ผู้เข้ามาทำงาน\" เพื่อเริ่มทำแบบทดสอบ"
