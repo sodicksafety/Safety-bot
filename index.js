@@ -830,15 +830,10 @@ async function handleDownloadCertificate(event, userId) {
   return client.replyMessage(event.replyToken, certificateFlex(url));
 }
 /* --------------------------------------------------
-   เมนูย่อยใหม่ : สื่ออบรมผู้รับเหมา  (ต้องอยู่บนสุด)
+   เมนูย่อย : สื่ออบรมผู้รับเหมา (5 คลิป YouTube)
 -------------------------------------------------- */
-if (
-  cleanText.includes("สื่ออบรมผู้รับเหมา") ||
-  cleanText.includes("สื่ออบรม") ||
-  cleanText.includes("อบรมผู้รับเหมา")
-) {
-
-  const flex = {
+function trainingMenu() {
+  return {
     type: "flex",
     altText: "สื่ออบรมผู้รับเหมา",
     contents: {
@@ -902,8 +897,6 @@ if (
       }
     }
   };
-
-  return client.replyMessage(event.replyToken, flex);
 }
 
 /* --------------------------------------------------
