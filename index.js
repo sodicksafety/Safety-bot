@@ -1174,7 +1174,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
     /* --------------------------------------------------
        4) เมนูหลักผู้รับเหมา
-       (เวอร์ชันแก้แล้ว — ไม่มี push ซ้อน reply)
     -------------------------------------------------- */
     if (
       msg.includes("ข้อมูลผู้รับเหมา") ||
@@ -1207,25 +1206,18 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       7) เริ่มทำแบบทดสอบ (Flow ใหม่แบบ A)
+       7) เริ่มทำแบบทดสอบ
     -------------------------------------------------- */
     if (msg.includes("ผู้รับเหมาใหม่") || msg.includes("ทำบัตร")) {
       userState[userId] = { mode: "pdpa" };
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
-  } catch (err) {
-    console.error("❌ WEBHOOK ERROR:", err);
-    return res.status(500).end();
-  }
-
-  res.status(200).end();
-});
-   
- /* --------------------------------------------------
-       8) ติดต่อทีมเซฟตี้
+    /* --------------------------------------------------
+       8) ติดต่อทีมเซฟตี้  (ย้ายเข้ามาใน webhook แล้ว)
     -------------------------------------------------- */
     if (msg.includes("ติดต่อทีมเซฟตี้")) {
+
       await client.replyMessage(event.replyToken, {
         type: "image",
         originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
@@ -1275,9 +1267,11 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     return reply(event, "พิมพ์: ข้อมูลผู้รับเหมา เพื่อเริ่มต้นใช้งานเมนู");
 
   } catch (err) {
-    console.error("❌ ERROR:", err);
+    console.error("❌ WEBHOOK ERROR:", err);
     return res.status(500).end();
   }
+
+  res.status(200).end();
 });
 
 /* --------------------------------------------------
