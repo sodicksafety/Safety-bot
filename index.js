@@ -1249,16 +1249,15 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       const state = userState[userId];
 
       // PDPA
-      if (state.mode === "pdpa") {
-        if (data === "pdpa_accept") {
-          state.mode = "form";
-          state.step = 0;
-          state.formData = {};
-          return client.replyMessage(event.replyToken, askFormQuestion(userId));
-        }
-        return client.replyMessage(event.replyToken, pdpaFlex());
-      }
-
+if (state.mode === "pdpa") {
+  if (data && data.startsWith("pdpa_accept")) {
+    state.mode = "form";
+    state.step = 0;
+    state.formData = {};
+    return client.replyMessage(event.replyToken, askFormQuestion(userId));
+  }
+  return client.replyMessage(event.replyToken, pdpaFlex());
+}
       // ฟอร์มกรอกข้อมูล
       if (state.mode === "form") {
         return handleFormAnswer(event, userId, text);
