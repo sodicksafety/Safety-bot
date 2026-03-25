@@ -1,13 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const line = require("@line/bot-sdk");
-const axios = require("axios");
 
 const app = express();
 
-/* --------------------------------------------------
-   CONFIG
--------------------------------------------------- */
+// --------------------------------------------------
+// CONFIG (Render ENV)
+// --------------------------------------------------
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET,
@@ -15,40 +14,9 @@ const config = {
 
 const client = new line.Client(config);
 
-/* --------------------------------------------------
-   STATE MANAGEMENT
--------------------------------------------------- */
-let userState = {};
-// userState[userId] = {
-//   mode: "pdpa" | "form" | "exam" | "waiting_certificate",
-//   contractorType: "delivery" | "vendor",
-//   step: 0,
-//   formData: {},
-//   currentQuestion: 1,
-//   score: 0
-// };
-
-/* --------------------------------------------------
-   NORMALIZE (เวอร์ชันสุดท้าย)
--------------------------------------------------- */
-function normalize(text) {
-  return text
-    .toLowerCase()
-    .replace(/\s/g, "")
-    .replace(/–/g, "-")
-    .replace(/—/g, "-")
-    .trim();
-}
-
-/* --------------------------------------------------
-   WARM-UP PING (สำหรับ UptimeRobot)
--------------------------------------------------- */
-app.get("/webhook", (req, res) => {
-  res.status(200).send("OK");
-});
-/* --------------------------------------------------
-   SAFETY Q&A
--------------------------------------------------- */
+// --------------------------------------------------
+// SAFETY Q&A
+// --------------------------------------------------
 const safetyQA = [
   {
     question: "ทำไมต้องอบรม",
@@ -56,30 +24,35 @@ const safetyQA = [
 ศึกษาข้อมูล:  
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
   },
+
   {
     question: "ppeคืออะไร",
     answer: `PPE คืออุปกรณ์ป้องกันอันตราย เช่น หมวกนิรภัย รองเท้าเซฟตี้ แว่นตา ถุงมือ  
 ศึกษาข้อมูล:  
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
   },
+
   {
     question: "งานที่สูงคืออะไร",
     answer: `งานที่ทำบนที่สูงเกิน 2 เมตร ต้องใช้อุปกรณ์กันตก  
 ศึกษาข้อมูล:  
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
   },
+
   {
     question: "สารเคมีคืออะไร",
     answer: `ของเหลวหรือของแข็งที่อาจเป็นพิษ ระคายเคือง หรือไวไฟ  
 ศึกษาข้อมูล:  
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
   },
+
   {
     question: "ที่อับอากาศคืออะไร",
     answer: `พื้นที่แคบ อากาศไม่พอ อาจมีแก๊สพิษหรือออกไม่ได้ อันตรายถึงชีวิต  
 ศึกษาข้อมูล:  
 https://drive.google.com/file/d/1mRW60fJ7BlLeh1j_3luhZjgLUiaIjrn6/view`
   },
+
   {
     question: "จุดสูบบุหรี่",
     answer: `📍 จุดสูบบุหรี่  
@@ -521,6 +494,7 @@ and carried out with the highest level of safety.`
   );
 }
 
+
 /* --------------------------------------------------
    REPLY FUNCTION
 -------------------------------------------------- */
@@ -530,697 +504,43 @@ function reply(event, text) {
     text,
   });
 }
-/* --------------------------------------------------
-   EXAM QUESTIONS (30 ข้อ)
--------------------------------------------------- */
-const examQuestions = [
-  { q: "1) PPE คืออะไร?", choices: ["อุปกรณ์ป้องกันอันตรายส่วนบุคคล", "รองเท้าธรรมดา", "เสื้อผ้าทั่วไป"], answer: 0 },
-  { q: "2) หมวกนิรภัยต้องสวมเมื่อไหร่?", choices: ["เมื่ออยู่ในพื้นที่ทำงาน", "เฉพาะตอนมีผู้จัดการมา", "ไม่จำเป็น"], answer: 0 },
-  { q: "3) งานที่สูงคือความสูงตั้งแต่กี่เมตรขึ้นไป?", choices: ["1 เมตร", "2 เมตร", "5 เมตร"], answer: 1 },
-  { q: "4) ถังดับเพลิงสีแดงใช้ดับอะไร?", choices: ["ไฟฟ้า", "เชื้อเพลิงของเหลว", "ไม้/กระดาษ"], answer: 2 },
-  { q: "5) หากพบอุบัติเหตุควรทำอย่างไร?", choices: ["ถ่ายรูปก่อน", "แจ้งทีม Safety ทันที", "เดินหนี"], answer: 1 },
-  { q: "6) จุดสูบบุหรี่ควรทำอย่างไร?", choices: ["สูบตรงไหนก็ได้", "สูบในห้องน้ำ", "สูบเฉพาะจุดที่กำหนด"], answer: 2 },
-  { q: "7) การเดินในโรงงานควรเดินตรงไหน?", choices: ["เดินในเลนคนเดิน", "เดินบนถนนรถยก", "เดินตรงไหนก็ได้"], answer: 0 },
-  { q: "8) ถ้าพบสารเคมีหกควรทำอย่างไร?", choices: ["เช็ดเอง", "แจ้ง Safety", "ปล่อยไว้"], answer: 1 },
-  { q: "9) การยกของหนักควรทำอย่างไร?", choices: ["ก้มหลังยก", "ใช้แรงเต็มที่", "ย่อตัวแล้วยก"], answer: 2 },
-  { q: "10) ป้ายเตือนสีเหลืองหมายถึงอะไร?", choices: ["ข้อบังคับ", "คำเตือน", "ห้ามทำ"], answer: 1 },
-  { q: "11) ป้ายวงกลมสีแดงมีเส้นทับหมายถึง?", choices: ["ควรทำ", "ห้ามทำ", "ไม่เกี่ยว"], answer: 1 },
-  { q: "12) ถ้าต้องใช้บันไดควรทำอย่างไร?", choices: ["ปีนสองคน", "ตรวจสภาพก่อนใช้", "ใช้บันไดพัง"], answer: 1 },
-  { q: "13) ถ้าต้องทำงานเชื่อมต้องมีอะไร?", choices: ["แว่นเชื่อม", "หมวกกันน็อค", "รองเท้าแตะ"], answer: 0 },
-  { q: "14) ถ้าต้องทำงานในที่อับอากาศต้องมี?", choices: ["ใบอนุญาต", "ไฟฉาย", "น้ำดื่ม"], answer: 0 },
-  { q: "15) รถยกมีสิทธิ์ในถนนโรงงานมากกว่าคนเดินหรือไม่?", choices: ["ใช่", "ไม่ใช่", "แล้วแต่เวลา"], answer: 1 },
-  { q: "16) ถ้าพบสายไฟชำรุดควรทำอย่างไร?", choices: ["จับดู", "แจ้งช่างไฟ", "ใช้ต่อ"], answer: 1 },
-  { q: "17) ถ้าต้องตัดเหล็กควรใส่อะไร?", choices: ["แว่นตานิรภัย", "หมวกแก๊ป", "ไม่มีอะไร"], answer: 0 },
-  { q: "18) ถังดับเพลิงต้องตรวจทุกกี่เดือน?", choices: ["1 เดือน", "3 เดือน", "6 เดือน"], answer: 2 },
-  { q: "19) ถ้าต้องทำงานบนที่สูงต้องใช้อะไร?", choices: ["รองเท้าแตะ", "เข็มขัดกันตก", "หมวกแก๊ป"], answer: 1 },
-  { q: "20) การเดินในพื้นที่ผลิตควรใส่อะไร?", choices: ["รองเท้าเซฟตี้", "รองเท้าแตะ", "รองเท้าผ้าใบ"], answer: 0 },
-  { q: "21) ถ้าต้องขนของหนักควรทำอย่างไร?", choices: ["ใช้รถเข็น", "ยกเอง", "ลากไปกับพื้น"], answer: 0 },
-  { q: "22) ถ้าพบไฟไหม้ควรทำอย่างไร?", choices: ["วิ่งหนี", "แจ้ง 102/127/129", "ถ่ายคลิป"], answer: 1 },
-  { q: "23) ถ้าต้องทำงานเสียงดังควรใส่อะไร?", choices: ["ที่อุดหู", "หมวกแก๊ป", "ไม่มีอะไร"], answer: 0 },
-  { q: "24) ถ้าต้องทำงานกับสารเคมีควรใส่อะไร?", choices: ["แว่น + ถุงมือ", "รองเท้าแตะ", "ไม่มีอะไร"], answer: 0 },
-  { q: "25) ถ้าพบคนหมดสติควรทำอย่างไร?", choices: ["เขย่าตัวแรง ๆ", "แจ้ง Safety", "ปล่อยไว้"], answer: 1 },
-  { q: "26) ถ้าต้องใช้เครื่องมือไฟฟ้าควรทำอะไร?", choices: ["ตรวจสายไฟก่อนใช้", "ใช้ทันที", "ใช้ตอนเปียกน้ำ"], answer: 0 },
-  { q: "27) ถ้าต้องเดินในพื้นที่มืดควรทำอย่างไร?", choices: ["ใช้ไฟฉาย", "เดินไปเลย", "วิ่ง"], answer: 0 },
-  { q: "28) ถ้าต้องทำงานใกล้รถยกควรทำอย่างไร?", choices: ["เดินตัดหน้า", "รักษาระยะห่าง", "ยืนข้างรถ"], answer: 1 },
-  { q: "29) ถ้าต้องทำงานร้อนควรทำอย่างไร?", choices: ["พักเป็นระยะ", "ทำต่อจนเสร็จ", "ไม่ต้องพัก"], answer: 0 },
-  { q: "30) ถ้าพบสิ่งผิดปกติควรทำอย่างไร?", choices: ["แจ้ง Safety", "ปล่อยไว้", "ถ่ายรูปลงโซเชียล"], answer: 0 }
-];
-/* --------------------------------------------------
-   FLEX TEMPLATE FOR EXAM (Panasonic Clean Card UI)
--------------------------------------------------- */
-function examFlex(questionObj, number) {
-  return {
-    type: "flex",
-    altText: `ข้อที่ ${number}`,
-    contents: {
-      type: "bubble",
-      size: "mega",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "lg",
-        contents: [
-          {
-            type: "text",
-            text: `ข้อที่ ${number}`,
-            weight: "bold",
-            size: "lg",
-            color: "#1E90FF"
-          },
-          {
-            type: "text",
-            text: questionObj.q,
-            wrap: true,
-            size: "md",
-            color: "#222222"
-          },
-
-          { type: "separator", margin: "md" },
-
-          // ⭐ ปุ่มแบบ Panasonic Clean Card
-          ...questionObj.choices.map((choice, index) => ({
-            type: "box",
-            layout: "vertical",
-            margin: "md",
-            paddingAll: "md",
-            backgroundColor: "#FFFFFF",
-            borderColor: "#B3B3B3",
-            borderWidth: "1px",
-            cornerRadius: "6px",
-            action: {
-              type: "postback",
-              label: choice,
-              data: `answer_${index}`,
-              displayText: choice
-            },
-            contents: [
-              {
-                type: "text",
-                text: choice,
-                color: "#222222",
-                size: "md",
-                weight: "regular",
-                align: "center"
-              }
-            ]
-          }))
-        ]
-      },
-      styles: {
-        body: { separator: true }
-      }
-    }
-  };
-}
 
 
 /* --------------------------------------------------
-   PDPA FLEX (Panasonic Clean Card UI)
+   NORMALIZE (เวอร์ชันสุดท้าย)
 -------------------------------------------------- */
-function pdpaFlex() {
-  return {
-    type: "flex",
-    altText: "ยินยอม PDPA",
-    contents: {
-      type: "bubble",
-      size: "mega",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "lg",
-        contents: [
-          {
-            type: "text",
-            text: "นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)",
-            weight: "bold",
-            size: "lg",
-            color: "#1E90FF"
-          },
-          {
-            type: "text",
-            text:
-              "บริษัทมีการเก็บข้อมูลส่วนบุคคลเพื่อใช้ในการ:\n" +
-              "• ยืนยันตัวตนผู้รับเหมา\n" +
-              "• ออกบัตรผู้รับเหมา\n" +
-              "• บันทึกผลการอบรมความปลอดภัย\n" +
-              "• ใช้ในระบบความปลอดภัยของบริษัท",
-            wrap: true,
-            size: "md",
-            color: "#222222"
-          },
-
-          { type: "separator", margin: "md" },
-
-          {
-            type: "text",
-            text: "กรุณาอ่านนโยบายฉบับเต็มได้ที่:",
-            wrap: true,
-            size: "sm",
-            color: "#444444"
-          },
-          {
-            type: "text",
-            text:
-              "🔗 https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf",
-            wrap: true,
-            size: "sm",
-            color: "#0066CC"
-          },
-          {
-            type: "text",
-            text: "โปรดเปิดไฟล์นโยบาย PDPA ก่อนกดยอมรับ",
-            wrap: true,
-            size: "sm",
-            color: "#666666"
-          }
-        ]
-      },
-
-      footer: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "box",
-            layout: "vertical",
-            paddingAll: "md",
-            backgroundColor: "#FFFFFF",
-            borderColor: "#B3B3B3",
-            borderWidth: "1px",
-            cornerRadius: "6px",
-            action: {
-              type: "postback",
-              label: "ยอมรับและกรอกข้อมูล",
-              data: "pdpa_accept"
-            },
-            contents: [
-              {
-                type: "text",
-                text: "ยอมรับและกรอกข้อมูล",
-                align: "center",
-                color: "#1E90FF",
-                weight: "bold"
-              }
-            ]
-          }
-        ]
-      },
-
-      styles: {
-        body: { separator: true }
-      }
-    }
-  };
-}
-/* --------------------------------------------------
-   FORM QUESTIONS (4 ข้อ)
--------------------------------------------------- */
-const formQuestions = [
-  { 
-    key: "fullname", 
-    text: "📝 กรุณาพิมพ์ชื่อ–นามสกุลของคุณ\n📝 Please type your full name" 
-  },
-  { 
-    key: "phone", 
-    text: "📞 กรุณาพิมพ์เบอร์โทรศัพท์ของคุณ\n📞 Please type your phone number" 
-  },
-  { 
-    key: "idcard", 
-    text: "🆔 กรุณาพิมพ์เลขบัตรประชาชน 13 หลัก\n🆔 Please type your 13‑digit ID number" 
-  },
-  { 
-    key: "company", 
-    text: "🏢 กรุณาพิมพ์ชื่อบริษัทของคุณ\n🏢 Please type your company name" 
-  }
-];
-/* --------------------------------------------------
-   ส่งคำถามฟอร์มตามลำดับ
--------------------------------------------------- */
-function askFormQuestion(userId) {
-  const step = userState[userId].step;
-  const q = formQuestions[step];
-
-  return {
-    type: "text",
-    text: q.text
-  };
+function normalize(text) {
+  return text
+    .toLowerCase()
+    .replace(/\s/g, "")
+    .replace(/–/g, "-")
+    .replace(/—/g, "-")
+    .trim();
 }
 
 /* --------------------------------------------------
-   HANDLE FORM ANSWER
-   (เก็บข้อมูลฟอร์มทีละข้อ → เริ่มข้อสอบ)
+   WARM-UP PING (สำหรับ UptimeRobot)
 -------------------------------------------------- */
-async function handleFormAnswer(event, userId, text) {
-  const state = userState[userId];
-  const step = state.step;
-  const key = formQuestions[step].key;
-
-  // เก็บข้อมูลฟอร์ม
-  state.formData[key] = text;
-  state.step++;
-
-  // ถ้ายังไม่ครบ 4 ข้อ → ถามต่อ
-  if (state.step < formQuestions.length) {
-    return client.replyMessage(event.replyToken, askFormQuestion(userId));
-  }
-
-  // ถ้าครบแล้ว → เริ่มข้อสอบ
-  state.mode = "exam";
-  state.currentQuestion = 1;
-  state.score = 0;
-
-  const qObj = examQuestions[0];
-  const flex = examFlex(qObj, 1);
-
-  return client.replyMessage(event.replyToken, flex);
-}
-
-/* --------------------------------------------------
-   HANDLE EXAM ANSWER
-   (ตรวจคำตอบ → ส่งข้อถัดไป)
--------------------------------------------------- */
-async function handleExamAnswer(event, userId, data) {
-  const state = userState[userId];
-  const qIndex = state.currentQuestion - 1;
-  const question = examQuestions[qIndex];
-
-  // ดึง index ของคำตอบที่เลือก
-  const selected = parseInt(data.replace("answer_", ""), 10);
-
-  // ตรวจคำตอบ
-  if (selected === question.answer) {
-    state.score++;
-  }
-
-  // ไปข้อถัดไป
-  state.currentQuestion++;
-
-  // ถ้าทำครบทุกข้อแล้ว → สรุปผลสอบ
-  if (state.currentQuestion > examQuestions.length) {
-    return finishExam(event, userId);
-  }
-
-  // ส่งข้อถัดไป
-  const nextQ = examQuestions[state.currentQuestion - 1];
-  const flex = examFlex(nextQ, state.currentQuestion);
-
-  return client.replyMessage(event.replyToken, flex);
-}
-
-/* --------------------------------------------------
-   FINISH EXAM
-   (สรุปผล → ส่งคะแนน → ออกบัตร)
--------------------------------------------------- */
-async function finishExam(event, userId) {
-  const state = userState[userId];
-  const score = state.score;
-  const total = examQuestions.length;
-
-  const pass = score >= 24;   // ผ่านเมื่อได้ 24 คะแนนขึ้นไป
-
-  // ส่งผลสอบ
-  await client.replyMessage(event.replyToken, {
-    type: "text",
-    text: `สรุปผลการทำแบบทดสอบ\nคะแนนของคุณ: ${score}/${total}\nผลสอบ: ${pass ? "ผ่าน ✅" : "ไม่ผ่าน ❌"}`
-  });
-
-  // ถ้าไม่ผ่าน → จบ flow
-  if (!pass) {
-    delete userState[userId];   // ⭐ ล้าง state ทันที
-    return;
-  }
-
-  // ถ้าผ่าน → ส่งข้อมูลไป Google Sheet
-  await sendToGoogleSheet(userId, "ผ่าน");
-
-  // ⭐ ล้าง state เพื่อให้กลับมาคุยปกติได้
-  delete userState[userId];
-
-  // แจ้งผู้ใช้แบบไม่บังคับ
-  return client.pushMessage(userId, {
-    type: "text",
-    text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ\nคุณสามารถกดเมนูหรือพิมพ์: ดาวน์โหลดบัตร เพื่อรับบัตรผู้รับเหมา"
-  });
-}
-/* --------------------------------------------------
-   SEND TO GOOGLE SHEET
--------------------------------------------------- */
-async function sendToGoogleSheet(userId, passStatus) {
-  const state = userState[userId];
-
-  const payload = {
-    userId,
-    fullname: state.formData.fullname,
-    phone: state.formData.phone,
-    idcard: state.formData.idcard,
-    company: state.formData.company,
-    score: state.score,
-    status: passStatus
-  };
-
-  try {
-    await axios.post("YOUR_GOOGLE_APPS_SCRIPT_URL", payload);
-  } catch (err) {
-    console.error("❌ ERROR sending to Google Sheet:", err);
-  }
-}
-
-/* --------------------------------------------------
-   GET CERTIFICATE URL
--------------------------------------------------- */
-async function getCertificateUrl(userId) {
-  try {
-    const res = await axios.get(`YOUR_APPS_SCRIPT_GET_URL?userId=${userId}`);
-    return res.data.url;
-  } catch (err) {
-    console.error("❌ ERROR getCertificateUrl:", err);
-    return null;
-  }
-}
-
-/* --------------------------------------------------
-   CERTIFICATE FLEX (Panasonic Clean Card UI)
--------------------------------------------------- */
-function certificateFlex(url) {
-  return {
-    type: "flex",
-    altText: "บัตรผู้รับเหมา",
-    contents: {
-      type: "bubble",
-      size: "mega",
-
-      hero: {
-        type: "image",
-        url,
-        size: "full",
-        aspectRatio: "20:13",
-        aspectMode: "cover"
-      },
-
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "lg",
-        contents: [
-          {
-            type: "text",
-            text: "บัตรผู้รับเหมา",
-            weight: "bold",
-            size: "lg",
-            color: "#1E90FF",
-            align: "center"
-          },
-
-          // ⭐ ปุ่มแบบ Card UI
-          {
-            type: "box",
-            layout: "vertical",
-            paddingAll: "md",
-            margin: "md",
-            backgroundColor: "#FFFFFF",
-            borderColor: "#B3B3B3",
-            borderWidth: "1px",
-            cornerRadius: "6px",
-            action: {
-              type: "uri",
-              label: "ดาวน์โหลดบัตร",
-              uri: url
-            },
-            contents: [
-              {
-                type: "text",
-                text: "ดาวน์โหลดบัตร",
-                align: "center",
-                color: "#222222"
-              }
-            ]
-          }
-        ]
-      }
-    }
-  };
-}
+app.get("/webhook", (req, res) => {
+  res.status(200).send("OK");
+});
 
 
-/* --------------------------------------------------
-   HANDLE DOWNLOAD CERTIFICATE
--------------------------------------------------- */
-async function handleDownloadCertificate(event, userId) {
-  const url = await getCertificateUrl(userId);
-
-  if (!url) {
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "ยังไม่พบบัตรของคุณ กรุณาทำข้อสอบให้ผ่านก่อน"
-    });
-  }
-
-  return client.replyMessage(event.replyToken, certificateFlex(url));
-}
-
-
-/* --------------------------------------------------
-   TRAINING MENU (Panasonic Clean Card UI)
--------------------------------------------------- */
-function trainingMenu() {
-  const items = [
-    ["1) ความปลอดภัยในการทำงาน", "https://youtu.be/MGbZGFtQCLQ?si=S7Xg3pxeOqkQCyx5"],
-    ["2) ความปลอดภัยงานเชื่อม", "https://youtu.be/gpUlIKyjSQM?si=QctBbVhlth2bbmDt"],
-    ["3) การใช้ถังดับเพลิง", "https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f"],
-    ["4) ขับขี่ปลอดภัย", "https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF"],
-    ["5) การแยกขยะ", "https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9"]
-  ];
-
-  return {
-    type: "flex",
-    altText: "สื่ออบรมผู้รับเหมา",
-    contents: {
-      type: "bubble",
-      size: "mega",
-
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "lg",
-        contents: [
-          {
-            type: "text",
-            text: "สื่ออบรมผู้รับเหมา",
-            weight: "bold",
-            size: "lg",
-            color: "#1E90FF",
-            align: "center"
-          },
-
-          // ⭐ ปุ่มทั้งหมดเป็น Card UI
-          ...items.map(([label, uri]) => ({
-            type: "box",
-            layout: "vertical",
-            paddingAll: "md",
-            margin: "md",
-            backgroundColor: "#FFFFFF",
-            borderColor: "#B3B3B3",
-            borderWidth: "1px",
-            cornerRadius: "6px",
-            action: { type: "uri", label, uri },
-            contents: [
-              {
-                type: "text",
-                text: label,
-                align: "center",
-                color: "#222222"
-              }
-            ]
-          }))
-        ]
-      }
-    }
-  };
-}
-
-/* --------------------------------------------------
-   CONTRACTOR MAIN MENU (Panasonic Clean Card UI)
--------------------------------------------------- */
-async function contractorMainMenu(event) {
-
-  const menuItems = [
-    ["ผู้รับ–ส่งสินค้า", "ผู้รับส่งสินค้า"],
-    ["ผู้เข้ามาทำงาน–แก้ไขงาน", "ผู้แก้ไขงาน"],
-    ["สื่ออบรมผู้รับเหมา", "สื่ออบรมผู้รับเหมา"],
-    ["ดาวน์โหลดบัตรผู้รับเหมา", "ดาวน์โหลดบัตร"]
-  ];
-
-  return client.replyMessage(event.replyToken, [
-    {
-      type: "text",
-      text:
-`ข้อมูลผู้รับเหมา
-เลือกประเภทการมาติดต่อเพื่อทำบัตร
-ทำข้อสอบและส่งเอกสารทางเมลบริษัท
-
-กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่  
-thai_safety@sodick.co.th`
-    },
-
-    {
-      type: "flex",
-      altText: "ข้อมูลผู้รับเหมา",
-      contents: {
-        type: "bubble",
-        size: "mega",
-
-        body: {
-          type: "box",
-          layout: "vertical",
-          spacing: "lg",
-          contents: menuItems.map(([label, text]) => ({
-            type: "box",
-            layout: "vertical",
-            paddingAll: "md",
-            margin: "md",
-            backgroundColor: "#FFFFFF",
-            borderColor: "#B3B3B3",
-            borderWidth: "1px",
-            cornerRadius: "6px",
-            action: { type: "message", label, text },
-            contents: [
-              {
-                type: "text",
-                text: label,
-                align: "center",
-                color: "#222222"
-              }
-            ]
-          }))
-        }
-      }
-    }
-  ]);
-}
-/* --------------------------------------------------
-   DELIVERY MENU (Panasonic Clean Card UI)
--------------------------------------------------- */
-function menuDelivery() {
-
-  const items = [
-    ["วีดีโออบรม", "uri", "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"],
-    ["ทำแบบทดสอบ", "message", "ทำแบบทดสอบ"],
-    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"]
-  ];
-
-  return {
-    type: "flex",
-    altText: "ผู้รับ–ส่งสินค้า",
-    contents: {
-      type: "bubble",
-      size: "mega",
-
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "lg",
-        contents: items.map(([label, type, value]) => ({
-          type: "box",
-          layout: "vertical",
-          paddingAll: "md",
-          margin: "md",
-          backgroundColor: "#FFFFFF",
-          borderColor: "#B3B3B3",
-          borderWidth: "1px",
-          cornerRadius: "6px",
-
-          action:
-            type === "uri"
-              ? { type: "uri", label, uri: value }
-              : { type: "message", label, text: value },
-
-          contents: [
-            {
-              type: "text",
-              text: label,
-              align: "center",
-              color: "#222222"
-            }
-          ]
-        }))
-      }
-    }
-  };
-}
-/* --------------------------------------------------
-   VENDOR MENU (Panasonic Clean Card UI)
--------------------------------------------------- */
-function menuVendor() {
-
-  const items = [
-    ["วีดีโออบรม", "uri", "https://drive.google.com/YOUR_VIDEO_LINK"],
-    ["ทำแบบทดสอบ", "message", "ทำแบบทดสอบ"],
-    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/YOUR_TRAINING_DOC"],
-    ["ใบขอเข้ามาทำงาน", "uri", "https://drive.google.com/YOUR_WORK_REQUEST"],
-    ["ใบตรวจสอบเครื่องมือ", "uri", "https://drive.google.com/YOUR_TOOL_CHECK"]
-  ];
-
-  return {
-    type: "flex",
-    altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
-    contents: {
-      type: "bubble",
-      size: "mega",
-
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "lg",
-
-        contents: items.map(([label, type, value]) => ({
-          type: "box",
-          layout: "vertical",
-          paddingAll: "md",
-          margin: "md",
-          backgroundColor: "#FFFFFF",
-          borderColor: "#B3B3B3",
-          borderWidth: "1px",
-          cornerRadius: "6px",
-
-          action:
-            type === "uri"
-              ? { type: "uri", label, uri: value }
-              : { type: "message", label, text: value },
-
-          contents: [
-            {
-              type: "text",
-              text: label,
-              align: "center",
-              color: "#222222"
-            }
-          ]
-        }))
-      }
-    }
-  };
-}
-/* --------------------------------------------------
-   WEBHOOK
--------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
 
-    if (!event || (event.type !== "message" && event.type !== "postback")) {
+    if (!event || event.type !== "message" || event.message.type !== "text") {
       return res.status(200).end();
     }
 
-    const userId = event.source.userId;
-    const text = event.message?.text || "";
+    const text = event.message.text;
     const msg = normalize(text);
-    const data = event.postback?.data || "";
+    const cleanText = msg;
 
     /* --------------------------------------------------
-       1) เงื่อนไขเฉพาะในกลุ่ม
-    -------------------------------------------------- */
-    if (event.source.type === "group") {
+       1) เงื่อนไขเฉพาะในกลุ่ม (ต้องเรียกชื่อบอทก่อน)
+    -------------------------------------------------- */    if (event.source.type === "group") {
       const triggers = ["บอท", "bot", "safety", "Safety"];
       const hasTrigger = triggers.some((w) => text.includes(w));
       if (!hasTrigger) return res.status(200).end();
@@ -1233,7 +553,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       msg.includes("อุบัติเหตุ") ||
       msg.includes("ฉุกเฉิน") ||
       msg.includes("ไฟไหม้") ||
-      msg.includes("บาดเจ็บ")
+      msg.includes("บาดเจ็บ") ||
+      msg.includes("danger") ||
+      msg.includes("emergency")
     ) {
       return reply(event, `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
 โรงงาน 1: 102 / 127 / 129  
@@ -1242,333 +564,572 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       3) FLOW หลักของระบบสอบผู้รับเหมา
-       (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
+       3) Safety Q&A
     -------------------------------------------------- */
-    if (userState[userId]) {
-      const state = userState[userId];
+    const found = safetyQA.find((q) =>
+      msg.includes(normalize(q.question))
+    );
+    if (found) return reply(event, found.answer);
 
-      // PDPA
-if (state.mode === "pdpa") {
-  if (data && data.startsWith("pdpa_accept")) {
-    state.mode = "form";
-    state.step = 0;
-    state.formData = {};
-    return client.replyMessage(event.replyToken, askFormQuestion(userId));
-  }
-  return client.replyMessage(event.replyToken, pdpaFlex());
-}
-      // ฟอร์มกรอกข้อมูล
-      if (state.mode === "form") {
-        return handleFormAnswer(event, userId, text);
-      }
-
-      // ทำข้อสอบ
-      if (state.mode === "exam") {
-        if (data && data.startsWith("answer_")) {
-          return handleExamAnswer(event, userId, data);
+    /* --------------------------------------------------
+       4) Categories
+    -------------------------------------------------- */
+    for (const category in categories) {
+      for (const word of categories[category]) {
+        if (msg.includes(normalize(word))) {
+          return reply(event, replies[category][word]);
         }
       }
     }
+/* --------------------------------------------------
+   เมนูย่อยใหม่ : สื่ออบรมผู้รับเหมา  (ต้องอยู่บนสุด)
+-------------------------------------------------- */
+if (
+  cleanText.includes("สื่ออบรมผู้รับเหมา") ||
+  cleanText.includes("สื่ออบรม") ||
+  cleanText.includes("อบรมผู้รับเหมา")
+) {
 
-    /* --------------------------------------------------
-       4) เมนูหลักผู้รับเหมา
-    -------------------------------------------------- */
-    if (
-      msg.includes("ข้อมูลผู้รับเหมา") ||
-      msg.includes("ผู้รับเหมา") ||
-      msg.includes("เมนูผู้รับเหมา")
-    ) {
-      return contractorMainMenu(event);
+  const flex = {
+    type: "flex",
+    altText: "สื่ออบรมผู้รับเหมา",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "1) ความปลอดภัยในการทำงาน",
+              uri: "https://youtu.be/MGbZGFtQCLQ?si=S7Xg3pxeOqkQCyx5"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "2) ความปลอดภัยงานเชื่อม",
+              uri: "https://youtu.be/gpUlIKyjSQM?si=QctBbVhlth2bbmDt"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "3) การใช้ถังดับเพลิง",
+              uri: "https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "4) ขับขี่ปลอดภัย",
+              uri: "https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "uri",
+              label: "5) การแยกขยะ",
+              uri: "https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9"
+            }
+          }
+        ]
+      }
     }
+  };
 
-    /* --------------------------------------------------
-       5) เมนูย่อย
-    -------------------------------------------------- */
-    if (msg.includes("ผู้รับส่งสินค้า")) {
-      return client.replyMessage(event.replyToken, menuDelivery());
+  return client.replyMessage(event.replyToken, flex);
+}
+
+
+/* --------------------------------------------------
+   ปุ่มที่ 4 : ผู้รับเหมา
+-------------------------------------------------- */
+if (
+  cleanText.includes("ข้อมูลผู้รับเหมา") ||
+  cleanText.includes("ผู้รับเหมา")
+) {
+
+  const headerText = {
+    type: "text",
+    text: `ข้อมูลผู้รับเหมา
+กดปุ่มเลือกประเภทการมาติดต่อเพื่อทำบัตร
+ทำข้อสอบและส่งเอกสารทางเมล์ของบริษัท
+  
+กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
+thai_safety@sodick.co.th`
+  };
+
+  const flex = {
+    type: "flex",
+    altText: "ข้อมูลผู้รับเหมา",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "message",
+              label: "สำหรับ ผู้รับ–ส่งสินค้า",
+              text: "ผู้รับส่งสินค้า"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "message",
+              label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน",
+              text: "ผู้แก้ไขงาน"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#FF0000",
+            action: {
+              type: "message",
+              label: "สื่ออบรมผู้รับเหมา",
+              text: "สื่ออบรมผู้รับเหมา"
+            }
+          }
+        ]
+      }
     }
+  };
 
-    if (msg.includes("ผู้แก้ไขงาน")) {
-      return client.replyMessage(event.replyToken, menuVendor());
+  return client.replyMessage(event.replyToken, [headerText, flex]);
+}
+
+
+/* --------------------------------------------------
+   เมนูย่อย: ผู้รับ–ส่งสินค้า
+-------------------------------------------------- */
+if (
+  cleanText.includes("ผู้รับส่งสินค้า") ||
+  cleanText.includes("ผู้รับ-ส่งสินค้า") ||
+  cleanText.includes("รับส่งสินค้า")
+) {
+
+  const flex = {
+    type: "flex",
+    altText: "ผู้รับ–ส่งสินค้า",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "วีดีโออบรม",
+              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "ทำแบบทดสอบ",
+              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "uri",
+              label: "เอกสารบันทึกการอบรม",
+              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
+            }
+          }
+        ]
+      }
     }
+  };
 
-    if (msg.includes("สื่ออบรมผู้รับเหมา")) {
-      return client.replyMessage(event.replyToken, trainingMenu());
+  return client.replyMessage(event.replyToken, flex);
+}
+
+
+/* --------------------------------------------------
+   เมนูย่อย: ผู้เข้ามาทำงาน–แก้ไขงาน
+-------------------------------------------------- */
+if (
+  cleanText.includes("ผู้แก้ไขงาน") ||
+  cleanText.includes("แก้ไขงาน") ||
+  cleanText.includes("ผู้เข้ามาทำงาน")
+) {
+
+  const flex = {
+    type: "flex",
+    altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "วีดีโออบรม",
+              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "ทำแบบทดสอบ",
+              uri: "https://docs.google.com/forms/d/e/1FAIpQLSeJtzzJRUguEBn0vynw3DgSyDvG3nnUGnWYrRWa8A3-pguzeQ/viewform?usp=header"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "เอกสารบันทึกการอบรม",
+              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "ใบขอเข้ามาทำงาน",
+              uri: "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drivesdk"
+            }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#32CD32",
+            action: {
+              type: "uri",
+              label: "ใบตรวจสอบเครื่องมือ",
+              uri: "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drivesdk"
+            }
+          }
+        ]
+      }
     }
+  };
 
-    /* --------------------------------------------------
-       6) ดาวน์โหลดบัตร
-    -------------------------------------------------- */
-    if (msg.includes("ดาวน์โหลดบัตร")) {
-      return handleDownloadCertificate(event, userId);
+  return client.replyMessage(event.replyToken, flex);
+}
+
+/* --------------------------------------------------
+   ⭐ ปุ่มที่ 6 — ส่งรูป + ปุ่มโทร
+-------------------------------------------------- */
+if (msg.includes("ติดต่อทีมเซฟตี้")) {
+
+  await client.replyMessage(event.replyToken, {
+    type: "image",
+    originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+    previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
+  });
+
+  await client.pushMessage(event.source.userId, {
+    type: "flex",
+    altText: "เบอร์ติดต่อทีมเซฟตี้",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกเบอร์ที่ต้องการโทร",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องกี้ (Safety Environment)", uri: "tel:0949380425" }
+          }
+        ]
+      }
     }
+  });
 
-    /* --------------------------------------------------
-       7) เริ่มทำแบบทดสอบ
-    -------------------------------------------------- */
-    if (msg.includes("ทำแบบทดสอบ")) {
-      userState[userId] = {
-        mode: "pdpa",
-        step: 0,
-        formData: {},
-        currentQuestion: 1,
-        score: 0
-      };
-      return client.replyMessage(event.replyToken, pdpaFlex());
-    }
+  return;
+}
+/* --------------------------------------------------
+   แผนที่บริษัท (Flex Message) + เบอร์โทร
+-------------------------------------------------- */
+if (
+  msg.includes("แผนที่") ||
+  msg.includes("map") ||
+  msg.includes("location") ||
+  msg.includes("โลเคชั่น") ||
+  msg.includes("โรงงานอยู่ไหน") ||
+  msg.includes("ไปโรงงาน") ||
+  msg.includes("factory")
+) {
 
-    /* --------------------------------------------------
-       8) ติดต่อทีมเซฟตี้
-    -------------------------------------------------- */
-    if (msg.includes("ติดต่อทีมเซฟตี้")) {
-
-      await client.replyMessage(event.replyToken, {
-        type: "image",
-        originalContentUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-        previewImageUrl: "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-      });
-
-      return client.pushMessage(userId, {
-        type: "flex",
-        altText: "เบอร์ติดต่อทีมเซฟตี้",
-        contents: {
-          type: "bubble",
-          body: {
+  const mapFlex = {
+    type: "flex",
+    altText: "แผนที่บริษัท Sodick Thailand",
+    contents: {
+      type: "bubble",
+      header: {
+        type: "box",
+        layout: "horizontal",
+        paddingAll: "16px",
+        backgroundColor: "#1E90FF",
+        contents: [
+          {
+            type: "text",
+            text: "📍 Sodick Thailand – Map Guide",
+            weight: "bold",
+            size: "md",
+            color: "#FFFFFF"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        contents: [
+          {
             type: "box",
             layout: "vertical",
-            spacing: "md",
+            spacing: "sm",
             contents: [
-              { type: "text", text: "เลือกเบอร์ที่ต้องการโทร", weight: "bold", size: "lg", align: "center" },
-              { type: "button", style: "primary", color: "#1E90FF", action: { type: "uri", label: "พี่ช้าง (Mgr.)", uri: "tel:0813765583" }},
-              { type: "button", style: "primary", color: "#1E90FF", action: { type: "uri", label: "พี่ไก่ (Factory1)", uri: "tel:0616455095" }},
-              { type: "button", style: "secondary", action: { type: "uri", label: "น้องพิน (Factory2)", uri: "tel:0832374357" }},
-              { type: "button", style: "secondary", action: { type: "uri", label: "น้องดุจ (Factory1)", uri: "tel:0816954474" }},
-              { type: "button", style: "secondary", action: { type: "uri", label: "น้องกี้ (Environment)", uri: "tel:0949380425" }}
+              {
+                type: "text",
+                text: "🏭 โรงงาน 1 (Factory 1)",
+                weight: "bold",
+                size: "md"
+              },
+              {
+                type: "text",
+                text: "Google Maps อัปเดตล่าสุด: เม.ย. 2022",
+                size: "sm",
+                color: "#555555"
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "เปิดแผนที่โรงงาน 1",
+                  uri: "https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8"
+                }
+              }
+            ]
+          },
+
+          { type: "separator" },
+
+          {
+            type: "box",
+            layout: "vertical",
+            spacing: "sm",
+            contents: [
+              {
+                type: "text",
+                text: "🏭 โรงงาน 2 (Factory 2)",
+                weight: "bold",
+                size: "md"
+              },
+              {
+                type: "text",
+                text: "Google Maps อัปเดตล่าสุด: เม.ย. 2025",
+                size: "sm",
+                color: "#555555"
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "uri",
+                  label: "เปิดแผนที่โรงงาน 2",
+                  uri: "https://maps.app.goo.gl/keZxD798z9ZwKXE7A"
+                }
+              }
             ]
           }
-        }
-      });
-    }
-
-    /* --------------------------------------------------
-       9) แผนที่ + เบอร์โรงงาน
-    -------------------------------------------------- */
-    if (
-      msg.includes("แผนที่") ||
-      msg.includes("map") ||
-      msg.includes("location") ||
-      msg.includes("โรงงานอยู่ไหน")
-    ) {
-      return client.replyMessage(event.replyToken, [
-        mapFlex,
-        phoneFlex
-      ]);
-    }
-
-    /* --------------------------------------------------
-       ⭐ SAFETY Q&A (ตอบคำถามเซฟตี้)
-    -------------------------------------------------- */
-    const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
-    if (foundQA) {
-      return reply(event, foundQA.answer);
-    }
-
-    /* --------------------------------------------------
-       ⭐ TEXT REPLIES (greeting / feeling / daily / friendly / compliment / exclaim / botinfo)
-    -------------------------------------------------- */
-    for (const cat of Object.keys(categories)) {
-      if (categories[cat].some(w => msg.includes(normalize(w)))) {
-        const replyText = replies[cat][text] || replies[cat][normalize(text)] || null;
-        if (replyText) {
-          return reply(event, replyText);
-        }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: "กดปุ่มเพื่อเปิดเส้นทางใน Google Maps",
+            size: "xs",
+            color: "#888888",
+            align: "center"
+          }
+        ]
       }
     }
+  };
 
-    /* --------------------------------------------------
-       10) Default
-    -------------------------------------------------- */
-    return reply(event, "พิมพ์: เมนู เพื่อเริ่มต้นใช้งาน");
+  const phoneFlex = {
+    type: "flex",
+    altText: "เบอร์โทรโรงงาน Sodick Thailand",
+    contents: {
+      type: "bubble",
+      header: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "16px",
+        backgroundColor: "#32CD32",
+        contents: [
+          {
+            type: "text",
+            text: "📞 เบอร์โทรโรงงาน Sodick Thailand",
+            weight: "bold",
+            size: "md",
+            color: "#FFFFFF"
+          }
+        ]
+      },
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "🏭 โรงงาน 1",
+            weight: "bold",
+            size: "md"
+          },
+          {
+            type: "text",
+            text: "02-529-2450-6\nต่อ:102-127-129",
+            size: "sm",
+            color: "#333333"
+          },
 
-  } catch (err) {
-    console.error("❌ WEBHOOK ERROR:", err);
-    return res.status(500).end();
-  }
+          { type: "separator" },
 
-  res.status(200).end();
+          {
+            type: "text",
+            text: "🏭 โรงงาน 2",
+            weight: "bold",
+            size: "md"
+          },
+          {
+            type: "text",
+            text: "02-529-3200-6\nต่อ:137",
+            size: "sm",
+            color: "#333333"
+          }
+        ]
+      }
+    }
+  };
+
+  return client.replyMessage(event.replyToken, [
+    mapFlex,
+    phoneFlex
+  ]);
+}
+/* --------------------------------------------------
+   6) Fallback
+-------------------------------------------------- */
+return client.replyMessage(event.replyToken, {
+  type: "text",
+  text: `❗ ไม่พบข้อมูลคำถามนี้ในระบบ
+
+ขออภัยครับ 🙂  
+ระบบยังไม่มีคำตอบสำหรับคำถามนี้  
+แต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ
+
+📞 ติดต่อผู้พัฒนาระบบ  
+@Trerasak_K (พี่ไก่)
+
+➕ เพิ่มเพื่อนผู้ดูแล  
+https://line.me/ti/p/_T4H-3TKUa`
 });
 
 /* --------------------------------------------------
-   MAP FLEX (แผนที่โรงงาน 1–2)
+   ปิด try/catch + ปิด webhook
 -------------------------------------------------- */
-const mapFlex = {
-  type: "flex",
-  altText: "แผนที่บริษัท Sodick Thailand",
-  contents: {
-    type: "bubble",
-    header: {
-      type: "box",
-      layout: "horizontal",
-      paddingAll: "16px",
-      backgroundColor: "#1E90FF",
-      contents: [
-        {
-          type: "text",
-          text: "📍 Sodick Thailand – Map Guide",
-          weight: "bold",
-          size: "md",
-          color: "#FFFFFF"
-        }
-      ]
-    },
-    body: {
-      type: "box",
-      layout: "vertical",
-      spacing: "lg",
-      contents: [
-        {
-          type: "box",
-          layout: "vertical",
-          spacing: "sm",
-          contents: [
-            {
-              type: "text",
-              text: "🏭 โรงงาน 1 (Factory 1)",
-              weight: "bold",
-              size: "md"
-            },
-            {
-              type: "text",
-              text: "Google Maps อัปเดตล่าสุด: เม.ย. 2022",
-              size: "sm",
-              color: "#555555"
-            },
-            {
-              type: "button",
-              style: "primary",
-              color: "#1E90FF",
-              action: {
-                type: "uri",
-                label: "เปิดแผนที่โรงงาน 1",
-                uri: "https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8"
-              }
-            }
-          ]
-        },
-
-        { type: "separator" },
-
-        {
-          type: "box",
-          layout: "vertical",
-          spacing: "sm",
-          contents: [
-            {
-              type: "text",
-              text: "🏭 โรงงาน 2 (Factory 2)",
-              weight: "bold",
-              size: "md"
-            },
-            {
-              type: "text",
-              text: "Google Maps อัปเดตล่าสุด: เม.ย. 2025",
-              size: "sm",
-              color: "#555555"
-            },
-            {
-              type: "button",
-              style: "primary",
-              color: "#1E90FF",
-              action: {
-                type: "uri",
-                label: "เปิดแผนที่โรงงาน 2",
-                uri: "https://maps.app.goo.gl/keZxD798z9ZwKXE7A"
-              }
-            }
-          ]
-        }
-      ]
-    },
-    footer: {
-      type: "box",
-      layout: "vertical",
-      contents: [
-        {
-          type: "text",
-          text: "กดปุ่มเพื่อเปิดเส้นทางใน Google Maps",
-          size: "xs",
-          color: "#888888",
-          align: "center"
-        }
-      ]
-    }
-  }
-};
-
+} catch (err) {
+  console.error("❌ ERROR:", err);
+  return res.status(500).end();
+}
+});
 /* --------------------------------------------------
-   PHONE FLEX (เบอร์โทรโรงงาน)
--------------------------------------------------- */
-const phoneFlex = {
-  type: "flex",
-  altText: "เบอร์โทรโรงงาน Sodick Thailand",
-  contents: {
-    type: "bubble",
-    header: {
-      type: "box",
-      layout: "vertical",
-      paddingAll: "16px",
-      backgroundColor: "#32CD32",
-      contents: [
-        {
-          type: "text",
-          text: "📞 เบอร์โทรโรงงาน Sodick Thailand",
-          weight: "bold",
-          size: "md",
-          color: "#FFFFFF"
-        }
-      ]
-    },
-    body: {
-      type: "box",
-      layout: "vertical",
-      spacing: "md",
-      contents: [
-        {
-          type: "text",
-          text: "🏭 โรงงาน 1",
-          weight: "bold",
-          size: "md"
-        },
-        {
-          type: "text",
-          text: "02-529-2450-6\nต่อ:102-127-129",
-          size: "sm",
-          color: "#333333"
-        },
-
-        { type: "separator" },
-
-        {
-          type: "text",
-          text: "🏭 โรงงาน 2",
-          weight: "bold",
-          size: "md"
-        },
-        {
-          type: "text",
-          text: "02-529-3200-6\nต่อ:137",
-          size: "sm",
-          color: "#333333"
-        }
-      ]
-    }
-  }
-};
-/* --------------------------------------------------
-   SERVER START
+   Server
 -------------------------------------------------- */
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("🚀 LINE Bot server running on port " + PORT);
-});
+app.listen(PORT, () => console.log("LINE Bot server running on port " + PORT));
