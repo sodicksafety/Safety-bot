@@ -566,7 +566,7 @@ const examQuestions = [
   { q: "30) ถ้าพบสิ่งผิดปกติควรทำอย่างไร?", choices: ["แจ้ง Safety", "ปล่อยไว้", "ถ่ายรูปลงโซเชียล"], answer: 0 }
 ];
 /* --------------------------------------------------
-   FLEX TEMPLATE FOR EXAM (Japanese Industrial UI)
+   FLEX TEMPLATE FOR EXAM (Panasonic Clean Card UI)
 -------------------------------------------------- */
 function examFlex(questionObj, number) {
   return {
@@ -597,32 +597,45 @@ function examFlex(questionObj, number) {
 
           { type: "separator", margin: "md" },
 
-          // ⭐ ปุ่มสไตล์ญี่ปุ่นโรงงาน: ขาว + ขอบเทา + ตัวหนังสือดำ
+          // ⭐ ปุ่มแบบ Panasonic Clean Card
           ...questionObj.choices.map((choice, index) => ({
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",        // พื้นขาว
+            type: "box",
+            layout: "vertical",
+            margin: "md",
+            paddingAll: "md",
+            backgroundColor: "#FFFFFF",
+            borderColor: "#B3B3B3",
+            borderWidth: "1px",
+            cornerRadius: "6px",
             action: {
               type: "postback",
-              label: choice,         // ตัวหนังสือดำอัตโนมัติ
+              label: choice,
               data: `answer_${index}`,
               displayText: choice
             },
-            height: "sm",
-            margin: "md"
+            contents: [
+              {
+                type: "text",
+                text: choice,
+                color: "#222222",
+                size: "md",
+                weight: "regular",
+                align: "center"
+              }
+            ]
           }))
         ]
       },
       styles: {
-        body: {
-          separator: true
-        }
+        body: { separator: true }
       }
     }
   };
 }
+
+
 /* --------------------------------------------------
-   PDPA FLEX (Japanese Industrial UI)
+   PDPA FLEX (Panasonic Clean Card UI)
 -------------------------------------------------- */
 function pdpaFlex() {
   return {
@@ -641,7 +654,7 @@ function pdpaFlex() {
             text: "นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)",
             weight: "bold",
             size: "lg",
-            color: "#1E90FF"   // น้ำเงินมาตรฐานญี่ปุ่น
+            color: "#1E90FF"
           },
           {
             type: "text",
@@ -653,17 +666,15 @@ function pdpaFlex() {
               "• ใช้ในระบบความปลอดภัยของบริษัท",
             wrap: true,
             size: "md",
-            color: "#222222"   // ดำเข้มแบบเอกสารญี่ปุ่น
+            color: "#222222"
           },
-          {
-            type: "separator",
-            margin: "md"
-          },
+
+          { type: "separator", margin: "md" },
+
           {
             type: "text",
             text: "กรุณาอ่านนโยบายฉบับเต็มได้ที่:",
             wrap: true,
-            margin: "md",
             size: "sm",
             color: "#444444"
           },
@@ -672,41 +683,52 @@ function pdpaFlex() {
             text:
               "🔗 https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf",
             wrap: true,
-            color: "#0066CC",   // น้ำเงินลิงก์แบบญี่ปุ่น
-            size: "sm"
+            size: "sm",
+            color: "#0066CC"
           },
           {
             type: "text",
-            text: "เพื่อความถูกต้อง โปรดเปิดไฟล์นโยบาย PDPA ของบริษัทก่อนกดยอมรับ",
+            text: "โปรดเปิดไฟล์นโยบาย PDPA ก่อนกดยอมรับ",
             wrap: true,
             size: "sm",
-            color: "#666666",
-            margin: "md"
+            color: "#666666"
           }
         ]
       },
+
       footer: {
         type: "box",
         layout: "vertical",
         spacing: "md",
         contents: [
           {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",   // ปุ่มน้ำเงินเข้มแบบ Toyota/Honda
+            type: "box",
+            layout: "vertical",
+            paddingAll: "md",
+            backgroundColor: "#FFFFFF",
+            borderColor: "#B3B3B3",
+            borderWidth: "1px",
+            cornerRadius: "6px",
             action: {
               type: "postback",
               label: "ยอมรับและกรอกข้อมูล",
               data: "pdpa_accept"
             },
-            height: "sm"
+            contents: [
+              {
+                type: "text",
+                text: "ยอมรับและกรอกข้อมูล",
+                align: "center",
+                color: "#1E90FF",
+                weight: "bold"
+              }
+            ]
           }
         ]
       },
+
       styles: {
-        body: {
-          separator: true
-        }
+        body: { separator: true }
       }
     }
   };
@@ -878,7 +900,7 @@ async function getCertificateUrl(userId) {
 }
 
 /* --------------------------------------------------
-   CERTIFICATE FLEX (Toyota Premium UI)
+   CERTIFICATE FLEX (Panasonic Clean Card UI)
 -------------------------------------------------- */
 function certificateFlex(url) {
   return {
@@ -887,6 +909,7 @@ function certificateFlex(url) {
     contents: {
       type: "bubble",
       size: "mega",
+
       hero: {
         type: "image",
         url,
@@ -894,6 +917,7 @@ function certificateFlex(url) {
         aspectRatio: "20:13",
         aspectMode: "cover"
       },
+
       body: {
         type: "box",
         layout: "vertical",
@@ -907,23 +931,37 @@ function certificateFlex(url) {
             color: "#1E90FF",
             align: "center"
           },
+
+          // ⭐ ปุ่มแบบ Card UI
           {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
+            type: "box",
+            layout: "vertical",
+            paddingAll: "md",
+            margin: "md",
+            backgroundColor: "#FFFFFF",
+            borderColor: "#B3B3B3",
+            borderWidth: "1px",
+            cornerRadius: "6px",
             action: {
               type: "uri",
               label: "ดาวน์โหลดบัตร",
               uri: url
             },
-            height: "sm"
+            contents: [
+              {
+                type: "text",
+                text: "ดาวน์โหลดบัตร",
+                align: "center",
+                color: "#222222"
+              }
+            ]
           }
         ]
-      },
-      styles: { body: { separator: true } }
+      }
     }
   };
 }
+
 
 /* --------------------------------------------------
    HANDLE DOWNLOAD CERTIFICATE
@@ -941,20 +979,30 @@ async function handleDownloadCertificate(event, userId) {
   return client.replyMessage(event.replyToken, certificateFlex(url));
 }
 
+
 /* --------------------------------------------------
-   TRAINING MENU (Toyota Premium UI)
+   TRAINING MENU (Panasonic Clean Card UI)
 -------------------------------------------------- */
 function trainingMenu() {
+  const items = [
+    ["1) ความปลอดภัยในการทำงาน", "https://youtu.be/MGbZGFtQCLQ?si=S7Xg3pxeOqkQCyx5"],
+    ["2) ความปลอดภัยงานเชื่อม", "https://youtu.be/gpUlIKyjSQM?si=QctBbVhlth2bbmDt"],
+    ["3) การใช้ถังดับเพลิง", "https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f"],
+    ["4) ขับขี่ปลอดภัย", "https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF"],
+    ["5) การแยกขยะ", "https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9"]
+  ];
+
   return {
     type: "flex",
     altText: "สื่ออบรมผู้รับเหมา",
     contents: {
       type: "bubble",
       size: "mega",
+
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "md",
+        spacing: "lg",
         contents: [
           {
             type: "text",
@@ -964,17 +1012,26 @@ function trainingMenu() {
             color: "#1E90FF",
             align: "center"
           },
-          ...[
-            ["1) ความปลอดภัยในการทำงาน", "https://youtu.be/MGbZGFtQCLQ?si=S7Xg3pxeOqkQCyx5"],
-            ["2) ความปลอดภัยงานเชื่อม", "https://youtu.be/gpUlIKyjSQM?si=QctBbVhlth2bbmDt"],
-            ["3) การใช้ถังดับเพลิง", "https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f"],
-            ["4) ขับขี่ปลอดภัย", "https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF"],
-            ["5) การแยกขยะ", "https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9"]
-          ].map(([label, uri]) => ({
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: { type: "uri", label, uri }
+
+          // ⭐ ปุ่มทั้งหมดเป็น Card UI
+          ...items.map(([label, uri]) => ({
+            type: "box",
+            layout: "vertical",
+            paddingAll: "md",
+            margin: "md",
+            backgroundColor: "#FFFFFF",
+            borderColor: "#B3B3B3",
+            borderWidth: "1px",
+            cornerRadius: "6px",
+            action: { type: "uri", label, uri },
+            contents: [
+              {
+                type: "text",
+                text: label,
+                align: "center",
+                color: "#222222"
+              }
+            ]
           }))
         ]
       }
@@ -983,9 +1040,17 @@ function trainingMenu() {
 }
 
 /* --------------------------------------------------
-   CONTRACTOR MAIN MENU (Toyota Premium UI)
+   CONTRACTOR MAIN MENU (Panasonic Clean Card UI)
 -------------------------------------------------- */
 async function contractorMainMenu(event) {
+
+  const menuItems = [
+    ["ผู้รับ–ส่งสินค้า", "ผู้รับส่งสินค้า"],
+    ["ผู้เข้ามาทำงาน–แก้ไขงาน", "ผู้แก้ไขงาน"],
+    ["สื่ออบรมผู้รับเหมา", "สื่ออบรมผู้รับเหมา"],
+    ["ดาวน์โหลดบัตรผู้รับเหมา", "ดาวน์โหลดบัตร"]
+  ];
+
   return client.replyMessage(event.replyToken, [
     {
       type: "text",
@@ -997,141 +1062,141 @@ async function contractorMainMenu(event) {
 กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่  
 thai_safety@sodick.co.th`
     },
+
     {
       type: "flex",
       altText: "ข้อมูลผู้รับเหมา",
       contents: {
         type: "bubble",
         size: "mega",
+
         body: {
           type: "box",
           layout: "vertical",
-          spacing: "md",
-          contents: [
-            {
-              type: "button",
-              style: "secondary",
-              color: "#FFFFFF",
-              action: { type: "message", label: "ผู้รับ–ส่งสินค้า", text: "ผู้รับส่งสินค้า" }
-            },
-            {
-              type: "button",
-              style: "secondary",
-              color: "#FFFFFF",
-              action: { type: "message", label: "ผู้เข้ามาทำงาน–แก้ไขงาน", text: "ผู้แก้ไขงาน" }
-            },
-            {
-              type: "button",
-              style: "secondary",
-              color: "#FFFFFF",
-              action: { type: "message", label: "สื่ออบรมผู้รับเหมา", text: "สื่ออบรมผู้รับเหมา" }
-            },
-            {
-              type: "button",
-              style: "secondary",
-              color: "#FFFFFF",
-              action: { type: "message", label: "ดาวน์โหลดบัตรผู้รับเหมา", text: "ดาวน์โหลดบัตร" }
-            }
-          ]
+          spacing: "lg",
+          contents: menuItems.map(([label, text]) => ({
+            type: "box",
+            layout: "vertical",
+            paddingAll: "md",
+            margin: "md",
+            backgroundColor: "#FFFFFF",
+            borderColor: "#B3B3B3",
+            borderWidth: "1px",
+            cornerRadius: "6px",
+            action: { type: "message", label, text },
+            contents: [
+              {
+                type: "text",
+                text: label,
+                align: "center",
+                color: "#222222"
+              }
+            ]
+          }))
         }
       }
     }
   ]);
 }
-
 /* --------------------------------------------------
-   DELIVERY MENU (Toyota Premium UI)
+   DELIVERY MENU (Panasonic Clean Card UI)
 -------------------------------------------------- */
 function menuDelivery() {
+
+  const items = [
+    ["วีดีโออบรม", "uri", "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"],
+    ["ทำแบบทดสอบ", "message", "ทำแบบทดสอบ"],
+    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"]
+  ];
+
   return {
     type: "flex",
     altText: "ผู้รับ–ส่งสินค้า",
     contents: {
       type: "bubble",
       size: "mega",
+
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: {
-              type: "uri",
-              label: "วีดีโออบรม",
-              uri: "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"
+        spacing: "lg",
+        contents: items.map(([label, type, value]) => ({
+          type: "box",
+          layout: "vertical",
+          paddingAll: "md",
+          margin: "md",
+          backgroundColor: "#FFFFFF",
+          borderColor: "#B3B3B3",
+          borderWidth: "1px",
+          cornerRadius: "6px",
+
+          action:
+            type === "uri"
+              ? { type: "uri", label, uri: value }
+              : { type: "message", label, text: value },
+
+          contents: [
+            {
+              type: "text",
+              text: label,
+              align: "center",
+              color: "#222222"
             }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: { type: "message", label: "ทำแบบทดสอบ", text: "ทำแบบทดสอบ" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: {
-              type: "uri",
-              label: "เอกสารบันทึกการอบรม",
-              uri: "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"
-            }
-          }
-        ]
+          ]
+        }))
       }
     }
   };
 }
-
 /* --------------------------------------------------
-   VENDOR MENU (Toyota Premium UI)
+   VENDOR MENU (Panasonic Clean Card UI)
 -------------------------------------------------- */
 function menuVendor() {
+
+  const items = [
+    ["วีดีโออบรม", "uri", "https://drive.google.com/YOUR_VIDEO_LINK"],
+    ["ทำแบบทดสอบ", "message", "ทำแบบทดสอบ"],
+    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/YOUR_TRAINING_DOC"],
+    ["ใบขอเข้ามาทำงาน", "uri", "https://drive.google.com/YOUR_WORK_REQUEST"],
+    ["ใบตรวจสอบเครื่องมือ", "uri", "https://drive.google.com/YOUR_TOOL_CHECK"]
+  ];
+
   return {
     type: "flex",
     altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
     contents: {
       type: "bubble",
       size: "mega",
+
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: { type: "uri", label: "วีดีโออบรม", uri: "https://drive.google.com/YOUR_VIDEO_LINK" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: { type: "message", label: "ทำแบบทดสอบ", text: "ทำแบบทดสอบ" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: { type: "uri", label: "เอกสารบันทึกการอบรม", uri: "https://drive.google.com/YOUR_TRAINING_DOC" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: { type: "uri", label: "ใบขอเข้ามาทำงาน", uri: "https://drive.google.com/YOUR_WORK_REQUEST" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            color: "#FFFFFF",
-            action: { type: "uri", label: "ใบตรวจสอบเครื่องมือ", uri: "https://drive.google.com/YOUR_TOOL_CHECK" }
-          }
-        ]
+        spacing: "lg",
+
+        contents: items.map(([label, type, value]) => ({
+          type: "box",
+          layout: "vertical",
+          paddingAll: "md",
+          margin: "md",
+          backgroundColor: "#FFFFFF",
+          borderColor: "#B3B3B3",
+          borderWidth: "1px",
+          cornerRadius: "6px",
+
+          action:
+            type === "uri"
+              ? { type: "uri", label, uri: value }
+              : { type: "message", label, text: value },
+
+          contents: [
+            {
+              type: "text",
+              text: label,
+              align: "center",
+              color: "#222222"
+            }
+          ]
+        }))
       }
     }
   };
