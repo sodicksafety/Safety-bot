@@ -1342,64 +1342,63 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         return client.replyMessage(event.replyToken, pdpaFlex());
       }
 
-      /* ------------------------------
-         ฟอร์มกรอกข้อมูล
-      ------------------------------ */
-      if (state.mode === "form") {
-        return handleFormAnswer(event, userId, text);
-      }
+         /* ------------------------------
+       ฟอร์มกรอกข้อมูล
+    ------------------------------ */
+    if (state.mode === "form") {
+      return handleFormAnswer(event, userId, text);
+    }
 
- /* ------------------------------
-   ทำข้อสอบ (รองรับทั้งปุ่ม + พิมพ์เอง)
------------------------------- */
-if (userState[userId] && userState[userId].mode === "exam") {
-
-  const state = userState[userId];   // ⭐ ต้องมีบรรทัดนี้
+    /* ------------------------------
+       ทำข้อสอบ (รองรับทั้งปุ่ม + พิมพ์เอง)
+    ------------------------------ */
+    if (state.mode === "exam") {
 
   // 1) กรณีกดปุ่ม (postback)
   if (data && data.startsWith("answer_")) {
     return handleExamAnswer(event, userId, data);
   }
 
-  // 2) กรณีพิมพ์เอง (Google Voice / พิมพ์ข้อความ)
+  // 2) กรณีพิมพ์เอง
   if (text) {
     const qIndex = state.currentQuestion - 1;
     const question = examQuestions[qIndex];
     const normText = normalize(text);
 
-    // หา choice ที่ตรงกับข้อความที่พิมพ์ (แบบหลวม ๆ)
-    const foundIndex = question.choices.findIndex(choice => {
-      const normChoice = normalize(choice);
-      return (
-        normText === normChoice ||          // ตรงเป๊ะ
-        normText.includes(normChoice) ||    // ผู้ใช้พิมพ์ยาวกว่า
-        normChoice.includes(normText)       // ผู้ใช้พิมพ์สั้นกว่า
-      );
-    });
+        // หา choice ที่ตรงกับข้อความที่พิมพ์ (แบบหลวม ๆ)
+        const foundIndex = question.choices.findIndex(choice => {
+          const normChoice = normalize(choice);
+          return (
+            normText === normChoice ||          // ตรงเป๊ะ
+            normText.includes(normChoice) ||    // ผู้ใช้พิมพ์ยาวกว่า
+            normChoice.includes(normText)       // ผู้ใช้พิมพ์สั้นกว่า
+          );
+        });
 
-    // ถ้าหาเจอ → ส่งเข้า handleExamAnswer เหมือนกดปุ่ม
-    if (foundIndex !== -1) {
-      return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+        // ถ้าหาเจอ → ส่งเข้า handleExamAnswer เหมือนกดปุ่ม
+        if (foundIndex !== -1) {
+          return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+        }
+
+        // ถ้าพิมพ์มั่วจนจับไม่ได้
+        return client.replyMessage(event.replyToken, {
+          type: "text",
+          text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+        });
+      }
     }
+  } // ⭐ ปิด if (userState[userId])
 
-    // ถ้าพิมพ์มั่วจนจับไม่ได้
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
-    });
+  /* --------------------------------------------------
+     4) เมนูหลักผู้รับเหมา
+  -------------------------------------------------- */
+  if (
+    msg.includes("ข้อมูลผู้รับเหมา") ||
+    msg.includes("ผู้รับเหมา") ||
+    msg.includes("เมนูผู้รับเหมา")
+  ) {
+    return contractorMainMenu(event);
   }
-}
-
-    /* --------------------------------------------------
-       4) เมนูหลักผู้รับเหมา
-    -------------------------------------------------- */
-    if (
-      msg.includes("ข้อมูลผู้รับเหมา") ||
-      msg.includes("ผู้รับเหมา") ||
-      msg.includes("เมนูผู้รับเหมา")
-    ) {
-      return contractorMainMenu(event);
-    }
 
     /* --------------------------------------------------
    5) เมนูย่อย (เวอร์ชันจับข้อความแบบหลวม)
