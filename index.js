@@ -615,62 +615,79 @@ function examFlex(questionObj, number) {
 }
 
 /* --------------------------------------------------
-   PDPA FLEX (แก้ให้ถูกต้องแล้ว)
+   PDPA FLEX (เวอร์ชันฟังก์ชัน — ใช้งานได้จริง)
 -------------------------------------------------- */
-const pdpaFlex = {
-  type: "bubble",
-  body: {
-    type: "box",
-    layout: "vertical",
-    spacing: "md",
-    contents: [
-      {
-        type: "text",
-        text: "นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)",
-        weight: "bold",
-        size: "lg",
-        color: "#1E90FF"
+function pdpaFlex() {
+  return {
+    type: "flex",
+    altText: "ยินยอม PDPA",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)",
+            weight: "bold",
+            size: "lg",
+            color: "#1E90FF"
+          },
+          {
+            type: "text",
+            text:
+              "บริษัทมีการเก็บข้อมูลส่วนบุคคลเพื่อใช้ในการ:\n" +
+              "• ยืนยันตัวตนผู้รับเหมา\n" +
+              "• ออกบัตรผู้รับเหมา\n" +
+              "• บันทึกผลการอบรมความปลอดภัย\n" +
+              "• ใช้ในระบบความปลอดภัยของบริษัท",
+            wrap: true
+          },
+          {
+            type: "text",
+            text: "กรุณาอ่านนโยบายฉบับเต็มได้ที่:",
+            wrap: true,
+            margin: "md"
+          },
+          {
+            type: "text",
+            text:
+              "🔗 https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf",
+            wrap: true,
+            color: "#0066CC",
+            size: "sm"
+          },
+          {
+            type: "text",
+            text: "เพื่อความถูกต้อง โปรดเปิดไฟล์นโยบาย PDPA ของบริษัทก่อนกดยอมรับ",
+            wrap: true,
+            size: "sm",
+            color: "#555555",
+            margin: "md"
+          }
+        ]
       },
-      {
-        type: "text",
-        text: "บริษัทมีการเก็บข้อมูลส่วนบุคคลเพื่อใช้ในการ:\n• ยืนยันตัวตนผู้รับเหมา\n• ออกบัตรผู้รับเหมา\n• บันทึกผลการอบรมความปลอดภัย\n• ใช้ในระบบความปลอดภัยของบริษัท",
-        wrap: true
-      },
-      {
-        type: "text",
-        text: "กรุณาอ่านนโยบายฉบับเต็มได้ที่:",
-        wrap: true,
-        margin: "md"
-      },
-      {
-        type: "text",
-        text: "🔗 https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf",
-        wrap: true,
-        color: "#0066CC",
-        size: "sm"
-      },
-      {
-        type: "text",
-        text: "เพื่อความถูกต้อง โปรดเปิดไฟล์นโยบาย PDPA ของบริษัทก่อนกดยอมรับ",
-        wrap: true,
-        size: "sm",
-        color: "#555555",
-        margin: "md"
-      },
-      {
-        type: "button",
-        style: "primary",
-        color: "#1E90FF",
-        action: {
-          type: "message",
-          label: "ยอมรับและกรอกข้อมูล",
-          text: "ยอมรับและกรอกข้อมูล"
-        },
-        margin: "lg"
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "postback",
+              label: "ยอมรับและกรอกข้อมูล",
+              data: "pdpa_accept"
+            }
+          }
+        ]
       }
-    ]
-  }
-};
+    }
+  };
+}
 
 /* --------------------------------------------------
    FORM QUESTIONS (4 ข้อ)
