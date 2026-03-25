@@ -1319,7 +1319,27 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       10) Default (ใหม่ — ไม่กินทุกข้อความ)
+       ⭐ SAFETY Q&A (ตอบคำถามเซฟตี้)
+    -------------------------------------------------- */
+    const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
+    if (foundQA) {
+      return reply(event, foundQA.answer);
+    }
+
+    /* --------------------------------------------------
+       ⭐ TEXT REPLIES (greeting / feeling / daily / friendly / compliment / exclaim / botinfo)
+    -------------------------------------------------- */
+    for (const cat of Object.keys(categories)) {
+      if (categories[cat].some(w => msg.includes(normalize(w)))) {
+        const replyText = replies[cat][text] || replies[cat][normalize(text)] || null;
+        if (replyText) {
+          return reply(event, replyText);
+        }
+      }
+    }
+
+    /* --------------------------------------------------
+       10) Default
     -------------------------------------------------- */
     return reply(event, "พิมพ์: เมนู เพื่อเริ่มต้นใช้งาน");
 
