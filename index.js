@@ -1176,38 +1176,35 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-   3) FLOW หลักของระบบสอบผู้รับเหมา
-   (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
--------------------------------------------------- */
-if (userState[userId]) {
-  const state = userState[userId];
+       3) FLOW หลักของระบบสอบผู้รับเหมา
+       (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
+    -------------------------------------------------- */
+    if (userState[userId]) {
+      const state = userState[userId];
 
-  // PDPA
-  if (state.mode === "pdpa") {
-    if (data === "pdpa_accept") {
-      state.mode = "form";
-      state.step = 0;
-      state.formData = {};
-      return client.replyMessage(event.replyToken, askFormQuestion(userId));
+      // PDPA
+      if (state.mode === "pdpa") {
+        if (data === "pdpa_accept") {
+          state.mode = "form";
+          state.step = 0;
+          state.formData = {};
+          return client.replyMessage(event.replyToken, askFormQuestion(userId));
+        }
+        return client.replyMessage(event.replyToken, pdpaFlex());
+      }
+
+      // ฟอร์มกรอกข้อมูล
+      if (state.mode === "form") {
+        return handleFormAnswer(event, userId, text);
+      }
+
+      // ทำข้อสอบ
+      if (state.mode === "exam") {
+        if (data && data.startsWith("answer_")) {
+          return handleExamAnswer(event, userId, data);
+        }
+      }
     }
-    return client.replyMessage(event.replyToken, pdpaFlex());
-  }
-
-  // ฟอร์มกรอกข้อมูล
-  if (state.mode === "form") {
-    return handleFormAnswer(event, userId, text);
-  }
-
-  // ทำข้อสอบ
-  if (state.mode === "exam") {
-    if (data && data.startsWith("answer_")) {
-      return handleExamAnswer(event, userId, data);
-    }
-  }
-
-  // ❌ ลบ waiting_certificate ออก (ไม่ต้องมีอีกต่อไป)
-  // เพราะจะทำให้บอทค้างและเมนูอื่นใช้ไม่ได้
-}
 
     /* --------------------------------------------------
        4) เมนูหลักผู้รับเหมา
@@ -1228,8 +1225,8 @@ if (userState[userId]) {
     }
 
     if (msg.includes("ผู้แก้ไขงาน")) {
-  return client.replyMessage(event.replyToken, menuVendor());
-}
+      return client.replyMessage(event.replyToken, menuVendor());
+    }
 
     if (msg.includes("สื่ออบรมผู้รับเหมา")) {
       return client.replyMessage(event.replyToken, trainingMenu());
@@ -1246,17 +1243,18 @@ if (userState[userId]) {
        7) เริ่มทำแบบทดสอบ
     -------------------------------------------------- */
     if (msg.includes("ทำแบบทดสอบ")) {
-  userState[userId] = {
-    mode: "pdpa",
-    step: 0,
-    formData: {},
-    currentQuestion: 1,
-    score: 0
-  };
-  return client.replyMessage(event.replyToken, pdpaFlex());
-}
+      userState[userId] = {
+        mode: "pdpa",
+        step: 0,
+        formData: {},
+        currentQuestion: 1,
+        score: 0
+      };
+      return client.replyMessage(event.replyToken, pdpaFlex());
+    }
+
     /* --------------------------------------------------
-       8) ติดต่อทีมเซฟตี้  (ย้ายเข้ามาใน webhook แล้ว)
+       8) ติดต่อทีมเซฟตี้
     -------------------------------------------------- */
     if (msg.includes("ติดต่อทีมเซฟตี้")) {
 
@@ -1304,9 +1302,9 @@ if (userState[userId]) {
     }
 
     /* --------------------------------------------------
-       10) Default
+       10) Default (ใหม่ — ไม่กินทุกข้อความ)
     -------------------------------------------------- */
-    return reply(event, "พิมพ์: ข้อมูลผู้รับเหมา เพื่อเริ่มต้นใช้งานเมนู");
+    return reply(event, "พิมพ์: เมนู เพื่อเริ่มต้นใช้งาน");
 
   } catch (err) {
     console.error("❌ WEBHOOK ERROR:", err);
