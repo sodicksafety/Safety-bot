@@ -1349,15 +1349,46 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         return handleFormAnswer(event, userId, text);
       }
 
-      /* ------------------------------
-         ทำข้อสอบ
-      ------------------------------ */
-      if (state.mode === "exam") {
-        if (data && data.startsWith("answer_")) {
-          return handleExamAnswer(event, userId, data);
-        }
-      }
+ /* ------------------------------
+   ทำข้อสอบ (รองรับทั้งปุ่ม + พิมพ์เอง)
+------------------------------ */
+if (userState[userId] && userState[userId].mode === "exam") {
+
+  const state = userState[userId];   // ⭐ ต้องมีบรรทัดนี้
+
+  // 1) กรณีกดปุ่ม (postback)
+  if (data && data.startsWith("answer_")) {
+    return handleExamAnswer(event, userId, data);
+  }
+
+  // 2) กรณีพิมพ์เอง (Google Voice / พิมพ์ข้อความ)
+  if (text) {
+    const qIndex = state.currentQuestion - 1;
+    const question = examQuestions[qIndex];
+    const normText = normalize(text);
+
+    // หา choice ที่ตรงกับข้อความที่พิมพ์ (แบบหลวม ๆ)
+    const foundIndex = question.choices.findIndex(choice => {
+      const normChoice = normalize(choice);
+      return (
+        normText === normChoice ||          // ตรงเป๊ะ
+        normText.includes(normChoice) ||    // ผู้ใช้พิมพ์ยาวกว่า
+        normChoice.includes(normText)       // ผู้ใช้พิมพ์สั้นกว่า
+      );
+    });
+
+    // ถ้าหาเจอ → ส่งเข้า handleExamAnswer เหมือนกดปุ่ม
+    if (foundIndex !== -1) {
+      return handleExamAnswer(event, userId, `answer_${foundIndex}`);
     }
+
+    // ถ้าพิมพ์มั่วจนจับไม่ได้
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+    });
+  }
+}
 
     /* --------------------------------------------------
        4) เมนูหลักผู้รับเหมา
@@ -1371,19 +1402,24 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       5) เมนูย่อย
-    -------------------------------------------------- */
-    if (msg.includes("ผู้รับส่งสินค้า")) {
-      return client.replyMessage(event.replyToken, menuDelivery());
-    }
+   5) เมนูย่อย (เวอร์ชันจับข้อความแบบหลวม)
+-------------------------------------------------- */
+if (msg.includes("ผู้รับส่งสินค้า")) {
+  return client.replyMessage(event.replyToken, menuDelivery());
+}
 
-    if (msg.includes("ผู้แก้ไขงาน")) {
-      return client.replyMessage(event.replyToken, menuVendor());
-    }
+if (msg.includes("ผู้แก้ไขงาน")) {
+  return client.replyMessage(event.replyToken, menuVendor());
+}
 
-    if (msg.includes("สื่ออบรมผู้รับเหมา")) {
-      return client.replyMessage(event.replyToken, trainingMenu());
-    }
+/* ⭐ แก้ตรงนี้ — รองรับทุกแบบที่ไก่พูด/พิมพ์ */
+if (
+  msg.includes("สื่อ") &&
+  msg.includes("อบรม") &&
+  msg.includes("ผู้รับเหมา")
+) {
+  return client.replyMessage(event.replyToken, trainingMenu());
+}
 
     /* --------------------------------------------------
        6) ดาวน์โหลดบัตร
