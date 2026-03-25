@@ -566,7 +566,7 @@ const examQuestions = [
   { q: "30) ถ้าพบสิ่งผิดปกติควรทำอย่างไร?", choices: ["แจ้ง Safety", "ปล่อยไว้", "ถ่ายรูปลงโซเชียล"], answer: 0 }
 ];
 /* --------------------------------------------------
-   FLEX TEMPLATE FOR EXAM (แสดงคำถาม + ตัวเลือก)
+   FLEX TEMPLATE FOR EXAM (Japanese Industrial UI)
 -------------------------------------------------- */
 function examFlex(questionObj, number) {
   return {
@@ -578,7 +578,7 @@ function examFlex(questionObj, number) {
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "md",
+        spacing: "lg",
         contents: [
           {
             type: "text",
@@ -592,30 +592,37 @@ function examFlex(questionObj, number) {
             text: questionObj.q,
             wrap: true,
             size: "md",
-            color: "#333333"
+            color: "#222222"
           },
+
           { type: "separator", margin: "md" },
 
-          // ปุ่มตัวเลือกทั้งหมด (สีใหม่สบายตา)
+          // ⭐ ปุ่มสไตล์ญี่ปุ่นโรงงาน: ขาว + ขอบเทา + ตัวหนังสือดำ
           ...questionObj.choices.map((choice, index) => ({
             type: "button",
-            style: "primary",
-            color: "#E0E0E0",   // สีเทาอ่อน สบายตา
+            style: "secondary",
+            color: "#FFFFFF",        // พื้นขาว
             action: {
               type: "postback",
-              label: choice,
+              label: choice,         // ตัวหนังสือดำอัตโนมัติ
               data: `answer_${index}`,
               displayText: choice
-            }
+            },
+            height: "sm",
+            margin: "md"
           }))
         ]
+      },
+      styles: {
+        body: {
+          separator: true
+        }
       }
     }
   };
 }
-
 /* --------------------------------------------------
-   PDPA FLEX (เวอร์ชันฟังก์ชัน — ใช้งานได้จริง)
+   PDPA FLEX (Japanese Industrial UI)
 -------------------------------------------------- */
 function pdpaFlex() {
   return {
@@ -623,17 +630,18 @@ function pdpaFlex() {
     altText: "ยินยอม PDPA",
     contents: {
       type: "bubble",
+      size: "mega",
       body: {
         type: "box",
         layout: "vertical",
-        spacing: "md",
+        spacing: "lg",
         contents: [
           {
             type: "text",
             text: "นโยบายคุ้มครองข้อมูลส่วนบุคคล (PDPA)",
             weight: "bold",
             size: "lg",
-            color: "#1E90FF"
+            color: "#1E90FF"   // น้ำเงินมาตรฐานญี่ปุ่น
           },
           {
             type: "text",
@@ -643,20 +651,28 @@ function pdpaFlex() {
               "• ออกบัตรผู้รับเหมา\n" +
               "• บันทึกผลการอบรมความปลอดภัย\n" +
               "• ใช้ในระบบความปลอดภัยของบริษัท",
-            wrap: true
+            wrap: true,
+            size: "md",
+            color: "#222222"   // ดำเข้มแบบเอกสารญี่ปุ่น
+          },
+          {
+            type: "separator",
+            margin: "md"
           },
           {
             type: "text",
             text: "กรุณาอ่านนโยบายฉบับเต็มได้ที่:",
             wrap: true,
-            margin: "md"
+            margin: "md",
+            size: "sm",
+            color: "#444444"
           },
           {
             type: "text",
             text:
               "🔗 https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf",
             wrap: true,
-            color: "#0066CC",
+            color: "#0066CC",   // น้ำเงินลิงก์แบบญี่ปุ่น
             size: "sm"
           },
           {
@@ -664,7 +680,7 @@ function pdpaFlex() {
             text: "เพื่อความถูกต้อง โปรดเปิดไฟล์นโยบาย PDPA ของบริษัทก่อนกดยอมรับ",
             wrap: true,
             size: "sm",
-            color: "#555555",
+            color: "#666666",
             margin: "md"
           }
         ]
@@ -672,23 +688,29 @@ function pdpaFlex() {
       footer: {
         type: "box",
         layout: "vertical",
+        spacing: "md",
         contents: [
           {
             type: "button",
             style: "primary",
-            color: "#1E90FF",
+            color: "#1E90FF",   // ปุ่มน้ำเงินเข้มแบบ Toyota/Honda
             action: {
               type: "postback",
               label: "ยอมรับและกรอกข้อมูล",
               data: "pdpa_accept"
-            }
+            },
+            height: "sm"
           }
         ]
+      },
+      styles: {
+        body: {
+          separator: true
+        }
       }
     }
   };
 }
-
 /* --------------------------------------------------
    FORM QUESTIONS (4 ข้อ)
 -------------------------------------------------- */
@@ -803,15 +825,15 @@ async function finishExam(event, userId) {
 
   // ถ้าไม่ผ่าน → จบ flow
   if (!pass) {
-    delete userState[userId];
+    delete userState[userId];   // ⭐ ล้าง state ทันที
     return;
   }
 
   // ถ้าผ่าน → ส่งข้อมูลไป Google Sheet
   await sendToGoogleSheet(userId, "ผ่าน");
 
-  // ไม่ล็อก state อีกต่อไป
-  state.mode = null;
+  // ⭐ ล้าง state เพื่อให้กลับมาคุยปกติได้
+  delete userState[userId];
 
   // แจ้งผู้ใช้แบบไม่บังคับ
   return client.pushMessage(userId, {
@@ -819,7 +841,6 @@ async function finishExam(event, userId) {
     text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ\nคุณสามารถกดเมนูหรือพิมพ์: ดาวน์โหลดบัตร เพื่อรับบัตรผู้รับเหมา"
   });
 }
-
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET
 -------------------------------------------------- */
@@ -857,7 +878,7 @@ async function getCertificateUrl(userId) {
 }
 
 /* --------------------------------------------------
-   CERTIFICATE FLEX
+   CERTIFICATE FLEX (Toyota Premium UI)
 -------------------------------------------------- */
 function certificateFlex(url) {
   return {
@@ -865,6 +886,7 @@ function certificateFlex(url) {
     altText: "บัตรผู้รับเหมา",
     contents: {
       type: "bubble",
+      size: "mega",
       hero: {
         type: "image",
         url,
@@ -875,19 +897,30 @@ function certificateFlex(url) {
       body: {
         type: "box",
         layout: "vertical",
+        spacing: "lg",
         contents: [
           {
-            type: "button",
-            style: "primary",
+            type: "text",
+            text: "บัตรผู้รับเหมา",
+            weight: "bold",
+            size: "lg",
             color: "#1E90FF",
+            align: "center"
+          },
+          {
+            type: "button",
+            style: "secondary",
+            color: "#FFFFFF",
             action: {
               type: "uri",
               label: "ดาวน์โหลดบัตร",
               uri: url
-            }
+            },
+            height: "sm"
           }
         ]
-      }
+      },
+      styles: { body: { separator: true } }
     }
   };
 }
@@ -909,7 +942,7 @@ async function handleDownloadCertificate(event, userId) {
 }
 
 /* --------------------------------------------------
-   เมนูย่อย : สื่ออบรมผู้รับเหมา (5 คลิป YouTube)
+   TRAINING MENU (Toyota Premium UI)
 -------------------------------------------------- */
 function trainingMenu() {
   return {
@@ -917,80 +950,51 @@ function trainingMenu() {
     altText: "สื่ออบรมผู้รับเหมา",
     contents: {
       type: "bubble",
+      size: "mega",
       body: {
         type: "box",
         layout: "vertical",
         spacing: "md",
         contents: [
           {
-            type: "button",
-            style: "primary",
-            color: "#FF0000",
-            action: {
-              type: "uri",
-              label: "1) ความปลอดภัยในการทำงาน",
-              uri: "https://youtu.be/MGbZGFtQCLQ?si=S7Xg3pxeOqkQCyx5"
-            }
+            type: "text",
+            text: "สื่ออบรมผู้รับเหมา",
+            weight: "bold",
+            size: "lg",
+            color: "#1E90FF",
+            align: "center"
           },
-          {
+          ...[
+            ["1) ความปลอดภัยในการทำงาน", "https://youtu.be/MGbZGFtQCLQ?si=S7Xg3pxeOqkQCyx5"],
+            ["2) ความปลอดภัยงานเชื่อม", "https://youtu.be/gpUlIKyjSQM?si=QctBbVhlth2bbmDt"],
+            ["3) การใช้ถังดับเพลิง", "https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f"],
+            ["4) ขับขี่ปลอดภัย", "https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF"],
+            ["5) การแยกขยะ", "https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9"]
+          ].map(([label, uri]) => ({
             type: "button",
-            style: "primary",
-            color: "#FF0000",
-            action: {
-              type: "uri",
-              label: "2) ความปลอดภัยงานเชื่อม",
-              uri: "https://youtu.be/gpUlIKyjSQM?si=QctBbVhlth2bbmDt"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#FF0000",
-            action: {
-              type: "uri",
-              label: "3) การใช้ถังดับเพลิง",
-              uri: "https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#FF0000",
-            action: {
-              type: "uri",
-              label: "4) ขับขี่ปลอดภัย",
-              uri: "https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF"
-            }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#FF0000",
-            action: {
-              type: "uri",
-              label: "5) การแยกขยะ",
-              uri: "https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9"
-            }
-          }
+            style: "secondary",
+            color: "#FFFFFF",
+            action: { type: "uri", label, uri }
+          }))
         ]
       }
     }
   };
 }
+
 /* --------------------------------------------------
-   เมนูหลัก : ข้อมูลผู้รับเหมา (ข้อความ + 4 ปุ่ม)
+   CONTRACTOR MAIN MENU (Toyota Premium UI)
 -------------------------------------------------- */
 async function contractorMainMenu(event) {
-
   return client.replyMessage(event.replyToken, [
     {
       type: "text",
       text:
 `ข้อมูลผู้รับเหมา
-กดปุ่มเลือกประเภทการมาติดต่อเพื่อทำบัตร
-ทำข้อสอบและส่งเอกสารทางเมล์ของบริษัท
-  
-กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่อีเมล  
+เลือกประเภทการมาติดต่อเพื่อทำบัตร
+ทำข้อสอบและส่งเอกสารทางเมลบริษัท
+
+กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่  
 thai_safety@sodick.co.th`
     },
     {
@@ -998,6 +1002,7 @@ thai_safety@sodick.co.th`
       altText: "ข้อมูลผู้รับเหมา",
       contents: {
         type: "bubble",
+        size: "mega",
         body: {
           type: "box",
           layout: "vertical",
@@ -1005,26 +1010,26 @@ thai_safety@sodick.co.th`
           contents: [
             {
               type: "button",
-              style: "primary",
-              color: "#1E90FF",
-              action: { type: "message", label: "สำหรับ ผู้รับ–ส่งสินค้า", text: "ผู้รับส่งสินค้า" }
+              style: "secondary",
+              color: "#FFFFFF",
+              action: { type: "message", label: "ผู้รับ–ส่งสินค้า", text: "ผู้รับส่งสินค้า" }
             },
             {
               type: "button",
-              style: "primary",
-              color: "#32CD32",
-              action: { type: "message", label: "สำหรับ ผู้เข้ามาทำงาน–แก้ไขงาน", text: "ผู้แก้ไขงาน" }
+              style: "secondary",
+              color: "#FFFFFF",
+              action: { type: "message", label: "ผู้เข้ามาทำงาน–แก้ไขงาน", text: "ผู้แก้ไขงาน" }
             },
             {
               type: "button",
-              style: "primary",
-              color: "#FF0000",
+              style: "secondary",
+              color: "#FFFFFF",
               action: { type: "message", label: "สื่ออบรมผู้รับเหมา", text: "สื่ออบรมผู้รับเหมา" }
             },
             {
               type: "button",
-              style: "primary",
-              color: "#FFA500",
+              style: "secondary",
+              color: "#FFFFFF",
               action: { type: "message", label: "ดาวน์โหลดบัตรผู้รับเหมา", text: "ดาวน์โหลดบัตร" }
             }
           ]
@@ -1035,7 +1040,7 @@ thai_safety@sodick.co.th`
 }
 
 /* --------------------------------------------------
-   เมนูย่อย: ผู้รับ–ส่งสินค้า
+   DELIVERY MENU (Toyota Premium UI)
 -------------------------------------------------- */
 function menuDelivery() {
   return {
@@ -1043,6 +1048,7 @@ function menuDelivery() {
     altText: "ผู้รับ–ส่งสินค้า",
     contents: {
       type: "bubble",
+      size: "mega",
       body: {
         type: "box",
         layout: "vertical",
@@ -1050,8 +1056,8 @@ function menuDelivery() {
         contents: [
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
+            style: "secondary",
+            color: "#FFFFFF",
             action: {
               type: "uri",
               label: "วีดีโออบรม",
@@ -1060,18 +1066,14 @@ function menuDelivery() {
           },
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "message",
-              label: "ทำแบบทดสอบ",
-              text: "ทำแบบทดสอบ"
-            }
+            style: "secondary",
+            color: "#FFFFFF",
+            action: { type: "message", label: "ทำแบบทดสอบ", text: "ทำแบบทดสอบ" }
           },
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
+            style: "secondary",
+            color: "#FFFFFF",
             action: {
               type: "uri",
               label: "เอกสารบันทึกการอบรม",
@@ -1083,8 +1085,9 @@ function menuDelivery() {
     }
   };
 }
+
 /* --------------------------------------------------
-   เมนูย่อย : ผู้เข้ามาทำงาน–แก้ไขงาน (5 ปุ่มใหม่)
+   VENDOR MENU (Toyota Premium UI)
 -------------------------------------------------- */
 function menuVendor() {
   return {
@@ -1092,6 +1095,7 @@ function menuVendor() {
     altText: "ผู้เข้ามาทำงาน–แก้ไขงาน",
     contents: {
       type: "bubble",
+      size: "mega",
       body: {
         type: "box",
         layout: "vertical",
@@ -1099,53 +1103,33 @@ function menuVendor() {
         contents: [
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "วีดีโออบรม",
-              uri: "https://drive.google.com/YOUR_VIDEO_LINK"
-            }
+            style: "secondary",
+            color: "#FFFFFF",
+            action: { type: "uri", label: "วีดีโออบรม", uri: "https://drive.google.com/YOUR_VIDEO_LINK" }
           },
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "message",
-              label: "ทำแบบทดสอบ",
-              text: "ทำแบบทดสอบ"
-            }
+            style: "secondary",
+            color: "#FFFFFF",
+            action: { type: "message", label: "ทำแบบทดสอบ", text: "ทำแบบทดสอบ" }
           },
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "เอกสารบันทึกการอบรม",
-              uri: "https://drive.google.com/YOUR_TRAINING_DOC"
-            }
+            style: "secondary",
+            color: "#FFFFFF",
+            action: { type: "uri", label: "เอกสารบันทึกการอบรม", uri: "https://drive.google.com/YOUR_TRAINING_DOC" }
           },
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "ใบขอเข้ามาทำงาน",
-              uri: "https://drive.google.com/YOUR_WORK_REQUEST"
-            }
+            style: "secondary",
+            color: "#FFFFFF",
+            action: { type: "uri", label: "ใบขอเข้ามาทำงาน", uri: "https://drive.google.com/YOUR_WORK_REQUEST" }
           },
           {
             type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "uri",
-              label: "ใบตรวจสอบเครื่องมือ",
-              uri: "https://drive.google.com/YOUR_TOOL_CHECK"
-            }
+            style: "secondary",
+            color: "#FFFFFF",
+            action: { type: "uri", label: "ใบตรวจสอบเครื่องมือ", uri: "https://drive.google.com/YOUR_TOOL_CHECK" }
           }
         ]
       }
