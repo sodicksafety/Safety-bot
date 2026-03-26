@@ -869,10 +869,6 @@ return client.replyMessage(event.replyToken, [
 }  // 👈 ปิดฟังก์ชัน handleFormAnswer ให้ครบ
 
 /* --------------------------------------------------
-   HANDLE EXAM ANSWER
--------------------------------------------------- */
-async function handleExamAnswer(event, userId, data) {
-/* --------------------------------------------------
    HANDLE EXAM ANSWER (เวอร์ชันเก็บคำตอบ 30 ข้อ)
 -------------------------------------------------- */
 async function handleExamAnswer(event, userId, data) {
@@ -949,15 +945,14 @@ async function handleExamAnswer(event, userId, data) {
   }
 
   // ⭐ 6) สร้าง Flex แบบกันพัง
-const flex = examFlex(nextQ, state.currentQuestion);
+  const flex = examFlex(nextQ, state.currentQuestion);
 
-state.locked = false;
-return client.replyMessage(event.replyToken, [
-  flex,
-  exitToMainMenuButton()
-]);
+  state.locked = false;
+  return client.replyMessage(event.replyToken, [
+    flex,
+    exitToMainMenuButton()
+  ]);
 }  // 👈 ปิดฟังก์ชัน handleExamAnswer ให้ครบ
-
 /* --------------------------------------------------
    FLEX TEMPLATE (เวอร์ชันกันพัง)
 -------------------------------------------------- */
@@ -1822,15 +1817,30 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
       }
     }
 
-    /* --------------------------------------------------
-       10) Default
-    -------------------------------------------------- */
-    return reply(event, "พิมพ์: เมนู เพื่อเริ่มต้นใช้งาน");
+ /* --------------------------------------------------
+   10) Default
+-------------------------------------------------- */
+return client.replyMessage(event.replyToken, {
+  type: "text",
+  text: `❗ ไม่พบข้อมูลคำถามนี้ในระบบ
 
-  } catch (err) {
-    console.error("❌ WEBHOOK ERROR:", err);
-    return res.status(500).end();
-  }
+ขออภัยครับ 🙂  
+ระบบยังไม่มีคำตอบสำหรับคำถามนี้  
+แต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ
+
+📞 ติดต่อผู้พัฒนาระบบ 
+📞 (System Developer)  
+@Trerasak_Komol (พี่ไก่)
+Safety Dept....
+
+➕ เพิ่มเพื่อนผู้ดูแล  
+https://line.me/ti/p/_T4H-3TKUa`
+});
+
+} catch (err) {
+  console.error("❌ WEBHOOK ERROR:", err);
+  return res.status(500).end();
+}
 });
 
 /* --------------------------------------------------
