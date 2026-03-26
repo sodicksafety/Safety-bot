@@ -849,16 +849,17 @@ async function handleFormAnswer(event, userId, text) {
   }
 
   // -----------------------------
-  // ถ้าครบแล้ว → เริ่มข้อสอบ
-  // -----------------------------
-  state.mode = "exam";
-  state.currentQuestion = 1;
-  state.score = 0;
+// ถ้าครบแล้ว → เริ่มข้อสอบ
+// -----------------------------
+state.mode = "exam";
+state.currentQuestion = 1;
+state.score = 0;
+state.answers = [];   // ⭐ สำคัญมาก ต้องมี
 
-  const qObj = examQuestions[0];
-  const flex = examFlex(qObj, 1);
+const qObj = examQuestions[0];
+const flex = examFlex(qObj, 1);
 
-  return client.replyMessage(event.replyToken, flex);
+return client.replyMessage(event.replyToken, flex);
 }
 /* --------------------------------------------------
    HANDLE EXAM ANSWER (เวอร์ชันเก็บคำตอบ 30 ข้อ)
@@ -1511,14 +1512,10 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const msg = normalize(text);
     const data = event.postback?.data || "";
 
-    /* ⭐ ฟังก์ชันล้าง state */
-    function clearUserState() {
-      delete examState[userId];
-      delete pdpaState[userId];
-      delete phoneState[userId];
-      delete userFlow[userId];
-      delete userState[userId];   // ⭐ เพิ่มอันนี้เพื่อเคลียร์ flow หลักด้วย
-    }
+    /* ⭐ ฟังก์ชันล้าง state (เวอร์ชันถูกต้อง) */
+function clearUserState() {
+  delete userState[userId];
+}
 
     /* ⭐ ล้าง state เมื่อผู้ใช้กดเมนูหลัก (ข้อความ) */
     if (
