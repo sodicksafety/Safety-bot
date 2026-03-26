@@ -843,13 +843,10 @@ async function handleFormAnswer(event, userId, text) {
   state.formData[key] = text;
   state.step++;
 
-  // ถ้ายังไม่ครบ 4 ข้อ → ถามต่อ + ปุ่มเมนูหลัก
-if (state.step < formQuestions.length) {
-  return client.replyMessage(event.replyToken, [
-    askFormQuestion(userId),
-    exitToMainMenuButton()
-  ]);
-}
+  // ถ้ายังไม่ครบ 4 ข้อ → ถามต่อ
+  if (state.step < formQuestions.length) {
+    return client.replyMessage(event.replyToken, askFormQuestion(userId));
+  }
 
   // -----------------------------
 // ถ้าครบแล้ว → เริ่มข้อสอบ
@@ -862,12 +859,8 @@ state.answers = [];   // ⭐ สำคัญมาก ต้องมี
 const qObj = examQuestions[0];
 const flex = examFlex(qObj, 1);
 
-return client.replyMessage(event.replyToken, [
-  flex,
-  exitToMainMenuButton()
-]);
-}  // 👈 ปิดฟังก์ชัน handleFormAnswer ให้ครบ
-
+return client.replyMessage(event.replyToken, flex);
+}
 /* --------------------------------------------------
    HANDLE EXAM ANSWER (เวอร์ชันเก็บคำตอบ 30 ข้อ)
 -------------------------------------------------- */
@@ -948,16 +941,13 @@ async function handleExamAnswer(event, userId, data) {
   const flex = examFlex(nextQ, state.currentQuestion);
 
   state.locked = false;
-  return client.replyMessage(event.replyToken, [
-    flex,
-    exitToMainMenuButton()
-  ]);
-}  // 👈 ปิดฟังก์ชัน handleExamAnswer ให้ครบ
+  return client.replyMessage(event.replyToken, flex);
+}
+
 /* --------------------------------------------------
    FLEX TEMPLATE (เวอร์ชันกันพัง)
 -------------------------------------------------- */
 function examFlex(questionObj, number) {
-
   // ⭐ กัน Flex พังจากข้อความยาว
   const safeText = (txt) =>
     typeof txt === "string"
@@ -1162,6 +1152,9 @@ delete userState[userId];
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
 -------------------------------------------------- */
+/* --------------------------------------------------
+   SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
+-------------------------------------------------- */
 async function sendToGoogleSheet(userId, passStatus, answers = []) {
   const state = userState[userId];
 
@@ -1180,21 +1173,13 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
     score: state.score,
     result: passStatus,
 
-    // ⭐ ส่งคำตอบ 30 ข้อแบบข้อความ + (ถูก)
-    answers: fullAnswers.map((ansIndex, i) => {
-      const q = examQuestions[i];
-      const userAnswerText = q.choices[ansIndex] || "";
-      const isCorrect = ansIndex === q.answer;
-
-      return isCorrect
-        ? `${userAnswerText} (ถูก)`
-        : userAnswerText;
-    })
+    // ⭐ ส่งคำตอบ 30 ข้อไปให้ Apps Script
+    answers: fullAnswers
   };
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec",
+      "https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec",
       payload,
       {
         headers: {
@@ -1206,14 +1191,13 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
     console.error("❌ ERROR sending to Google Sheet:", err);
   }
 }
-
 /* --------------------------------------------------
    GET CERTIFICATE URL
 -------------------------------------------------- */
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec?mode=get&userId=${userId}`
     );
     return res.data;
   } catch (err) {
@@ -1221,6 +1205,7 @@ async function getCertificateUrl(userId) {
     return null;
   }
 }
+
 /* --------------------------------------------------
    CERTIFICATE FLEX (Panasonic Clean Card UI)
 -------------------------------------------------- */
@@ -1523,43 +1508,13 @@ function menuVendor() {
   };
 }
 /* --------------------------------------------------
-   EXIT TO MAIN MENU BUTTON (Panasonic Clean Card UI)
--------------------------------------------------- */
-function exitToMainMenuButton() {
-  return {
-    type: "flex",
-    altText: "กลับเมนูหลัก",
-    contents: {
-      type: "bubble",
-      size: "nano",
-      body: {
-        type: "box",
-        layout: "vertical",
-        paddingAll: "md",
-        contents: [
-          {
-            type: "button",
-            style: "secondary",
-            color: "#B3B3B3",
-            action: {
-              type: "message",
-              label: "กลับเมนูหลัก",
-              text: "เมนูหลัก"
-            }
-          }
-        ]
-      }
-    }
-  };
-}
-
-/* --------------------------------------------------
    WEBHOOK
 -------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
 
+    // ป้องกัน event ที่ไม่ใช่ message หรือ postback
     if (!event || (event.type !== "message" && event.type !== "postback")) {
       return res.status(200).end();
     }
@@ -1569,32 +1524,23 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const msg = normalize(text);
     const data = event.postback?.data || "";
 
-    function clearUserState() {
-      delete userState[userId];
-    }
+    /* ⭐ ฟังก์ชันล้าง state (เวอร์ชันถูกต้อง) */
+function clearUserState() {
+  delete userState[userId];
+}
 
-    if (userState[userId]) {
-      userState[userId].lastActive = Date.now();
-    }
-
-    if (userState[userId] && userState[userId].lastActive) {
-      const now = Date.now();
-      const diff = now - userState[userId].lastActive;
-
-      if (diff > 3 * 60 * 1000) {
-        delete userState[userId];
-        return contractorMainMenu(event);
-      }
-    }
-
+    /* ⭐ ล้าง state เมื่อผู้ใช้กดเมนูหลัก (ข้อความ) */
     if (
       msg === "เมนูหลัก" ||
       msg === "ติดต่อเซฟตี้" ||
-      msg === "ขอใบเซฟตี้"
+      msg === "ขอใบเซฟตี้" ||
+      msg === "ทำข้อสอบ" ||
+      msg === "pdpa"
     ) {
       clearUserState();
     }
 
+    /* ⭐ ล้าง state เมื่อผู้ใช้กดปุ่ม (postback) ที่เป็นเมนู */
     if (
       data === "menu_main" ||
       data === "contact_safety" ||
@@ -1633,6 +1579,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
     /* --------------------------------------------------
        3) FLOW หลักของระบบสอบผู้รับเหมา
+       (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
     -------------------------------------------------- */
     if (userState[userId]) {
       const state = userState[userId];
@@ -1647,7 +1594,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
           state.formData = {};
           return client.replyMessage(event.replyToken, askFormQuestion(userId));
         }
-
         return client.replyMessage(event.replyToken, pdpaFlex());
       }
 
@@ -1655,39 +1601,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
          ฟอร์มกรอกข้อมูล
       ------------------------------ */
       if (state.mode === "form") {
-
-        if (
-          msg === "เมนู" ||
-          msg === "เมนูหลัก" ||
-          msg === "ออก" ||
-          msg === "ยกเลิก"
-        ) {
-          clearUserState();
-          return contractorMainMenu(event);
-        }
-
-        const fields = ["fullname", "phone", "idcard", "company"];
-        const step = state.step;
-        const field = fields[step];
-
-        state.formData[field] = text;
-        state.step++;
-
-        if (state.step >= fields.length) {
-          state.mode = "exam";
-          state.currentQuestion = 1;
-          state.score = 0;
-          state.answers = [];
-
-          const qObj = examQuestions[0];
-
-          return client.replyMessage(event.replyToken, [
-            examFlex(qObj, 1),
-            exitToMainMenuButton()
-          ]);
-        }
-
-        return client.replyMessage(event.replyToken, askFormQuestion(userId));
+        return handleFormAnswer(event, userId, text);
       }
 
       /* ------------------------------
@@ -1695,20 +1609,12 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       ------------------------------ */
       if (state.mode === "exam") {
 
-        if (
-          text === "เมนู" ||
-          text === "ออก" ||
-          text === "ยกเลิก" ||
-          text === "กลับเมนู"
-        ) {
-          clearUserState();
-          return contractorMainMenu(event);
-        }
-
+        // 1) ปุ่มคำตอบ
         if (data && data.startsWith("answer_")) {
           return handleExamAnswer(event, userId, data);
         }
 
+        // 2) พิมพ์คำตอบเอง
         if (text) {
           const qIndex = state.currentQuestion - 1;
           const question = examQuestions[qIndex];
@@ -1733,17 +1639,15 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
           });
         }
       }
-    }
+    } // ⭐ ปิด if (userState[userId])
 
-    /* --------------------------------------------------
-       4) สื่ออบรมผู้รับเหมา
-    -------------------------------------------------- */
+    /* ⭐ สื่ออบรมผู้รับเหมา */
     if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
       return client.replyMessage(event.replyToken, trainingMenu());
     }
 
     /* --------------------------------------------------
-       5) เมนูหลักผู้รับเหมา
+       4) เมนูหลักผู้รับเหมา
     -------------------------------------------------- */
     if (
       msg.includes("ข้อมูลผู้รับเหมา") ||
@@ -1754,7 +1658,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       6) เมนูย่อย
+       5) เมนูย่อย
     -------------------------------------------------- */
     if (msg.includes("ผู้รับส่งสินค้า")) {
       return client.replyMessage(event.replyToken, menuDelivery());
@@ -1765,14 +1669,14 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       7) ดาวน์โหลดบัตร
+       6) ดาวน์โหลดบัตร
     -------------------------------------------------- */
     if (msg.includes("ดาวน์โหลดบัตร")) {
       return handleDownloadCertificate(event, userId);
     }
 
     /* --------------------------------------------------
-       8) เริ่มทำแบบทดสอบ
+       7) เริ่มทำแบบทดสอบ
     -------------------------------------------------- */
     if (msg.includes("ทำแบบทดสอบ")) {
       userState[userId] = {
@@ -1780,16 +1684,16 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
         step: 0,
         formData: {},
         currentQuestion: 1,
-        score: 0,
-        lastActive: Date.now()
+        score: 0
       };
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
-/* --------------------------------------------------
-   8) ติดต่อทีมเซฟตี้  ⭐ ย้ายเข้ามาใน webhook แล้ว
+
+    /* --------------------------------------------------
+   8) ติดต่อทีมเซฟตี้
 -------------------------------------------------- */
 if (msg.includes("ติดต่อทีมเซฟตี้")) {
-  client.replyMessage(event.replyToken, {
+  await client.replyMessage(event.replyToken, {
     type: "image",
     originalContentUrl:
       "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
@@ -1797,7 +1701,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
       "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
   });
 
-  client.pushMessage(userId, {
+  return client.pushMessage(userId, {
     type: "flex",
     altText: "เบอร์ติดต่อทีมเซฟตี้",
     contents: {
@@ -1845,9 +1749,8 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
       }
     }
   });
-
-  return;
 }
+
     /* --------------------------------------------------
        9) แผนที่ + เบอร์โรงงาน
     -------------------------------------------------- */
@@ -1882,30 +1785,15 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
       }
     }
 
- /* --------------------------------------------------
-   10) Default
--------------------------------------------------- */
-return client.replyMessage(event.replyToken, {
-  type: "text",
-  text: `❗ ไม่พบข้อมูลคำถามนี้ในระบบ
+    /* --------------------------------------------------
+       10) Default
+    -------------------------------------------------- */
+    return reply(event, "พิมพ์: เมนู เพื่อเริ่มต้นใช้งาน");
 
-ขออภัยครับ 🙂  
-ระบบยังไม่มีคำตอบสำหรับคำถามนี้  
-แต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ
-
-📞 ติดต่อผู้พัฒนาระบบ 
-📞 (System Developer)  
-@Trerasak_Komol (พี่ไก่)
-Safety Dept....
-
-➕ เพิ่มเพื่อนผู้ดูแล  
-https://line.me/ti/p/_T4H-3TKUa`
-});
-
-} catch (err) {
-  console.error("❌ WEBHOOK ERROR:", err);
-  return res.status(500).end();
-}
+  } catch (err) {
+    console.error("❌ WEBHOOK ERROR:", err);
+    return res.status(500).end();
+  }
 });
 
 /* --------------------------------------------------
