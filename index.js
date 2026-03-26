@@ -553,7 +553,7 @@ const examQuestions = [
   { q: "17) ถ้าต้องตัดเหล็กควรใส่อะไร?", choices: ["แว่นตานิรภัย", "หมวกแก๊ป", "ไม่มีอะไร"], answer: 0 },
   { q: "18) ถังดับเพลิงต้องตรวจทุกกี่เดือน?", choices: ["1 เดือน", "3 เดือน", "6 เดือน"], answer: 2 },
   { q: "19) ถ้าต้องทำงานบนที่สูงต้องใช้อะไร?", choices: ["รองเท้าแตะ", "เข็มขัดกันตก", "หมวกแก๊ป"], answer: 1 },
-  { q: "20) การเดินในพื้นที่ผลิตควรใส่อะไร?", choices: ["รองเท้าเซฟตี้", "รองเท้าแตะ", "รองเท้าผ้าใบ"], answer: 0 },
+  { q: "20) การเดินในพื้นที่การผลิตควรใส่อะไร?", choices: ["รองเท้าเซฟตี้", "รองเท้าแตะ", "รองเท้าผ้าใบ"], answer: 0 },
   { q: "21) ถ้าต้องขนของหนักควรทำอย่างไร?", choices: ["ใช้รถเข็น", "ยกเอง", "ลากไปกับพื้น"], answer: 0 },
   { q: "22) ถ้าพบไฟไหม้ควรทำอย่างไร?", choices: ["วิ่งหนี", "แจ้ง 102/127/129", "ถ่ายคลิป"], answer: 1 },
   { q: "23) ถ้าต้องทำงานเสียงดังควรใส่อะไร?", choices: ["ที่อุดหู", "หมวกแก๊ป", "ไม่มีอะไร"], answer: 0 },
@@ -562,7 +562,7 @@ const examQuestions = [
   { q: "26) ถ้าต้องใช้เครื่องมือไฟฟ้าควรทำอะไร?", choices: ["ตรวจสายไฟก่อนใช้", "ใช้ทันที", "ใช้ตอนเปียกน้ำ"], answer: 0 },
   { q: "27) ถ้าต้องเดินในพื้นที่มืดควรทำอย่างไร?", choices: ["ใช้ไฟฉาย", "เดินไปเลย", "วิ่ง"], answer: 0 },
   { q: "28) ถ้าต้องทำงานใกล้รถยกควรทำอย่างไร?", choices: ["เดินตัดหน้า", "รักษาระยะห่าง", "ยืนข้างรถ"], answer: 1 },
-  { q: "29) ถ้าต้องทำงานร้อนควรทำอย่างไร?", choices: ["พักเป็นระยะ", "ทำต่อจนเสร็จ", "ไม่ต้องพัก"], answer: 0 },
+  { q: "29) ถ้าต้องทำงานอากาศร้อนควรทำอย่างไร?", choices: ["พักเป็นระยะ", "ทำต่อจนเสร็จ", "ไม่ต้องพัก"], answer: 0 },
   { q: "30) ถ้าพบสิ่งผิดปกติควรทำอย่างไร?", choices: ["แจ้ง Safety", "ปล่อยไว้", "ถ่ายรูปลงโซเชียล"], answer: 0 }
 ];
 /* --------------------------------------------------
@@ -906,26 +906,33 @@ async function handleExamAnswer(event, userId, data) {
       text: "⚠️ ข้อสอบข้อนี้มีปัญหา กรุณาแจ้งเจ้าหน้าที่"
     });
   }
+// ⭐ 4) ตรวจคำตอบ
+const selected = parseInt(data.replace("answer_", ""), 10);
 
-  // ⭐ 4) ตรวจคำตอบ
-  const selected = parseInt(data.replace("answer_", ""), 10);
+// ⭐ แปลงเลขเป็นคำตอบจริง
+const answerText = question.choices[selected];
 
-  // ⭐ เก็บคำตอบลง state (สำคัญมาก)
-  state.answers[qIndex] = selected;
+// ⭐ ถ้าตอบถูก → ต่อท้ายคำว่า "(ถูก)"
+const finalAnswer = (selected === question.answer)
+  ? `${answerText} (ถูก)`
+  : answerText;
 
-  if (selected === question.answer) {
-    state.score++;
-  }
+// ⭐ เก็บคำตอบลง state เป็นข้อความ
+state.answers[qIndex] = finalAnswer;
 
-  // ⭐ ไปข้อถัดไป
-  state.currentQuestion++;
+// ⭐ นับคะแนน
+if (selected === question.answer) {
+  state.score++;
+}
 
-  // ⭐ ถ้าจบข้อสอบ → ส่งไป finishExam()
-  if (state.currentQuestion > examQuestions.length) {
-    state.locked = false;
-    return finishExam(event, userId);
-  }
+// ⭐ ไปข้อถัดไป
+state.currentQuestion++;
 
+// ⭐ ถ้าจบข้อสอบ → ส่งไป finishExam()
+if (state.currentQuestion > examQuestions.length) {
+  state.locked = false;
+  return finishExam(event, userId);
+}
   // ⭐ 5) ตรวจคำถามถัดไปว่าปลอดภัยไหม
   const nextQ = examQuestions[state.currentQuestion - 1];
   if (!nextQ || !nextQ.choices || nextQ.choices.length === 0) {
@@ -1152,9 +1159,6 @@ delete userState[userId];
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
 -------------------------------------------------- */
-/* --------------------------------------------------
-   SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
--------------------------------------------------- */
 async function sendToGoogleSheet(userId, passStatus, answers = []) {
   const state = userState[userId];
 
@@ -1179,7 +1183,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec",
+      "https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec",
       payload,
       {
         headers: {
@@ -1191,13 +1195,14 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
     console.error("❌ ERROR sending to Google Sheet:", err);
   }
 }
+
 /* --------------------------------------------------
    GET CERTIFICATE URL
 -------------------------------------------------- */
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec?mode=get&userId=${userId}`
     );
     return res.data;
   } catch (err) {
@@ -1205,7 +1210,6 @@ async function getCertificateUrl(userId) {
     return null;
   }
 }
-
 /* --------------------------------------------------
    CERTIFICATE FLEX (Panasonic Clean Card UI)
 -------------------------------------------------- */
