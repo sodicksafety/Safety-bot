@@ -843,10 +843,13 @@ async function handleFormAnswer(event, userId, text) {
   state.formData[key] = text;
   state.step++;
 
-  // ถ้ายังไม่ครบ 4 ข้อ → ถามต่อ
-  if (state.step < formQuestions.length) {
-    return client.replyMessage(event.replyToken, askFormQuestion(userId));
-  }
+  // ถ้ายังไม่ครบ 4 ข้อ → ถามต่อ + ปุ่มเมนูหลัก
+if (state.step < formQuestions.length) {
+  return client.replyMessage(event.replyToken, [
+    askFormQuestion(userId),
+    exitToMainMenuButton()
+  ]);
+}
 
   // -----------------------------
 // ถ้าครบแล้ว → เริ่มข้อสอบ
@@ -859,8 +862,11 @@ state.answers = [];   // ⭐ สำคัญมาก ต้องมี
 const qObj = examQuestions[0];
 const flex = examFlex(qObj, 1);
 
-return client.replyMessage(event.replyToken, flex);
-}
+return client.replyMessage(event.replyToken, [
+  flex,
+  exitToMainMenuButton()
+]);
+
 /* --------------------------------------------------
    HANDLE EXAM ANSWER (เวอร์ชันเก็บคำตอบ 30 ข้อ)
 -------------------------------------------------- */
@@ -938,16 +944,20 @@ async function handleExamAnswer(event, userId, data) {
   }
 
   // ⭐ 6) สร้าง Flex แบบกันพัง
-  const flex = examFlex(nextQ, state.currentQuestion);
+const flex = examFlex(nextQ, state.currentQuestion);
 
-  state.locked = false;
-  return client.replyMessage(event.replyToken, flex);
-}
+state.locked = false;
+return client.replyMessage(event.replyToken, [
+  flex,
+  exitToMainMenuButton()
+]);
+}  // 👈 ปิดฟังก์ชัน handleExamAnswer ให้ครบ
 
 /* --------------------------------------------------
    FLEX TEMPLATE (เวอร์ชันกันพัง)
 -------------------------------------------------- */
 function examFlex(questionObj, number) {
+
   // ⭐ กัน Flex พังจากข้อความยาว
   const safeText = (txt) =>
     typeof txt === "string"
@@ -1170,8 +1180,16 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
     score: state.score,
     result: passStatus,
 
-    // ⭐ ส่งคำตอบ 30 ข้อไปให้ Apps Script
-    answers: fullAnswers
+    // ⭐ ส่งคำตอบ 30 ข้อแบบข้อความ + (ถูก)
+    answers: fullAnswers.map((ansIndex, i) => {
+      const q = examQuestions[i];
+      const userAnswerText = q.choices[ansIndex] || "";
+      const isCorrect = ansIndex === q.answer;
+
+      return isCorrect
+        ? `${userAnswerText} (ถูก)`
+        : userAnswerText;
+    })
   };
 
   try {
@@ -1188,7 +1206,6 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
     console.error("❌ ERROR sending to Google Sheet:", err);
   }
 }
-
 
 /* --------------------------------------------------
    GET CERTIFICATE URL
@@ -1592,51 +1609,68 @@ function clearUserState() {
           state.formData = {};
           return client.replyMessage(event.replyToken, askFormQuestion(userId));
         }
-        return client.replyMessage(event.replyToken, pdpaFlex());
+        return client.replyMessage(event.replyToken, [
+  pdpaFlex(),
+  exitToMainMenuButton()
+]);
       }
 
       /* ------------------------------
          ฟอร์มกรอกข้อมูล
       ------------------------------ */
       if (state.mode === "form") {
-        return handleFormAnswer(event, userId, text);
+        return client.replyMessage(event.replyToken, [
+  askFormQuestion(userId),
+  exitToMainMenuButton()
+]);
       }
 
-      /* ------------------------------
-         ทำข้อสอบ
-      ------------------------------ */
-      if (state.mode === "exam") {
+/* ------------------------------
+   ทำข้อสอบ
+------------------------------ */
+if (state.mode === "exam") {
 
-        // 1) ปุ่มคำตอบ
-        if (data && data.startsWith("answer_")) {
-          return handleExamAnswer(event, userId, data);
-        }
+  // ⭐ Escape: ออกจากข้อสอบได้ทุกเมื่อ
+  if (
+    text === "เมนู" ||
+    text === "ออก" ||
+    text === "ยกเลิก" ||
+    text === "กลับเมนู"
+  ) {
+    state.mode = "menu";
+    return contractorMainMenu(event);
+  }
 
-        // 2) พิมพ์คำตอบเอง
-        if (text) {
-          const qIndex = state.currentQuestion - 1;
-          const question = examQuestions[qIndex];
-          const normText = normalize(text);
+  // 1) ปุ่มคำตอบ
+  if (data && data.startsWith("answer_")) {
+    return handleExamAnswer(event, userId, data);
+  }
 
-          const foundIndex = question.choices.findIndex(choice => {
-            const normChoice = normalize(choice);
-            return (
-              normText === normChoice ||
-              normText.includes(normChoice) ||
-              normChoice.includes(normText)
-            );
-          });
+  // 2) พิมพ์คำตอบเอง
+  if (text) {
+    const qIndex = state.currentQuestion - 1;
+    const question = examQuestions[qIndex];
+    const normText = normalize(text);
 
-          if (foundIndex !== -1) {
-            return handleExamAnswer(event, userId, `answer_${foundIndex}`);
-          }
+    const foundIndex = question.choices.findIndex(choice => {
+      const normChoice = normalize(choice);
+      return (
+        normText === normChoice ||
+        normText.includes(normChoice) ||
+        normChoice.includes(normText)
+      );
+    });
 
-          return client.replyMessage(event.replyToken, {
-            type: "text",
-            text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
-          });
-        }
-      }
+    if (foundIndex !== -1) {
+      return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+    }
+
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+    });
+  }
+}
     } // ⭐ ปิด if (userState[userId])
 
     /* ⭐ สื่ออบรมผู้รับเหมา */
