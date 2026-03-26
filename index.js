@@ -1915,11 +1915,11 @@ return client.replyMessage(event.replyToken, {
             },
             {
               type: "text",
-              text: "➕ เพิ่มเพื่อนผู้ดูแล\nhttps://line.me/ti/p/_T4H-3TKUa",
-              margin: "md",
-              size: "sm",
-              color: "#333333",
-              wrap: true
+  	      text: "➕ เพิ่มเพื่อนผู้ดูแล\nพิมพ์ค้นหา: tk.2023",
+  	      margin: "md",
+  	      size: "sm",
+  	      color: "#0A4D8C",
+ 	      wrap: true
             }
           ]
         }
