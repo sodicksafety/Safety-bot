@@ -1381,8 +1381,7 @@ async function contractorMainMenu(event) {
 
 เลือกประเภทการมาติดต่อเพื่อทำบัตร  
 ทำข้อสอบและส่งเอกสารทางอีเมลบริษัท  
-กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่ 
-   
+กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่  
 thai_safety@sodick.co.th`
     },
 
@@ -1392,7 +1391,6 @@ thai_safety@sodick.co.th`
       contents: {
         type: "bubble",
         size: "mega",
-
         body: {
           type: "box",
           layout: "vertical",
@@ -1872,7 +1870,6 @@ return client.replyMessage(event.replyToken, {
     }
   }
 });
-
 /* --------------------------------------------------
    MAP FLEX (แผนที่โรงงาน 1–2)
 -------------------------------------------------- */
