@@ -1100,14 +1100,13 @@ async function sendToGoogleSheet(userId, passStatus) {
     fullname: state.formData.fullname,
     phone: state.formData.phone,
     idcard: state.formData.idcard,
-    company: state.formData.company,
     score: state.score,
-    status: passStatus
+    result: passStatus   // ← ต้องใช้ชื่อ result ให้ตรงกับ Apps Script
   };
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbwvuLZNUVNiNRPnu44W6RtlNvxsxui7sLGKSv0c_cMsKlazq8MAkLQ1GNc1zb0OQRme/exec",
+      "https://script.google.com/macros/s/AKfycbza-x-U3VaFGDAlYrDX47Ga-5BQnNKK9ialMWjWztHhaZdf2XvkSrkOIra8dHb1AoqJ/exec",
       payload,
       {
         headers: {
@@ -1126,14 +1125,15 @@ async function sendToGoogleSheet(userId, passStatus) {
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbwvuLZNUVNiNRPnu44W6RtlNvxsxui7sLGKSv0c_cMsKlazq8MAkLQ1GNc1zb0OQRme/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbza-x-U3VaFGDAlYrDX47Ga-5BQnNKK9ialMWjWztHhaZdf2XvkSrkOIra8dHb1AoqJ/exec?mode=get&userId=${userId}`
     );
-    return res.data.url;
+    return res.data;
   } catch (err) {
     console.error("❌ ERROR getCertificateUrl:", err);
     return null;
   }
 }
+
 /* --------------------------------------------------
    CERTIFICATE FLEX (Panasonic Clean Card UI)
 -------------------------------------------------- */
