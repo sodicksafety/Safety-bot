@@ -1622,13 +1622,19 @@ function clearUserState() {
     }
 
     /* --------------------------------------------------
-       1) เงื่อนไขเฉพาะในกลุ่ม
-    -------------------------------------------------- */
-  if (event.source.type === "group") {
+   1) เงื่อนไขเฉพาะในกลุ่ม — ตอบเฉพาะเมื่อถูกเรียกชื่อ
+-------------------------------------------------- */
+if (event.source.type === "group") {
   const triggers = ["บอท", "bot", "Bot", "safety"];
-  const hasTrigger = triggers.some(w => text.includes(w));
-  if (!hasTrigger) return res.status(200).end();
+  const lowerText = text.toLowerCase();
+
+  const hasTrigger = triggers.some(w => lowerText.includes(w.toLowerCase()));
+
+  if (!hasTrigger) {
+    return res.status(200).end(); // ไม่ถูกเรียก → เงียบ
+  }
 }
+
     /* --------------------------------------------------
        2) Emergency
     -------------------------------------------------- */
