@@ -1624,12 +1624,11 @@ function clearUserState() {
     /* --------------------------------------------------
        1) เงื่อนไขเฉพาะในกลุ่ม
     -------------------------------------------------- */
-    if (event.source.type === "group") {
-      const triggers = ["บอท", "bot", "safety", "Safety"];
-      const hasTrigger = triggers.some(w => text.includes(w));
-      if (!hasTrigger) return res.status(200).end();
-    }
-
+   if (event.source.type === "group") {
+  const triggers = ["บอท", "bot", "Bot", "safety"];
+  const hasTrigger = triggers.some(w => msg.includes(w));
+  if (!hasTrigger) return res.status(200).end();
+}
     /* --------------------------------------------------
        2) Emergency
     -------------------------------------------------- */
