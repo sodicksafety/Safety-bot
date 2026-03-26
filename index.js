@@ -1523,13 +1523,43 @@ function menuVendor() {
   };
 }
 /* --------------------------------------------------
+   EXIT TO MAIN MENU BUTTON (Panasonic Clean Card UI)
+-------------------------------------------------- */
+function exitToMainMenuButton() {
+  return {
+    type: "flex",
+    altText: "กลับเมนูหลัก",
+    contents: {
+      type: "bubble",
+      size: "nano",
+      body: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "md",
+        contents: [
+          {
+            type: "button",
+            style: "secondary",
+            color: "#B3B3B3",
+            action: {
+              type: "message",
+              label: "กลับเมนูหลัก",
+              text: "เมนูหลัก"
+            }
+          }
+        ]
+      }
+    }
+  };
+}
+
+/* --------------------------------------------------
    WEBHOOK
 -------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
   try {
     const event = req.body.events[0];
 
-    // ป้องกัน event ที่ไม่ใช่ message หรือ postback
     if (!event || (event.type !== "message" && event.type !== "postback")) {
       return res.status(200).end();
     }
@@ -1539,28 +1569,24 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const msg = normalize(text);
     const data = event.postback?.data || "";
 
-    /* ⭐ ฟังก์ชันล้าง state */
     function clearUserState() {
       delete userState[userId];
     }
 
-    /* ⭐ อัปเดตเวลาเมื่อผู้ใช้ตอบ */
     if (userState[userId]) {
       userState[userId].lastActive = Date.now();
     }
 
-    /* ⭐ ตรวจ Timeout 3 นาที */
     if (userState[userId] && userState[userId].lastActive) {
       const now = Date.now();
       const diff = now - userState[userId].lastActive;
 
-      if (diff > 3 * 60 * 1000) {  // 3 นาที
+      if (diff > 3 * 60 * 1000) {
         delete userState[userId];
-        return contractorMainMenu(event);  // กลับเมนูหลัก
+        return contractorMainMenu(event);
       }
     }
 
-    /* ⭐ ล้าง state เมื่อผู้ใช้กดเมนูหลัก (ข้อความ) */
     if (
       msg === "เมนูหลัก" ||
       msg === "ติดต่อเซฟตี้" ||
@@ -1569,7 +1595,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       clearUserState();
     }
 
-    /* ⭐ ล้าง state เมื่อผู้ใช้กดปุ่ม (postback) ที่เป็นเมนู */
     if (
       data === "menu_main" ||
       data === "contact_safety" ||
@@ -1608,7 +1633,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
     /* --------------------------------------------------
        3) FLOW หลักของระบบสอบผู้รับเหมา
-       (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
     -------------------------------------------------- */
     if (userState[userId]) {
       const state = userState[userId];
@@ -1632,7 +1656,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       ------------------------------ */
       if (state.mode === "form") {
 
-        // ⭐ Escape ออกจากฟอร์ม
         if (
           msg === "เมนู" ||
           msg === "เมนูหลัก" ||
@@ -1643,24 +1666,27 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
           return contractorMainMenu(event);
         }
 
-        // ⭐ ฟิลด์ของฟอร์ม
         const fields = ["fullname", "phone", "idcard", "company"];
         const step = state.step;
         const field = fields[step];
 
-        // ⭐ บันทึกคำตอบ
         state.formData[field] = text;
         state.step++;
 
-        // ⭐ ถ้ากรอกครบ → ไปทำข้อสอบ
         if (state.step >= fields.length) {
           state.mode = "exam";
           state.currentQuestion = 1;
           state.score = 0;
-          return client.replyMessage(event.replyToken, askExamQuestion(1));
+          state.answers = [];
+
+          const qObj = examQuestions[0];
+
+          return client.replyMessage(event.replyToken, [
+            examFlex(qObj, 1),
+            exitToMainMenuButton()
+          ]);
         }
 
-        // ⭐ ถ้ายังไม่ครบ → ถามคำถามถัดไป
         return client.replyMessage(event.replyToken, askFormQuestion(userId));
       }
 
@@ -1669,7 +1695,6 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       ------------------------------ */
       if (state.mode === "exam") {
 
-        // ⭐ Escape: ออกจากข้อสอบได้ทุกเมื่อ
         if (
           text === "เมนู" ||
           text === "ออก" ||
@@ -1680,12 +1705,10 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
           return contractorMainMenu(event);
         }
 
-        // ⭐ ปุ่มคำตอบ
         if (data && data.startsWith("answer_")) {
           return handleExamAnswer(event, userId, data);
         }
 
-        // ⭐ พิมพ์คำตอบเอง
         if (text) {
           const qIndex = state.currentQuestion - 1;
           const question = examQuestions[qIndex];
@@ -1710,15 +1733,17 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
           });
         }
       }
-    } // ⭐ ปิด if (userState[userId])
+    }
 
-    /* ⭐ สื่ออบรมผู้รับเหมา */
+    /* --------------------------------------------------
+       4) สื่ออบรมผู้รับเหมา
+    -------------------------------------------------- */
     if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
       return client.replyMessage(event.replyToken, trainingMenu());
     }
 
     /* --------------------------------------------------
-       4) เมนูหลักผู้รับเหมา
+       5) เมนูหลักผู้รับเหมา
     -------------------------------------------------- */
     if (
       msg.includes("ข้อมูลผู้รับเหมา") ||
@@ -1729,7 +1754,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       5) เมนูย่อย
+       6) เมนูย่อย
     -------------------------------------------------- */
     if (msg.includes("ผู้รับส่งสินค้า")) {
       return client.replyMessage(event.replyToken, menuDelivery());
@@ -1740,27 +1765,26 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       6) ดาวน์โหลดบัตร
+       7) ดาวน์โหลดบัตร
     -------------------------------------------------- */
     if (msg.includes("ดาวน์โหลดบัตร")) {
       return handleDownloadCertificate(event, userId);
     }
 
     /* --------------------------------------------------
-       7) เริ่มทำแบบทดสอบ
--------------------------------------------------- */
-if (msg.includes("ทำแบบทดสอบ")) {
-  userState[userId] = {
-    mode: "pdpa",
-    step: 0,
-    formData: {},
-    currentQuestion: 1,
-    score: 0,
-    lastActive: Date.now()   // ⭐ เริ่มจับเวลา
-  };
-  return client.replyMessage(event.replyToken, pdpaFlex());
-}
-
+       8) เริ่มทำแบบทดสอบ
+    -------------------------------------------------- */
+    if (msg.includes("ทำแบบทดสอบ")) {
+      userState[userId] = {
+        mode: "pdpa",
+        step: 0,
+        formData: {},
+        currentQuestion: 1,
+        score: 0,
+        lastActive: Date.now()
+      };
+      return client.replyMessage(event.replyToken, pdpaFlex());
+    }
 /* --------------------------------------------------
    8) ติดต่อทีมเซฟตี้  ⭐ ย้ายเข้ามาใน webhook แล้ว
 -------------------------------------------------- */
