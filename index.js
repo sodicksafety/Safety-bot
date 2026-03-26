@@ -1030,9 +1030,15 @@ async function finishExam(event, userId) {
 
   // ส่งผลสอบ
   await client.replyMessage(event.replyToken, {
-    type: "text",
-    text: `สรุปผลการทำแบบทดสอบ\nคะแนนของคุณ: ${score}/${total}\nผลสอบ: ${pass ? "ผ่าน ✅" : "ไม่ผ่าน ❌"}`
-  });
+  type: "text",
+  text:
+    `สรุปผลการทำแบบทดสอบ\n` +
+    `คะแนนของคุณ: ${score}/${total}\n` +
+    `ผลสอบ: ${pass ? "ผ่าน ✅" : "ไม่ผ่าน ❌"}\n\n` +
+    `⏳ กรุณารอประมาณ 20 วินาที\n` +
+    `เพื่อให้ระบบดาวน์โหลดข้อมูลจากเซิร์ฟเวอร์\n` +
+    `อย่าเพิ่งเปลี่ยนหน้า`
+});
 
   // ❌ ถ้าไม่ผ่าน
   if (!pass) {
@@ -1089,57 +1095,58 @@ async function finishExam(event, userId) {
     return client.pushMessage(userId, retryFlex);
   }
 
-  /* --------------------------------------------------
+/* --------------------------------------------------
      ⭐ ถ้าผ่าน → บันทึกลง Google Sheet
-  -------------------------------------------------- */
+-------------------------------------------------- */
 
-  await sendToGoogleSheet(userId, "ผ่าน", state.answers);
+await sendToGoogleSheet(userId, "ผ่าน", state.answers);
 
-  // ⭐ ล้าง state
-  delete userState[userId];
-
-  // ⭐ ส่ง Flex ปุ่มดาวน์โหลดบัตรทันที
-  const flexMessage = {
-    type: "flex",
-    altText: "ดาวน์โหลดบัตรผู้รับเหมา",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        contents: [
-          {
-            type: "text",
-            text: "ผ่านการทดสอบแล้ว 🎉",
-            weight: "bold",
-            size: "lg",
-            align: "center"
+// ⭐ ส่ง Flex ปุ่มดาวน์โหลดบัตรทันที
+const flexMessage = {
+  type: "flex",
+  altText: "ดาวน์โหลดบัตรผู้รับเหมา",
+  contents: {
+    type: "bubble",
+    body: {
+      type: "box",
+      layout: "vertical",
+      contents: [
+        {
+          type: "text",
+          text: "ผ่านการทดสอบแล้ว 🎉",
+          weight: "bold",
+          size: "lg",
+          align: "center"
+        },
+        {
+          type: "text",
+          text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ",
+          size: "sm",
+          align: "center",
+          margin: "md"
+        },
+        {
+          type: "button",
+          style: "primary",
+          color: "#1DB446",
+          action: {
+            type: "message",
+            label: "ดาวน์โหลดบัตร",
+            text: "ดาวน์โหลดบัตร"
           },
-          {
-            type: "text",
-            text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ",
-            size: "sm",
-            align: "center",
-            margin: "md"
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1DB446",
-            action: {
-              type: "message",
-              label: "ดาวน์โหลดบัตร",
-              text: "ดาวน์โหลดบัตร"
-            },
-            margin: "lg"
-          }
-        ]
-      }
+          margin: "lg"
+        }
+      ]
     }
-  };
+  }
+};
 
-  return client.pushMessage(userId, flexMessage);
-}
+// ⭐ ส่ง Flex ก่อน แล้วค่อยล้าง state (สำคัญมาก)
+await client.pushMessage(userId, flexMessage);
+
+// ⭐ ล้าง state หลังสุด (ถูกต้อง)
+delete userState[userId];
+
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
 -------------------------------------------------- */
