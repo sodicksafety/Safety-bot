@@ -1748,29 +1748,24 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 
     /* --------------------------------------------------
        7) เริ่มทำแบบทดสอบ
-    -------------------------------------------------- */
-    if (msg.includes("ทำแบบทดสอบ")) {
-      userState[userId] = {
-        mode: "pdpa",
-        step: 0,
-        formData: {},
-        currentQuestion: 1,
-        score: 0,
-        lastActive: Date.now()   // ⭐ เริ่มจับเวลา
-      };
-      return client.replyMessage(event.replyToken, pdpaFlex());
-    }
+-------------------------------------------------- */
+if (msg.includes("ทำแบบทดสอบ")) {
+  userState[userId] = {
+    mode: "pdpa",
+    step: 0,
+    formData: {},
+    currentQuestion: 1,
+    score: 0,
+    lastActive: Date.now()   // ⭐ เริ่มจับเวลา
+  };
+  return client.replyMessage(event.replyToken, pdpaFlex());
+}
 
-  } catch (err) {
-    console.error(err);
-    res.status(500).end();
-  }
-});
-    /* --------------------------------------------------
-   8) ติดต่อทีมเซฟตี้
+/* --------------------------------------------------
+   8) ติดต่อทีมเซฟตี้  ⭐ ย้ายเข้ามาใน webhook แล้ว
 -------------------------------------------------- */
 if (msg.includes("ติดต่อทีมเซฟตี้")) {
-  await client.replyMessage(event.replyToken, {
+  client.replyMessage(event.replyToken, {
     type: "image",
     originalContentUrl:
       "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
@@ -1778,7 +1773,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
       "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
   });
 
-  return client.pushMessage(userId, {
+  client.pushMessage(userId, {
     type: "flex",
     altText: "เบอร์ติดต่อทีมเซฟตี้",
     contents: {
@@ -1826,8 +1821,9 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
       }
     }
   });
-}
 
+  return;
+}
     /* --------------------------------------------------
        9) แผนที่ + เบอร์โรงงาน
     -------------------------------------------------- */
