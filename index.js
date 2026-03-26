@@ -1419,6 +1419,63 @@ thai_safety@sodick.co.th`
     }
   ]);
 }
+
+/* --------------------------------------------------
+   DELIVERY MENU (Panasonic Clean Card UI)
+-------------------------------------------------- */
+async function deliveryMenu(event) {
+
+  const deliveryItems = [
+    ["ลงทะเบียนส่งของ", "ลงทะเบียนส่งของ"],
+    ["จุดรับ–ส่งสินค้า", "จุดรับส่งสินค้า"],
+    ["เอกสารความปลอดภัย", "เอกสารความปลอดภัย"]
+  ];
+
+  return client.replyMessage(event.replyToken, {
+    type: "flex",
+    altText: "เมนูผู้รับ–ส่งสินค้า",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        contents: [
+          {
+            type: "text",
+            text: "เมนูผู้รับ–ส่งสินค้า",
+            weight: "bold",
+            size: "lg",
+            color: "#1E90FF",
+            align: "center"
+          },
+
+          ...deliveryItems.map(([label, text]) => ({
+            type: "box",
+            layout: "vertical",
+            paddingAll: "md",
+            margin: "md",
+            backgroundColor: "#FFFFFF",
+            borderColor: "#B3B3B3",
+            borderWidth: "1px",
+            cornerRadius: "6px",
+            action: { type: "message", label, text },
+            contents: [
+              {
+                type: "text",
+                text: label,
+                align: "center",
+                color: "#222222"
+              }
+            ]
+          }))
+        ]
+      }
+    }
+  });
+}
+
 /* --------------------------------------------------
    DELIVERY MENU (Panasonic Clean Card UI)
 -------------------------------------------------- */
@@ -1870,6 +1927,14 @@ return client.replyMessage(event.replyToken, {
     }
   }
 });
+
+/* ⭐⭐⭐ ปิด TRY + ปิด WEBHOOK ตรงนี้ ⭐⭐⭐ */
+} catch (err) {
+  console.error("❌ Webhook Error:", err);
+  return res.status(500).end();
+}
+}); // ← ปิด webhook ครบแล้วตรงนี้!
+
 /* --------------------------------------------------
    MAP FLEX (แผนที่โรงงาน 1–2)
 -------------------------------------------------- */
