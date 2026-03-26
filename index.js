@@ -1367,10 +1367,22 @@ async function contractorMainMenu(event) {
       type: "text",
       text:
 `ข้อมูลผู้รับเหมา
-เลือกประเภทการมาติดต่อเพื่อทำบัตร
-ทำข้อสอบและส่งเอกสารทางเมลบริษัท
 
-กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่  
+⚠️ ข้อกำชับด้านความปลอดภัย (สำคัญมาก)
+
+เพื่อความถูกต้องของข้อมูล และมาตรฐานความปลอดภัยของบริษัท  
+กรุณาทำแบบทดสอบ “ด้วยตนเองเท่านั้น”  
+❌ ห้ามทำแทนกัน  
+❌ ห้ามส่งคำตอบให้กัน  
+❌ ห้ามช่วยกันตอบข้อสอบ
+
+ผลการทดสอบจะถูกบันทึกในระบบอย่างเป็นทางการ  
+และใช้ประกอบการอนุญาตเข้าพื้นที่ปฏิบัติงานจริง
+
+เลือกประเภทการมาติดต่อเพื่อทำบัตร  
+ทำข้อสอบและส่งเอกสารทางอีเมลบริษัท  
+กรุณาส่งเอกสารบันทึกการอบรมกลับมาที่ 
+   
 thai_safety@sodick.co.th`
     },
 
@@ -1789,14 +1801,75 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
       }
     }
 
-    /* --------------------------------------------------
-       10) Default
-    -------------------------------------------------- */
-    return reply(event, "พิมพ์: เมนู เพื่อเริ่มต้นใช้งาน");
-
-  } catch (err) {
-    console.error("❌ WEBHOOK ERROR:", err);
-    return res.status(500).end();
+   /* --------------------------------------------------
+  Fallback (ข้อความเดิม + เบอร์โทร + ดีไซน์พรีเมียม)
+-------------------------------------------------- */
+return client.replyMessage(event.replyToken, {
+  type: "flex",
+  altText: "ไม่พบข้อมูลคำถามนี้ในระบบ",
+  contents: {
+    type: "bubble",
+    size: "mega",
+    styles: {
+      body: {
+        backgroundColor: "#F7F9FC"
+      }
+    },
+    body: {
+      type: "box",
+      layout: "vertical",
+      spacing: "lg",
+      paddingAll: "22px",
+      contents: [
+        {
+          type: "box",
+          layout: "vertical",
+          paddingAll: "18px",
+          borderColor: "#0A4D8C",
+          borderWidth: "2px",
+          cornerRadius: "12px",
+          backgroundColor: "#FFFFFF",
+          contents: [
+            {
+              type: "text",
+              text: "❗ ไม่พบข้อมูลคำถามนี้ในระบบ",
+              weight: "bold",
+              size: "lg",
+              color: "#D00000",
+              wrap: true
+            },
+            {
+              type: "text",
+              text: "ขออภัยครับ 🙂\nระบบยังไม่มีคำตอบสำหรับคำถามนี้\nแต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ",
+              margin: "md",
+              size: "md",
+              color: "#333333",
+              wrap: true
+            },
+            {
+              type: "separator",
+              margin: "lg"
+            },
+            {
+              type: "text",
+              text: "📞 ติดต่อผู้พัฒนาระบบ\n      @Trerasak_Komol  (พี่ไก่)\n      โทร: 061-645-5095",
+              margin: "lg",
+              size: "sm",
+              color: "#0A4D8C",
+              wrap: true
+            },
+            {
+              type: "text",
+              text: "➕ เพิ่มเพื่อนผู้ดูแล\nhttps://line.me/ti/p/_T4H-3TKUa",
+              margin: "md",
+              size: "sm",
+              color: "#333333",
+              wrap: true
+            }
+          ]
+        }
+      ]
+    }
   }
 });
 
