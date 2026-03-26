@@ -746,14 +746,21 @@ const formQuestions = [
     text: "📞 กรุณาพิมพ์เบอร์โทรศัพท์ของคุณ\n📞 Please type your phone number" 
   },
   { 
-    key: "idcard", 
-    text: "🆔 กรุณาพิมพ์เลขบัตรประชาชน 13 หลัก\n🆔 Please type your 13‑digit ID number" 
+    key: "idcard",
+    text:
+"🆔 กรุณากรอกหมายเลขบัตรประชาชน / พาสปอร์ต / Work Permit\n\n" +
+"🇹🇭 คนไทย: กรุณากรอกเลขบัตรประชาชน 13 หลัก\n" +
+"🌏 ชาวต่างชาติ: กรุณากรอกหมายเลข Passport หรือ Work Permit (ไม่เกิน 9 หลัก)\n\n" +
+"🆔 Please enter your National ID / Passport / Work Permit number\n" +
+"Thai: 13‑digit national ID\n" +
+"Foreigner: Passport or Work Permit (up to 9 digits)"
   },
   { 
     key: "company", 
     text: "🏢 กรุณาพิมพ์ชื่อบริษัทของคุณ\n🏢 Please type your company name" 
   }
 ];
+
 /* --------------------------------------------------
    ส่งคำถามฟอร์มตามลำดับ
 -------------------------------------------------- */
@@ -765,35 +772,6 @@ function askFormQuestion(userId) {
     type: "text",
     text: q.text
   };
-}
-
-/* --------------------------------------------------
-   HANDLE FORM ANSWER
-   (เก็บข้อมูลฟอร์มทีละข้อ → เริ่มข้อสอบ)
--------------------------------------------------- */
-async function handleFormAnswer(event, userId, text) {
-  const state = userState[userId];
-  const step = state.step;
-  const key = formQuestions[step].key;
-
-  // เก็บข้อมูลฟอร์ม
-  state.formData[key] = text;
-  state.step++;
-
-  // ถ้ายังไม่ครบ 4 ข้อ → ถามต่อ
-  if (state.step < formQuestions.length) {
-    return client.replyMessage(event.replyToken, askFormQuestion(userId));
-  }
-
-  // ถ้าครบแล้ว → เริ่มข้อสอบ
-  state.mode = "exam";
-  state.currentQuestion = 1;
-  state.score = 0;
-
-  const qObj = examQuestions[0];
-  const flex = examFlex(qObj, 1);
-
-  return client.replyMessage(event.replyToken, flex);
 }
 
 /* --------------------------------------------------
@@ -820,14 +798,35 @@ async function handleFormAnswer(event, userId, text) {
     }
   }
 
-  // ตรวจเลขบัตรประชาชน (ต้องเป็นตัวเลข 13 หลัก)
+  // ตรวจเลขบัตรประชาชน / Passport / Work Permit
   if (key === "idcard") {
     const idcard = text.trim();
 
-    if (!/^\d{13}$/.test(idcard)) {
+    // ต้องเป็นตัวเลขทั้งหมด
+    if (!/^\d+$/.test(idcard)) {
       return client.replyMessage(event.replyToken, {
         type: "text",
-        text: "❌ เลขบัตรประชาชนไม่ถูกต้อง\nกรุณาพิมพ์เลขบัตรประชาชน 13 หลัก เช่น 1234567890123"
+        text:
+"❌ หมายเลขไม่ถูกต้อง\n" +
+"🇹🇭 คนไทย: ต้องกรอกเลขบัตรประชาชน 13 หลัก\n" +
+"🌏 ชาวต่างชาติ: กรุณากรอกหมายเลข Passport หรือ Work Permit (ไม่เกิน 9 หลัก)\n\n" +
+"❌ Invalid number\n" +
+"Thai: Please enter your 13‑digit national ID\n" +
+"Foreigner: Passport or Work Permit (up to 9 digits)"
+      });
+    }
+
+    // ความยาวต้องอยู่ระหว่าง 7–13 หลัก
+    if (idcard.length < 7 || idcard.length > 13) {
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text:
+"❌ หมายเลขไม่ถูกต้อง\n" +
+"🇹🇭 คนไทย: ต้องกรอกเลขบัตรประชาชน 13 หลัก\n" +
+"🌏 ชาวต่างชาติ: กรุณากรอกหมายเลข Passport หรือ Work Permit (ไม่เกิน 9 หลัก)\n\n" +
+"❌ Invalid number\n" +
+"Thai: Please enter your 13‑digit national ID\n" +
+"Foreigner: Passport or Work Permit (up to 9 digits)"
       });
     }
   }
@@ -855,7 +854,6 @@ async function handleFormAnswer(event, userId, text) {
 
   return client.replyMessage(event.replyToken, flex);
 }
-
 /* --------------------------------------------------
    HANDLE EXAM ANSWER (เวอร์ชันกันค้าง)
 -------------------------------------------------- */
@@ -1025,20 +1023,59 @@ async function finishExam(event, userId) {
   });
 
   // ❌ ถ้าไม่ผ่าน
-  if (!pass) {
-    await client.pushMessage(userId, {
-      type: "text",
-      text:
-`คุณไม่ผ่านการทดสอบ ❌
-ต้องได้อย่างน้อย 24 คะแนนจึงจะผ่าน
+if (!pass) {
 
-กรุณากลับไปที่เมนู "ข้อมูลผู้รับเหมา"
-แล้วเลือก "ทำข้อสอบใหม่" เพื่อเริ่มทำแบบทดสอบอีกครั้ง`
-    });
+  // ล้าง state เดิมก่อน
+  delete userState[userId];
 
-    delete userState[userId];
-    return;
-  }
+  // ⭐ Flex ปุ่มเริ่มทำข้อสอบใหม่ทันที
+  const retryFlex = {
+    type: "flex",
+    altText: "ทำข้อสอบใหม่",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "คุณไม่ผ่านการทดสอบ ❌",
+            weight: "bold",
+            size: "lg",
+            align: "center",
+            color: "#FF3333"
+          },
+          {
+            type: "text",
+            text:
+"ต้องได้อย่างน้อย 24 คะแนนจึงจะผ่าน\n" +
+"กรุณากดปุ่มด้านล่างเพื่อทำข้อสอบใหม่\n\n" +
+"Minimum score to pass: 24/30\n" +
+"Press the button below to retake the exam.",
+            wrap: true,
+            size: "sm",
+            align: "center"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "message",
+              label: "เริ่มทำข้อสอบใหม่ / Retake Exam",
+              text: "ทำข้อสอบใหม่"
+            },
+            margin: "lg"
+          }
+        ]
+      }
+    }
+  };
+
+  return client.pushMessage(userId, retryFlex);
+}
 
   // ✔ ถ้าผ่าน → ส่งข้อมูลไป Google Sheet
   await sendToGoogleSheet(userId, "ผ่าน");
@@ -1100,13 +1137,14 @@ async function sendToGoogleSheet(userId, passStatus) {
     fullname: state.formData.fullname,
     phone: state.formData.phone,
     idcard: state.formData.idcard,
+    company: state.formData.company,
     score: state.score,
-    result: passStatus   // ← ต้องใช้ชื่อ result ให้ตรงกับ Apps Script
+    result: passStatus
   };
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbza-x-U3VaFGDAlYrDX47Ga-5BQnNKK9ialMWjWztHhaZdf2XvkSrkOIra8dHb1AoqJ/exec",
+      "https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec",
       payload,
       {
         headers: {
@@ -1125,7 +1163,7 @@ async function sendToGoogleSheet(userId, passStatus) {
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbza-x-U3VaFGDAlYrDX47Ga-5BQnNKK9ialMWjWztHhaZdf2XvkSrkOIra8dHb1AoqJ/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec?mode=get&userId=${userId}`
     );
     return res.data;
   } catch (err) {
