@@ -1786,19 +1786,21 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
     }
 
     /* --------------------------------------------------
-       ⭐ TEXT REPLIES
-    -------------------------------------------------- */
-    for (const cat of Object.keys(categories)) {
-      if (categories[cat].some(w => msg.includes(normalize(w)))) {
-        const replyText =
-          replies[cat][text] || replies[cat][normalize(text)] || null;
+   ⭐ TEXT REPLIES
+-------------------------------------------------- */
+for (const cat of Object.keys(categories)) {
+  if (categories[cat].some(w => msg.includes(normalize(w)))) {
+    const replyText =
+      replies[cat][text] || replies[cat][normalize(text)] || null;
 
-        if (replyText) {
-          return reply(event, replyText);
-        }
-      }
+    if (replyText) {
+      return reply(event, replyText);
     }
+  }
+}
 
+/* ❗❗ ต้องมีปีกปิด function ตรงนี้ ❗❗ */
+// }   ← ไก่ลืมอันนี้
    /* --------------------------------------------------
   Fallback (ข้อความเดิม + เบอร์โทร + ดีไซน์พรีเมียม)
 -------------------------------------------------- */
