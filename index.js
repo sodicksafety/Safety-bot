@@ -866,7 +866,12 @@ return client.replyMessage(event.replyToken, [
   flex,
   exitToMainMenuButton()
 ]);
+}  // 👈 ปิดฟังก์ชัน handleFormAnswer ให้ครบ
 
+/* --------------------------------------------------
+   HANDLE EXAM ANSWER
+-------------------------------------------------- */
+async function handleExamAnswer(event, userId, data) {
 /* --------------------------------------------------
    HANDLE EXAM ANSWER (เวอร์ชันเก็บคำตอบ 30 ข้อ)
 -------------------------------------------------- */
