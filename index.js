@@ -1147,6 +1147,8 @@ await client.pushMessage(userId, flexMessage);
 // ⭐ ล้าง state หลังสุด (ถูกต้อง)
 delete userState[userId];
 
+}   // ← ปิดฟังก์ชัน finishExam() ให้ครบ
+
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
 -------------------------------------------------- */
