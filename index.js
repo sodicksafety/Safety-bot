@@ -1766,24 +1766,24 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
 }
 
     /* --------------------------------------------------
-       9) แผนที่ + เบอร์โรงงาน
-    -------------------------------------------------- */
-    if (
-      msg.includes("แผนที่") ||
-      msg.includes("map") ||
-      msg.includes("location") ||
-      msg.includes("โรงงานอยู่ไหน")
-    ) {
-      return client.replyMessage(event.replyToken, [mapFlex, phoneFlex]);
-    }
+   9) แผนที่ + เบอร์โรงงาน
+-------------------------------------------------- */
+if (
+  msg.includes("แผนที่") ||
+  msg.includes("map") ||
+  msg.includes("location") ||
+  msg.includes("โรงงานอยู่ไหน")
+) {
+  return client.replyMessage(event.replyToken, [mapFlex, phoneFlex]);
+}
 
-    /* --------------------------------------------------
-       ⭐ SAFETY Q&A
-    -------------------------------------------------- */
-    const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
-    if (foundQA) {
-      return reply(event, foundQA.answer);
-    }
+/* --------------------------------------------------
+   ⭐ SAFETY Q&A
+-------------------------------------------------- */
+const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
+if (foundQA) {
+  return reply(event, foundQA.answer);
+}
 
 /* --------------------------------------------------
    ⭐ TEXT REPLIES
@@ -1800,7 +1800,7 @@ for (const cat of Object.keys(categories)) {
 }
 
 /* --------------------------------------------------
-  Fallback (ข้อความเดิม + เบอร์โทร + ดีไซน์พรีเมียม)
+   ⭐ Fallback (ข้อความเดิม + เบอร์โทร + ดีไซน์พรีเมียม)
 -------------------------------------------------- */
 return client.replyMessage(event.replyToken, {
   type: "flex",
@@ -2036,6 +2036,7 @@ const phoneFlex = {
     }
   }
 };
+
 /* --------------------------------------------------
    SERVER START  ⭐ (มีอันเดียวพอ)
 -------------------------------------------------- */
@@ -2057,7 +2058,6 @@ async function updateAnswersToSheet(rowNumber, answers) {
 
   const sheets = google.sheets({ version: "v4", auth });
 
-  // แปลงคำตอบเป็น 30 ช่อง
   const rowValues = answers.map(a => a !== undefined ? a : "");
 
   await sheets.spreadsheets.values.update({
