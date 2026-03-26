@@ -1176,7 +1176,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec",
+      "https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec",
       payload,
       {
         headers: {
@@ -1188,13 +1188,15 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
     console.error("❌ ERROR sending to Google Sheet:", err);
   }
 }
+
+
 /* --------------------------------------------------
    GET CERTIFICATE URL
 -------------------------------------------------- */
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbwqoiILMPsq8fQVKdTftNqIZrzsPqJTvpkRFb7-81-FK2aV000L9dCaHiJMS2RaNtzJ/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec?mode=get&userId=${userId}`
     );
     return res.data;
   } catch (err) {
@@ -1202,7 +1204,6 @@ async function getCertificateUrl(userId) {
     return null;
   }
 }
-
 /* --------------------------------------------------
    CERTIFICATE FLEX (Panasonic Clean Card UI)
 -------------------------------------------------- */
