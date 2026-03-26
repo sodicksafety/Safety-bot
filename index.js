@@ -857,18 +857,53 @@ async function handleFormAnswer(event, userId, text) {
 }
 
 /* --------------------------------------------------
-   HANDLE EXAM ANSWER
-   (ตรวจคำตอบ → ส่งข้อถัดไป)
+   HANDLE EXAM ANSWER (เวอร์ชันกันค้าง)
 -------------------------------------------------- */
 async function handleExamAnswer(event, userId, data) {
   const state = userState[userId];
+
+  // ⭐ 0) กันกรณี state หายไปเลย
+  if (!state) {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "⚠️ ระบบหมดอายุการทำข้อสอบ กรุณาพิมพ์: เมนู เพื่อเริ่มใหม่อีกครั้ง"
+    });
+  }
+
+  // ⭐ 1) กันกดซ้ำ
+  if (state.locked) {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "⏳ กรุณารอสักครู่ ระบบกำลังโหลดข้อถัดไป"
+    });
+  }
+  state.locked = true;
+
+  // ⭐ 2) กัน state ค้าง / currentQuestion เพี้ยน
+  if (!state.currentQuestion || !examQuestions[state.currentQuestion - 1]) {
+    state.mode = "menu";
+    state.locked = false;
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "⚠️ ระบบพบความผิดปกติ กรุณาพิมพ์: เมนู"
+    });
+  }
+
   const qIndex = state.currentQuestion - 1;
   const question = examQuestions[qIndex];
 
-  // ดึง index ของคำตอบที่เลือก
-  const selected = parseInt(data.replace("answer_", ""), 10);
+  // ⭐ 3) ตรวจ choices ก่อนตรวจคำตอบ
+  if (!question.choices || !Array.isArray(question.choices) || question.choices.length < 1) {
+    console.error("❌ ERROR: choices ผิดรูปแบบ", question);
+    state.locked = false;
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "⚠️ ข้อสอบข้อนี้มีปัญหา กรุณาแจ้งเจ้าหน้าที่"
+    });
+  }
 
-  // ตรวจคำตอบ
+  // ⭐ 4) ตรวจคำตอบ
+  const selected = parseInt(data.replace("answer_", ""), 10);
   if (selected === question.answer) {
     state.score++;
   }
@@ -876,18 +911,102 @@ async function handleExamAnswer(event, userId, data) {
   // ไปข้อถัดไป
   state.currentQuestion++;
 
-  // ถ้าทำครบทุกข้อแล้ว → สรุปผลสอบ
+  // ถ้าจบข้อสอบ
   if (state.currentQuestion > examQuestions.length) {
+    state.locked = false;
     return finishExam(event, userId);
   }
 
-  // ส่งข้อถัดไป
+  // ⭐ 5) ตรวจคำถามถัดไปว่าปลอดภัยไหม
   const nextQ = examQuestions[state.currentQuestion - 1];
+  if (!nextQ || !nextQ.choices || nextQ.choices.length === 0) {
+    console.error("❌ ERROR: nextQ ผิดรูปแบบ", nextQ);
+    state.locked = false;
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "⚠️ ระบบพบความผิดปกติ กรุณาแจ้งเจ้าหน้าที่"
+    });
+  }
+
+  // ⭐ 6) สร้าง Flex แบบกันพัง
   const flex = examFlex(nextQ, state.currentQuestion);
 
+  state.locked = false;
   return client.replyMessage(event.replyToken, flex);
 }
+/* --------------------------------------------------
+   FLEX TEMPLATE (เวอร์ชันกันพัง)
+-------------------------------------------------- */
+function examFlex(questionObj, number) {
+  // ⭐ กัน Flex พังจากข้อความยาว
+  const safeText = (txt) =>
+    typeof txt === "string"
+      ? txt.substring(0, 200) // จำกัดความยาว
+      : "ข้อความไม่ถูกต้อง";
 
+  return {
+    type: "flex",
+    altText: `ข้อที่ ${number}`,
+    contents: {
+      type: "bubble",
+      size: "mega",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        contents: [
+          {
+            type: "text",
+            text: `ข้อที่ ${number}`,
+            weight: "bold",
+            size: "lg",
+            color: "#1E90FF"
+          },
+          {
+            type: "text",
+            text: safeText(questionObj.q),
+            wrap: true,
+            size: "md",
+            color: "#222222"
+          },
+
+          { type: "separator", margin: "md" },
+
+          // ⭐ ปุ่มแบบ Panasonic Clean Card + กันพัง
+          ...questionObj.choices.map((choice, index) => ({
+            type: "box",
+            layout: "vertical",
+            margin: "md",
+            paddingAll: "md",
+            backgroundColor: "#FFFFFF",
+            borderColor: "#B3B3B3",
+            borderWidth: "1px",
+            cornerRadius: "6px",
+            action: {
+              type: "postback",
+              label: safeText(choice),
+              data: `answer_${index}`,
+              displayText: safeText(choice)
+            },
+            contents: [
+              {
+                type: "text",
+                text: safeText(choice),
+                color: "#222222",
+                size: "md",
+                weight: "regular",
+                align: "center"
+              }
+            ]
+          }))
+        ]
+      },
+      styles: {
+        body: { separator: true }
+      }
+    }
+  };
+}
 /* --------------------------------------------------
    FINISH EXAM
    (สรุปผล → ส่งคะแนน → ออกบัตร)
