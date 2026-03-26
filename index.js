@@ -1539,18 +1539,32 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const msg = normalize(text);
     const data = event.postback?.data || "";
 
-    /* ⭐ ฟังก์ชันล้าง state (เวอร์ชันถูกต้อง) */
-function clearUserState() {
-  delete userState[userId];
-}
+    /* ⭐ ฟังก์ชันล้าง state */
+    function clearUserState() {
+      delete userState[userId];
+    }
+
+    /* ⭐ อัปเดตเวลาเมื่อผู้ใช้ตอบ */
+    if (userState[userId]) {
+      userState[userId].lastActive = Date.now();
+    }
+
+    /* ⭐ ตรวจ Timeout 3 นาที */
+    if (userState[userId] && userState[userId].lastActive) {
+      const now = Date.now();
+      const diff = now - userState[userId].lastActive;
+
+      if (diff > 3 * 60 * 1000) {  // 3 นาที
+        delete userState[userId];
+        return contractorMainMenu(event);  // กลับเมนูหลัก
+      }
+    }
 
     /* ⭐ ล้าง state เมื่อผู้ใช้กดเมนูหลัก (ข้อความ) */
     if (
       msg === "เมนูหลัก" ||
       msg === "ติดต่อเซฟตี้" ||
-      msg === "ขอใบเซฟตี้" ||
-      msg === "ทำข้อสอบ" ||
-      msg === "pdpa"
+      msg === "ขอใบเซฟตี้"
     ) {
       clearUserState();
     }
@@ -1592,115 +1606,111 @@ function clearUserState() {
       );
     }
 
-   /* --------------------------------------------------
-   3) FLOW หลักของระบบสอบผู้รับเหมา
-   (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
--------------------------------------------------- */
-if (userState[userId]) {
-  const state = userState[userId];
+    /* --------------------------------------------------
+       3) FLOW หลักของระบบสอบผู้รับเหมา
+       (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
+    -------------------------------------------------- */
+    if (userState[userId]) {
+      const state = userState[userId];
 
-  /* ------------------------------
-     PDPA
-  ------------------------------ */
-  if (state.mode === "pdpa") {
-    if (data && data.startsWith("pdpa_accept")) {
-      state.mode = "form";
-      state.step = 0;
-      state.formData = {};
-      return client.replyMessage(event.replyToken, askFormQuestion(userId));
-    }
-    return client.replyMessage(event.replyToken, [
-      pdpaFlex(),
-      exitToMainMenuButton()
-    ]);
-  }
+      /* ------------------------------
+         PDPA
+      ------------------------------ */
+      if (state.mode === "pdpa") {
+        if (data && data.startsWith("pdpa_accept")) {
+          state.mode = "form";
+          state.step = 0;
+          state.formData = {};
+          return client.replyMessage(event.replyToken, askFormQuestion(userId));
+        }
 
-  /* ------------------------------
-     ฟอร์มกรอกข้อมูล (แก้ใหม่ทั้งบล็อก)
-  ------------------------------ */
-  if (state.mode === "form") {
-
-    // ⭐ Escape ออกจากฟอร์ม
-    if (
-      msg === "เมนู" ||
-      msg === "เมนูหลัก" ||
-      msg === "ออก" ||
-      msg === "ยกเลิก"
-    ) {
-      clearUserState();
-      return contractorMainMenu(event);
-    }
-
-    // ⭐ ฟิลด์ของฟอร์ม (แก้ตามจริงได้)
-    const fields = ["fullname", "idcard", "company"];
-    const step = state.step;
-    const field = fields[step];
-
-    // ⭐ บันทึกคำตอบ
-    state.formData[field] = text;
-    state.step++;
-
-    // ⭐ ถ้ากรอกครบ → ไปทำข้อสอบ
-    if (state.step >= fields.length) {
-      state.mode = "exam";
-      state.currentQuestion = 1;
-      return client.replyMessage(event.replyToken, askExamQuestion(1));
-    }
-
-    // ⭐ ถ้ายังไม่ครบ → ถามคำถามถัดไป
-    return client.replyMessage(event.replyToken, [
-      askFormQuestion(userId),
-      exitToMainMenuButton()
-    ]);
-  }
-
-  /* ------------------------------
-     ทำข้อสอบ
-  ------------------------------ */
-  if (state.mode === "exam") {
-
-    // ⭐ Escape: ออกจากข้อสอบได้ทุกเมื่อ
-    if (
-      text === "เมนู" ||
-      text === "ออก" ||
-      text === "ยกเลิก" ||
-      text === "กลับเมนู"
-    ) {
-      state.mode = "menu";
-      return contractorMainMenu(event);
-    }
-
-    // ⭐ ปุ่มคำตอบ
-    if (data && data.startsWith("answer_")) {
-      return handleExamAnswer(event, userId, data);
-    }
-
-    // ⭐ พิมพ์คำตอบเอง
-    if (text) {
-      const qIndex = state.currentQuestion - 1;
-      const question = examQuestions[qIndex];
-      const normText = normalize(text);
-
-      const foundIndex = question.choices.findIndex(choice => {
-        const normChoice = normalize(choice);
-        return (
-          normText === normChoice ||
-          normText.includes(normChoice) ||
-          normChoice.includes(normText)
-        );
-      });
-
-      if (foundIndex !== -1) {
-        return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+        return client.replyMessage(event.replyToken, pdpaFlex());
       }
 
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
-      });
-    }
-  }
-} // ⭐ ปิด if (userState[userId])
+      /* ------------------------------
+         ฟอร์มกรอกข้อมูล
+      ------------------------------ */
+      if (state.mode === "form") {
+
+        // ⭐ Escape ออกจากฟอร์ม
+        if (
+          msg === "เมนู" ||
+          msg === "เมนูหลัก" ||
+          msg === "ออก" ||
+          msg === "ยกเลิก"
+        ) {
+          clearUserState();
+          return contractorMainMenu(event);
+        }
+
+        // ⭐ ฟิลด์ของฟอร์ม
+        const fields = ["fullname", "phone", "idcard", "company"];
+        const step = state.step;
+        const field = fields[step];
+
+        // ⭐ บันทึกคำตอบ
+        state.formData[field] = text;
+        state.step++;
+
+        // ⭐ ถ้ากรอกครบ → ไปทำข้อสอบ
+        if (state.step >= fields.length) {
+          state.mode = "exam";
+          state.currentQuestion = 1;
+          state.score = 0;
+          return client.replyMessage(event.replyToken, askExamQuestion(1));
+        }
+
+        // ⭐ ถ้ายังไม่ครบ → ถามคำถามถัดไป
+        return client.replyMessage(event.replyToken, askFormQuestion(userId));
+      }
+
+      /* ------------------------------
+         ทำข้อสอบ
+      ------------------------------ */
+      if (state.mode === "exam") {
+
+        // ⭐ Escape: ออกจากข้อสอบได้ทุกเมื่อ
+        if (
+          text === "เมนู" ||
+          text === "ออก" ||
+          text === "ยกเลิก" ||
+          text === "กลับเมนู"
+        ) {
+          clearUserState();
+          return contractorMainMenu(event);
+        }
+
+        // ⭐ ปุ่มคำตอบ
+        if (data && data.startsWith("answer_")) {
+          return handleExamAnswer(event, userId, data);
+        }
+
+        // ⭐ พิมพ์คำตอบเอง
+        if (text) {
+          const qIndex = state.currentQuestion - 1;
+          const question = examQuestions[qIndex];
+          const normText = normalize(text);
+
+          const foundIndex = question.choices.findIndex(choice => {
+            const normChoice = normalize(choice);
+            return (
+              normText === normChoice ||
+              normText.includes(normChoice) ||
+              normChoice.includes(normText)
+            );
+          });
+
+          if (foundIndex !== -1) {
+            return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+          }
+
+          return client.replyMessage(event.replyToken, {
+            type: "text",
+            text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+          });
+        }
+      }
+    } // ⭐ ปิด if (userState[userId])
 
     /* ⭐ สื่ออบรมผู้รับเหมา */
     if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
@@ -1745,11 +1755,17 @@ if (userState[userId]) {
         step: 0,
         formData: {},
         currentQuestion: 1,
-        score: 0
+        score: 0,
+        lastActive: Date.now()   // ⭐ เริ่มจับเวลา
       };
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
+  } catch (err) {
+    console.error(err);
+    res.status(500).end();
+  }
+});
     /* --------------------------------------------------
    8) ติดต่อทีมเซฟตี้
 -------------------------------------------------- */
