@@ -635,7 +635,7 @@ function examFlex(questionObj, number) {
 
 
 /* --------------------------------------------------
-   PDPA FLEX (Panasonic Clean Card UI)
+   PDPA FLEX (Panasonic Clean Card UI) — FIXED LINK
 -------------------------------------------------- */
 function pdpaFlex() {
   return {
@@ -678,14 +678,20 @@ function pdpaFlex() {
             size: "sm",
             color: "#444444"
           },
+
+          /* ⭐ ลิงก์แบบกดได้จริง */
           {
             type: "text",
-            text:
-              "🔗 https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf",
+            text: "🔗 เปิดนโยบาย PDPA (คลิกที่นี่)",
             wrap: true,
             size: "sm",
-            color: "#0066CC"
+            color: "#0066CC",
+            action: {
+              type: "uri",
+              uri: "https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf"
+            }
           },
+
           {
             type: "text",
             text: "โปรดเปิดไฟล์นโยบาย PDPA ก่อนกดยอมรับ",
@@ -855,7 +861,7 @@ async function handleFormAnswer(event, userId, text) {
   return client.replyMessage(event.replyToken, flex);
 }
 /* --------------------------------------------------
-   HANDLE EXAM ANSWER (เวอร์ชันกันค้าง)
+   HANDLE EXAM ANSWER (เวอร์ชันเก็บคำตอบ 30 ข้อ)
 -------------------------------------------------- */
 async function handleExamAnswer(event, userId, data) {
   const state = userState[userId];
@@ -902,14 +908,18 @@ async function handleExamAnswer(event, userId, data) {
 
   // ⭐ 4) ตรวจคำตอบ
   const selected = parseInt(data.replace("answer_", ""), 10);
+
+  // ⭐ เก็บคำตอบลง state (สำคัญมาก)
+  state.answers[qIndex] = selected;
+
   if (selected === question.answer) {
     state.score++;
   }
 
-  // ไปข้อถัดไป
+  // ⭐ ไปข้อถัดไป
   state.currentQuestion++;
 
-  // ถ้าจบข้อสอบ
+  // ⭐ ถ้าจบข้อสอบ → ส่งไป finishExam()
   if (state.currentQuestion > examQuestions.length) {
     state.locked = false;
     return finishExam(event, userId);
@@ -932,6 +942,7 @@ async function handleExamAnswer(event, userId, data) {
   state.locked = false;
   return client.replyMessage(event.replyToken, flex);
 }
+
 /* --------------------------------------------------
    FLEX TEMPLATE (เวอร์ชันกันพัง)
 -------------------------------------------------- */
@@ -1023,62 +1034,65 @@ async function finishExam(event, userId) {
   });
 
   // ❌ ถ้าไม่ผ่าน
-if (!pass) {
+  if (!pass) {
 
-  // ล้าง state เดิมก่อน
-  delete userState[userId];
+    // ล้าง state เดิมก่อน
+    delete userState[userId];
 
-  // ⭐ Flex ปุ่มเริ่มทำข้อสอบใหม่ทันที
-  const retryFlex = {
-    type: "flex",
-    altText: "ทำข้อสอบใหม่",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "text",
-            text: "คุณไม่ผ่านการทดสอบ ❌",
-            weight: "bold",
-            size: "lg",
-            align: "center",
-            color: "#FF3333"
-          },
-          {
-            type: "text",
-            text:
+    // ⭐ Flex ปุ่มเริ่มทำข้อสอบใหม่ทันที
+    const retryFlex = {
+      type: "flex",
+      altText: "ทำข้อสอบใหม่",
+      contents: {
+        type: "bubble",
+        body: {
+          type: "box",
+          layout: "vertical",
+          spacing: "md",
+          contents: [
+            {
+              type: "text",
+              text: "คุณไม่ผ่านการทดสอบ ❌",
+              weight: "bold",
+              size: "lg",
+              align: "center",
+              color: "#FF3333"
+            },
+            {
+              type: "text",
+              text:
 "ต้องได้อย่างน้อย 24 คะแนนจึงจะผ่าน\n" +
 "กรุณากดปุ่มด้านล่างเพื่อทำข้อสอบใหม่\n\n" +
 "Minimum score to pass: 24/30\n" +
 "Press the button below to retake the exam.",
-            wrap: true,
-            size: "sm",
-            align: "center"
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: {
-              type: "message",
-              label: "เริ่มทำข้อสอบใหม่ / Retake Exam",
-              text: "ทำข้อสอบใหม่"
+              wrap: true,
+              size: "sm",
+              align: "center"
             },
-            margin: "lg"
-          }
-        ]
+            {
+              type: "button",
+              style: "primary",
+              color: "#1E90FF",
+              action: {
+                type: "message",
+                label: "เริ่มทำข้อสอบใหม่ / Retake Exam",
+                text: "ทำข้อสอบใหม่"
+              },
+              margin: "lg"
+            }
+          ]
+        }
       }
-    }
-  };
+    };
 
-  return client.pushMessage(userId, retryFlex);
-}
+    return client.pushMessage(userId, retryFlex);
+  }
 
-  // ✔ ถ้าผ่าน → ส่งข้อมูลไป Google Sheet
-  await sendToGoogleSheet(userId, "ผ่าน");
+  /* --------------------------------------------------
+     ⭐ ถ้าผ่าน → บันทึกลง Google Sheet
+  -------------------------------------------------- */
+
+  await sendToGoogleSheet(userId, "ผ่าน", state.answers);
 
   // ⭐ ล้าง state
   delete userState[userId];
@@ -1125,12 +1139,17 @@ if (!pass) {
 
   return client.pushMessage(userId, flexMessage);
 }
-
 /* --------------------------------------------------
-   SEND TO GOOGLE SHEET
+   SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
 -------------------------------------------------- */
-async function sendToGoogleSheet(userId, passStatus) {
+async function sendToGoogleSheet(userId, passStatus, answers = []) {
   const state = userState[userId];
+
+  // ⭐ กันกรณี answers หาย → เติมให้ครบ 30 ช่อง
+  const fullAnswers = [];
+  for (let i = 0; i < 30; i++) {
+    fullAnswers.push(answers[i] !== undefined ? answers[i] : "");
+  }
 
   const payload = {
     userId,
@@ -1139,7 +1158,10 @@ async function sendToGoogleSheet(userId, passStatus) {
     idcard: state.formData.idcard,
     company: state.formData.company,
     score: state.score,
-    result: passStatus
+    result: passStatus,
+
+    // ⭐ ส่งคำตอบ 30 ข้อไปให้ Apps Script
+    answers: fullAnswers
   };
 
   try {
@@ -1156,7 +1178,6 @@ async function sendToGoogleSheet(userId, passStatus) {
     console.error("❌ ERROR sending to Google Sheet:", err);
   }
 }
-
 /* --------------------------------------------------
    GET CERTIFICATE URL
 -------------------------------------------------- */
@@ -1490,6 +1511,36 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const msg = normalize(text);
     const data = event.postback?.data || "";
 
+    /* ⭐ ฟังก์ชันล้าง state */
+    function clearUserState() {
+      delete examState[userId];
+      delete pdpaState[userId];
+      delete phoneState[userId];
+      delete userFlow[userId];
+      delete userState[userId];   // ⭐ เพิ่มอันนี้เพื่อเคลียร์ flow หลักด้วย
+    }
+
+    /* ⭐ ล้าง state เมื่อผู้ใช้กดเมนูหลัก (ข้อความ) */
+    if (
+      msg === "เมนูหลัก" ||
+      msg === "ติดต่อเซฟตี้" ||
+      msg === "ขอใบเซฟตี้" ||
+      msg === "ทำข้อสอบ" ||
+      msg === "pdpa"
+    ) {
+      clearUserState();
+    }
+
+    /* ⭐ ล้าง state เมื่อผู้ใช้กดปุ่ม (postback) ที่เป็นเมนู */
+    if (
+      data === "menu_main" ||
+      data === "contact_safety" ||
+      data === "certificate_menu" ||
+      data === "start_exam"
+    ) {
+      clearUserState();
+    }
+
     /* --------------------------------------------------
        1) เงื่อนไขเฉพาะในกลุ่ม
     -------------------------------------------------- */
@@ -1528,94 +1579,85 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
          PDPA
       ------------------------------ */
       if (state.mode === "pdpa") {
-        // ผู้ใช้กดยอมรับ PDPA
         if (data && data.startsWith("pdpa_accept")) {
           state.mode = "form";
           state.step = 0;
           state.formData = {};
           return client.replyMessage(event.replyToken, askFormQuestion(userId));
         }
-
-        // ถ้ายังไม่กดยอมรับ → ส่ง Flex PDPA ให้ใหม่
         return client.replyMessage(event.replyToken, pdpaFlex());
       }
 
-         /* ------------------------------
-       ฟอร์มกรอกข้อมูล
-    ------------------------------ */
-    if (state.mode === "form") {
-      return handleFormAnswer(event, userId, text);
-    }
+      /* ------------------------------
+         ฟอร์มกรอกข้อมูล
+      ------------------------------ */
+      if (state.mode === "form") {
+        return handleFormAnswer(event, userId, text);
+      }
 
-    /* ------------------------------
-       ทำข้อสอบ (รองรับทั้งปุ่ม + พิมพ์เอง)
-    ------------------------------ */
-    if (state.mode === "exam") {
+      /* ------------------------------
+         ทำข้อสอบ
+      ------------------------------ */
+      if (state.mode === "exam") {
 
-  // 1) กรณีกดปุ่ม (postback)
-  if (data && data.startsWith("answer_")) {
-    return handleExamAnswer(event, userId, data);
-  }
-
-  // 2) กรณีพิมพ์เอง
-  if (text) {
-    const qIndex = state.currentQuestion - 1;
-    const question = examQuestions[qIndex];
-    const normText = normalize(text);
-
-        // หา choice ที่ตรงกับข้อความที่พิมพ์ (แบบหลวม ๆ)
-        const foundIndex = question.choices.findIndex(choice => {
-          const normChoice = normalize(choice);
-          return (
-            normText === normChoice ||          // ตรงเป๊ะ
-            normText.includes(normChoice) ||    // ผู้ใช้พิมพ์ยาวกว่า
-            normChoice.includes(normText)       // ผู้ใช้พิมพ์สั้นกว่า
-          );
-        });
-
-        // ถ้าหาเจอ → ส่งเข้า handleExamAnswer เหมือนกดปุ่ม
-        if (foundIndex !== -1) {
-          return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+        // 1) ปุ่มคำตอบ
+        if (data && data.startsWith("answer_")) {
+          return handleExamAnswer(event, userId, data);
         }
 
-        // ถ้าพิมพ์มั่วจนจับไม่ได้
-        return client.replyMessage(event.replyToken, {
-          type: "text",
-          text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
-        });
+        // 2) พิมพ์คำตอบเอง
+        if (text) {
+          const qIndex = state.currentQuestion - 1;
+          const question = examQuestions[qIndex];
+          const normText = normalize(text);
+
+          const foundIndex = question.choices.findIndex(choice => {
+            const normChoice = normalize(choice);
+            return (
+              normText === normChoice ||
+              normText.includes(normChoice) ||
+              normChoice.includes(normText)
+            );
+          });
+
+          if (foundIndex !== -1) {
+            return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+          }
+
+          return client.replyMessage(event.replyToken, {
+            type: "text",
+            text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+          });
+        }
       }
+    } // ⭐ ปิด if (userState[userId])
+
+    /* ⭐ สื่ออบรมผู้รับเหมา */
+    if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
+      return client.replyMessage(event.replyToken, trainingMenu());
     }
-  } // ⭐ ปิด if (userState[userId])
 
-/* ⭐ สื่ออบรมผู้รับเหมา */
-if (
-  msg.includes("สื่อ") &&
-  msg.includes("อบรม") &&
-  msg.includes("ผู้รับเหมา")
-) {
-  return client.replyMessage(event.replyToken, trainingMenu());
-}
-
-/* --------------------------------------------------
-   4) เมนูหลักผู้รับเหมา
--------------------------------------------------- */
-if (
-  msg.includes("ข้อมูลผู้รับเหมา") ||
-  msg.includes("ผู้รับเหมา") ||
-  msg.includes("เมนูผู้รับเหมา")
-) {
-  return contractorMainMenu(event);
-}
     /* --------------------------------------------------
-   5) เมนูย่อย (เวอร์ชันจับข้อความแบบหลวม)
--------------------------------------------------- */
-if (msg.includes("ผู้รับส่งสินค้า")) {
-  return client.replyMessage(event.replyToken, menuDelivery());
-}
+       4) เมนูหลักผู้รับเหมา
+    -------------------------------------------------- */
+    if (
+      msg.includes("ข้อมูลผู้รับเหมา") ||
+      msg.includes("ผู้รับเหมา") ||
+      msg.includes("เมนูผู้รับเหมา")
+    ) {
+      return contractorMainMenu(event);
+    }
 
-if (msg.includes("ผู้แก้ไขงาน")) {
-  return client.replyMessage(event.replyToken, menuVendor());
-}
+    /* --------------------------------------------------
+       5) เมนูย่อย
+    -------------------------------------------------- */
+    if (msg.includes("ผู้รับส่งสินค้า")) {
+      return client.replyMessage(event.replyToken, menuDelivery());
+    }
+
+    if (msg.includes("ผู้แก้ไขงาน")) {
+      return client.replyMessage(event.replyToken, menuVendor());
+    }
 
     /* --------------------------------------------------
        6) ดาวน์โหลดบัตร
@@ -1653,50 +1695,7 @@ if (msg.includes("ผู้แก้ไขงาน")) {
       return client.pushMessage(userId, {
         type: "flex",
         altText: "เบอร์ติดต่อทีมเซฟตี้",
-        contents: {
-          type: "bubble",
-          body: {
-            type: "box",
-            layout: "vertical",
-            spacing: "md",
-            contents: [
-              {
-                type: "text",
-                text: "เลือกเบอร์ที่ต้องการโทร",
-                weight: "bold",
-                size: "lg",
-                align: "center"
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#1E90FF",
-                action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#1E90FF",
-                action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องกี้ (Sodick Environment)", uri: "tel:0949380425" }
-              }
-            ]
-          }
-        }
+        contents: safetyContactFlex()
       });
     }
 
@@ -1715,9 +1714,7 @@ if (msg.includes("ผู้แก้ไขงาน")) {
     /* --------------------------------------------------
        ⭐ SAFETY Q&A
     -------------------------------------------------- */
-    const foundQA = safetyQA.find(q =>
-      msg.includes(normalize(q.question))
-    );
+    const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
     if (foundQA) {
       return reply(event, foundQA.answer);
     }
@@ -1736,19 +1733,16 @@ if (msg.includes("ผู้แก้ไขงาน")) {
       }
     }
 
-        /* --------------------------------------------------
+    /* --------------------------------------------------
        10) Default
     -------------------------------------------------- */
     return reply(event, "พิมพ์: เมนู เพื่อเริ่มต้นใช้งาน");
 
-  }   // ⭐ ปิด try
-  catch (err) {
+  } catch (err) {
     console.error("❌ WEBHOOK ERROR:", err);
     return res.status(500).end();
   }
-
-});   // ⭐ ปิด app.post("/webhook")
-
+});
 
 /* --------------------------------------------------
    MAP FLEX (แผนที่โรงงาน 1–2)
@@ -1917,9 +1911,35 @@ const phoneFlex = {
   }
 };
 /* --------------------------------------------------
-   SERVER START
+   SERVER START  ⭐ (มีอันเดียวพอ)
 -------------------------------------------------- */
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("🚀 LINE Bot server running on port " + PORT);
 });
+
+/* --------------------------------------------------
+   UPDATE ANSWERS TO GOOGLE SHEET (ข้อ 1–30)
+-------------------------------------------------- */
+async function updateAnswersToSheet(rowNumber, answers) {
+  const { google } = require("googleapis");
+
+  const auth = new google.auth.GoogleAuth({
+    keyFile: "credentials.json",
+    scopes: ["https://www.googleapis.com/auth/spreadsheets"]
+  });
+
+  const sheets = google.sheets({ version: "v4", auth });
+
+  // แปลงคำตอบเป็น 30 ช่อง
+  const rowValues = answers.map(a => a !== undefined ? a : "");
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: "1OG3dYmL-8drZQYQaNNaS8Nui_wPkBjSrwpIOQqD7bks",
+    range: `Sheet1!M${rowNumber}:AL${rowNumber}`,
+    valueInputOption: "RAW",
+    requestBody: {
+      values: [rowValues]
+    }
+  });
+}
