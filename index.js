@@ -1887,7 +1887,7 @@ return client.replyMessage(event.replyToken, {
           contents: [
             {
               type: "text",
-              text: "❗ ไม่พบข้อมูลคำถามนี้ในระบบ",
+              text: "❗ ไม่พบคำถามนี้ในระบบ",
               weight: "bold",
               size: "lg",
               color: "#D00000",
