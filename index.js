@@ -633,7 +633,6 @@ function examFlex(questionObj, number) {
   };
 }
 
-
 /* --------------------------------------------------
    PDPA FLEX (Panasonic Clean Card UI) — FIXED LINK
 -------------------------------------------------- */
@@ -679,7 +678,6 @@ function pdpaFlex() {
             color: "#444444"
           },
 
-          /* ⭐ ลิงก์แบบกดได้จริง */
           {
             type: "text",
             text: "🔗 เปิดนโยบาย PDPA (คลิกที่นี่)",
@@ -739,13 +737,101 @@ function pdpaFlex() {
     }
   };
 }
+
 /* --------------------------------------------------
-   FORM QUESTIONS (4 ข้อ)
+   ข้อความแจ้งเตือนก่อนเลือกตำแหน่งงาน (ไทย + อังกฤษ)
+-------------------------------------------------- */
+function askJobPositionText() {
+  return {
+    type: "text",
+    text: "กรุณาเลือกตำแหน่งงานของท่าน\nPlease select your job position"
+  };
+}
+
+/* --------------------------------------------------
+   FLEX เลือกตำแหน่งงาน (ไทย + อังกฤษ)
+-------------------------------------------------- */
+function jobPositionFlex() {
+  return {
+    type: "flex",
+    altText: "เลือกตำแหน่งงาน / Select Job Position",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกตำแหน่งงาน",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "text",
+            text: "Select Your Job Position",
+            size: "sm",
+            color: "#888888",
+            align: "center"
+          },
+          { type: "separator", margin: "md" },
+
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "postback", label: "เจ้าของบริษัท / Owner", data: "job=Owner" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "postback", label: "ผู้ควบคุมงาน / Supervisor", data: "job=Supervisor" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "postback", label: "วิศวกร / Engineer", data: "job=Engineer" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "postback", label: "โฟร์แมน / Foreman", data: "job=Foreman" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "postback", label: "ช่าง / Technician", data: "job=Technician" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "postback", label: "พนักงานทั่วไป / General Worker", data: "job=GeneralWorker" }
+          }
+        ]
+      }
+    }
+  };
+}
+
+/* --------------------------------------------------
+   FORM QUESTIONS (เพิ่มตำแหน่งงานเข้าไปด้วย)
 -------------------------------------------------- */
 const formQuestions = [
   { 
     key: "fullname", 
     text: "📝 กรุณาพิมพ์ชื่อ–นามสกุลของคุณ\n📝 Please type your full name" 
+  },
+  { 
+    key: "position",
+    text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบน\n💼 Please select your job position"
   },
   { 
     key: "phone", 
@@ -906,33 +992,41 @@ async function handleExamAnswer(event, userId, data) {
       text: "⚠️ ข้อสอบข้อนี้มีปัญหา กรุณาแจ้งเจ้าหน้าที่"
     });
   }
-// ⭐ 4) ตรวจคำตอบ
-const selected = parseInt(data.replace("answer_", ""), 10);
 
-// ⭐ แปลงเลขเป็นคำตอบจริง
-const answerText = question.choices[selected];
+  // ⭐ 4) ตรวจคำตอบ
+  const selected = parseInt(data.replace("answer_", ""), 10);
 
-// ⭐ ถ้าตอบถูก → ต่อท้ายคำว่า "(ถูก)"
-const finalAnswer = (selected === question.answer)
-  ? `${answerText} (ถูก)`
-  : answerText;
+  // ⭐ แปลงเลขเป็นคำตอบจริง
+  const answerText = question.choices[selected];
 
-// ⭐ เก็บคำตอบลง state เป็นข้อความ
-state.answers[qIndex] = finalAnswer;
+  // ⭐ ถ้าตอบถูก → ต่อท้ายคำว่า "(ถูก)"
+  const finalAnswer = (selected === question.answer)
+    ? `${answerText} (ถูก)`
+    : answerText;
 
-// ⭐ นับคะแนน
-if (selected === question.answer) {
-  state.score++;
-}
+  // ⭐ เก็บคำตอบลง state เป็นข้อความ
+  state.answers[qIndex] = finalAnswer;
 
-// ⭐ ไปข้อถัดไป
-state.currentQuestion++;
+  // ⭐ นับคะแนน
+  if (selected === question.answer) {
+    state.score++;
+  }
 
-// ⭐ ถ้าจบข้อสอบ → ส่งไป finishExam()
-if (state.currentQuestion > examQuestions.length) {
-  state.locked = false;
-  return finishExam(event, userId);
-}
+  // ⭐ ไปข้อถัดไป
+  state.currentQuestion++;
+
+  // ⭐ ถ้าจบข้อสอบ → ส่งไป finishExam()
+  if (state.currentQuestion > examQuestions.length) {
+    state.locked = false;
+
+    // ⭐⭐⭐ เพิ่มบล็อกส่งข้อมูลไป Google Sheet ⭐⭐⭐
+    const passStatus = state.score >= 24 ? "ผ่าน" : "ไม่ผ่าน";
+    await sendToGoogleSheet(userId, passStatus, state.answers);
+    // ⭐⭐⭐ จบส่วนที่เพิ่ม ⭐⭐⭐
+
+    return finishExam(event, userId);
+  }
+
   // ⭐ 5) ตรวจคำถามถัดไปว่าปลอดภัยไหม
   const nextQ = examQuestions[state.currentQuestion - 1];
   if (!nextQ || !nextQ.choices || nextQ.choices.length === 0) {
@@ -950,7 +1044,6 @@ if (state.currentQuestion > examQuestions.length) {
   state.locked = false;
   return client.replyMessage(event.replyToken, flex);
 }
-
 /* --------------------------------------------------
    FLEX TEMPLATE (เวอร์ชันกันพัง)
 -------------------------------------------------- */
@@ -1157,7 +1250,7 @@ delete userState[userId];
 }   // ← ปิดฟังก์ชัน finishExam() ให้ครบ
 
 /* --------------------------------------------------
-   SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ)
+   SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ + ตำแหน่งงาน)
 -------------------------------------------------- */
 async function sendToGoogleSheet(userId, passStatus, answers = []) {
   const state = userState[userId];
@@ -1171,6 +1264,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
   const payload = {
     userId,
     fullname: state.formData.fullname,
+    position: state.formData.position,   // ⭐ ส่งตำแหน่งงาน
     phone: state.formData.phone,
     idcard: state.formData.idcard,
     company: state.formData.company,
@@ -1183,7 +1277,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec",
+      "https://script.google.com/macros/s/AKfycbwEN7tQWD_1YO14RbSOF_ZnnAxYCZwVGTZX-GgulUBdwYeRhI5ClUQNjJhFY8EwjKlw/exec",
       payload,
       {
         headers: {
@@ -1202,7 +1296,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbyzHDAxTlewXB6FX7LIngtu2n8nHD0Yu3badSwUbpJBYpV4fsp44ac5X4jHSUluI4CY/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbwEN7tQWD_1YO14RbSOF_ZnnAxYCZwVGTZX-GgulUBdwYeRhI5ClUQNjJhFY8EwjKlw/exec?mode=get&userId=${userId}`
     );
     return res.data;
   } catch (err) {
@@ -1581,6 +1675,29 @@ function menuVendor() {
   };
 }
 /* --------------------------------------------------
+   INACTIVITY TIMER (2 นาที)
+-------------------------------------------------- */
+let inactivityTimers = {};
+
+function startInactivityTimer(userId) {
+  // ถ้ามี timer เดิม → ลบทิ้งก่อน
+  if (inactivityTimers[userId]) {
+    clearTimeout(inactivityTimers[userId]);
+  }
+
+  // ตั้ง timer ใหม่ 2 นาที (120,000 ms)
+  inactivityTimers[userId] = setTimeout(() => {
+    delete userState[userId]; // ล้าง state
+
+    client.pushMessage(userId, {
+      type: "text",
+      text: "⏳ ไม่มีการใช้งาน 2 นาที ระบบรีเซ็ตกลับสู่เมนูหลักแล้วครับ"
+    });
+
+    delete inactivityTimers[userId];
+  }, 120000);
+}
+/* --------------------------------------------------
    WEBHOOK
 -------------------------------------------------- */
 app.post("/webhook", line.middleware(config), async (req, res) => {
@@ -1597,10 +1714,13 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     const msg = normalize(text);
     const data = event.postback?.data || "";
 
+    // ⭐⭐⭐ เพิ่มบรรทัดนี้ (เรียก Timer 2 นาที) ⭐⭐⭐
+    startInactivityTimer(userId);
+
     /* ⭐ ฟังก์ชันล้าง state (เวอร์ชันถูกต้อง) */
-function clearUserState() {
-  delete userState[userId];
-}
+    function clearUserState() {
+      delete userState[userId];
+    }
 
     /* ⭐ ล้าง state เมื่อผู้ใช้กดเมนูหลัก (ข้อความ) */
     if (
@@ -1624,18 +1744,18 @@ function clearUserState() {
     }
 
     /* --------------------------------------------------
-   1) เงื่อนไขเฉพาะในกลุ่ม — ตอบเฉพาะเมื่อถูกเรียกชื่อ
--------------------------------------------------- */
-if (event.source.type === "group") {
-  const triggers = ["บอท", "bot", "safety"];
-  const lowerText = msg; // ⭐ ใช้ normalize แล้ว
+       1) เงื่อนไขเฉพาะในกลุ่ม — ตอบเฉพาะเมื่อถูกเรียกชื่อ
+    -------------------------------------------------- */
+    if (event.source.type === "group") {
+      const triggers = ["บอท", "bot", "safety"];
+      const lowerText = msg; // ⭐ ใช้ normalize แล้ว
 
-  const hasTrigger = triggers.some(w => lowerText.includes(w));
+      const hasTrigger = triggers.some(w => lowerText.includes(w));
 
-  if (!hasTrigger) {
-    return res.status(200).end(); // ไม่ถูกเรียก → เงียบ
-  }
-}
+      if (!hasTrigger) {
+        return res.status(200).end(); // ไม่ถูกเรียก → เงียบ
+      }
+    }
 
     /* --------------------------------------------------
        2) Emergency
@@ -1657,7 +1777,7 @@ if (event.source.type === "group") {
 
     /* --------------------------------------------------
        3) FLOW หลักของระบบสอบผู้รับเหมา
-       (PDPA → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
+       (PDPA → เลือกตำแหน่งงาน → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
     -------------------------------------------------- */
     if (userState[userId]) {
       const state = userState[userId];
@@ -1667,12 +1787,34 @@ if (event.source.type === "group") {
       ------------------------------ */
       if (state.mode === "pdpa") {
         if (data && data.startsWith("pdpa_accept")) {
-          state.mode = "form";
-          state.step = 0;
-          state.formData = {};
-          return client.replyMessage(event.replyToken, askFormQuestion(userId));
+          // ⭐ เปลี่ยนจากไป form → ไปเลือกตำแหน่งงานก่อน
+          state.mode = "job";
+          return client.replyMessage(event.replyToken, [
+            askJobPositionText(),
+            jobPositionFlex()
+          ]);
         }
         return client.replyMessage(event.replyToken, pdpaFlex());
+      }
+
+      /* ------------------------------
+         เลือกตำแหน่งงาน (โหมดใหม่)
+      ------------------------------ */
+      if (state.mode === "job") {
+        if (data && data.startsWith("job=")) {
+          const job = data.replace("job=", "");
+          state.formData.position = job;
+
+          // ⭐ ไปเริ่มฟอร์มข้อ 1 (ชื่อ–นามสกุล)
+          state.mode = "form";
+          state.step = 0;
+          return client.replyMessage(event.replyToken, askFormQuestion(userId));
+        }
+
+        return client.replyMessage(event.replyToken, {
+          type: "text",
+          text: "กรุณาเลือกตำแหน่งงานจากปุ่มด้านล่างนะครับ"
+        });
       }
 
       /* ------------------------------
