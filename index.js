@@ -1774,6 +1774,21 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
+       3.5) เริ่มทำแบบทดสอบ
+    -------------------------------------------------- */
+    if (msg.includes("ทำแบบทดสอบ")) {
+      clearUserState();
+      userState[userId] = {
+        mode: "pdpa",
+        step: 0,
+        formData: {},
+        currentQuestion: 1,
+        score: 0
+      };
+      return client.replyMessage(event.replyToken, pdpaFlex());
+    }
+
+    /* --------------------------------------------------
        3) FLOW หลักของระบบสอบผู้รับเหมา
        (PDPA → เลือกตำแหน่งงาน → กรอกข้อมูล → ทำข้อสอบ → ออกบัตร)
     -------------------------------------------------- */
@@ -1867,48 +1882,36 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       }
     } // END if (userState[userId])
 
-    /* --------------------------------------------------
-       4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
-    -------------------------------------------------- */
+  /* --------------------------------------------------
+   4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
+-------------------------------------------------- */
 
-    if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
-      return client.replyMessage(event.replyToken, trainingMenu());
-    }
+if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
+  return client.replyMessage(event.replyToken, trainingMenu());
+}
 
-    if (
-      msg.includes("ข้อมูลผู้รับเหมา") ||
-      msg.includes("ผู้รับเหมา") ||
-      msg.includes("เมนูผู้รับเหมา")
-    ) {
-      return contractorMainMenu(event);
-    }
+if (msg.includes("ผู้รับส่งสินค้า")) {
+  return client.replyMessage(event.replyToken, menuDelivery());
+}
 
-    if (msg.includes("ผู้รับส่งสินค้า")) {
-      return client.replyMessage(event.replyToken, menuDelivery());
-    }
+if (msg.includes("ผู้แก้ไขงาน")) {
+  return client.replyMessage(event.replyToken, menuVendor());
+}
 
-    if (msg.includes("ผู้แก้ไขงาน")) {
-      return client.replyMessage(event.replyToken, menuVendor());
-    }
+if (msg.includes("ดาวน์โหลดบัตร")) {
+  return handleDownloadCertificate(event, userId);
+}
 
-    if (msg.includes("ดาวน์โหลดบัตร")) {
-      return handleDownloadCertificate(event, userId);
-    }
-
-    /* --------------------------------------------------
-       7) เริ่มทำแบบทดสอบ
-    -------------------------------------------------- */
-    if (msg.includes("ทำแบบทดสอบ")) {
-      clearUserState();
-      userState[userId] = {
-        mode: "pdpa",
-        step: 0,
-        formData: {},
-        currentQuestion: 1,
-        score: 0
-      };
-      return client.replyMessage(event.replyToken, pdpaFlex());
-    }
+/* --------------------------------------------------
+   4.5) เมนูผู้รับเหมา (ต้องอยู่หลัง FLOW สอบ)
+-------------------------------------------------- */
+if (
+  msg.includes("ข้อมูลผู้รับเหมา") ||
+  msg.includes("ผู้รับเหมา") ||
+  msg.includes("เมนูผู้รับเหมา")
+) {
+  return contractorMainMenu(event);
+}
     /* --------------------------------------------------
    8) ติดต่อทีมเซฟตี้
 -------------------------------------------------- */
