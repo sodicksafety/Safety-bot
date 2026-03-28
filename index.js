@@ -1868,18 +1868,58 @@ if (
 }
 
 /* --------------------------------------------------
-   8) ติดต่อทีมเซฟตี้
+   8) ติดต่อทีมเซฟตี้ (เวอร์ชันใหม่ ไม่มีรูป)
 -------------------------------------------------- */
-if (msg.includes("ติดต่อทีมเซฟตี้")) {
-  await client.replyMessage(event.replyToken, {
-    type: "image",
-    originalContentUrl:
-      "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-    previewImageUrl:
-      "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-  });
+const ADMIN_USER_ID = "U4a74c3933c0ecf9d2062768696ba3df8";   // ← ไอดีไก่
 
-  return client.pushMessage(userId, {
+// 1) ผู้ใช้กดเมนู 6 → ส่ง Flex 2 ปุ่ม
+if (msg.includes("ติดต่อทีมเซฟตี้")) {
+  return client.replyMessage(event.replyToken, {
+    type: "flex",
+    altText: "เมนูติดต่อทีมเซฟตี้",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        contents: [
+          {
+            type: "text",
+            text: "กรุณาเลือกเมนู / Please select",
+            weight: "bold",
+            size: "lg",
+            align: "center",
+            color: "#1E90FF"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: {
+              type: "message",
+              label: "เบอร์ติดต่อทีมเซฟตี้ / Safety Contact",
+              text: "เบอร์ติดต่อทีมเซฟตี้"
+            }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: {
+              type: "message",
+              label: "ส่งข้อความ ติดต่อ–แจ้งปัญหา / Report Issue",
+              text: "แจ้งปัญหา"
+            }
+          }
+        ]
+      }
+    }
+  });
+}
+
+// 2) ปุ่ม 1 → ส่งเบอร์โทร 5 คน
+if (msg === "เบอร์ติดต่อทีมเซฟตี้") {
+  return client.replyMessage(event.replyToken, {
     type: "flex",
     altText: "เบอร์ติดต่อทีมเซฟตี้",
     contents: {
@@ -1891,10 +1931,11 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
         contents: [
           {
             type: "text",
-            text: "เลือกเบอร์ที่ต้องการโทร",
+            text: "เบอร์ติดต่อทีมเซฟตี้ / Safety Contact",
             weight: "bold",
             size: "lg",
-            align: "center"
+            align: "center",
+            color: "#1E90FF"
           },
           {
             type: "button",
@@ -1921,7 +1962,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
           {
             type: "button",
             style: "secondary",
-            action: { type: "uri", label: "น้องกี้ (Sodick Environment)", uri: "tel:0949380425" }
+            action: { type: "uri", label: "น้องกี้ (Environment)", uri: "tel:0949380425" }
           }
         ]
       }
@@ -1929,6 +1970,38 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
   });
 }
 
+// 3) ปุ่ม 2 → ส่งข้อความแจ้งปัญหา
+if (msg === "แจ้งปัญหา") {
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text:
+`📣 กรุณาแจ้งรายละเอียดปัญหาที่พบ  
+Please describe the issue you are reporting.
+
+โปรดพิมพ์ข้อมูลดังนี้ / Please include:
+1) รายละเอียดปัญหา  •  Issue details  
+2) ชื่อผู้แจ้ง  •  Your name  
+3) บริษัท  •  Company  
+4) เบอร์ติดต่อกลับ  •  Contact number`
+  });
+}
+
+// 4) Forward ข้อความทั้งหมดไปหาไก่ (ยกเว้นข้อความระบบ + เมนูอื่น)
+if (
+  msg !== "ติดต่อทีมเซฟตี้" &&
+  msg !== "เบอร์ติดต่อทีมเซฟตี้" &&
+  msg !== "แจ้งปัญหา" &&
+  !msg.includes("แผนที่") &&
+  !msg.includes("map") &&
+  !msg.includes("location") &&
+  !msg.includes("ผู้รับเหมา") &&
+  !msg.includes("ดาวน์โหลดบัตร")
+) {
+  await client.pushMessage(ADMIN_USER_ID, {
+    type: "text",
+    text: `📩 ข้อความจากผู้ใช้:\n${msg}`
+  });
+}
 /* --------------------------------------------------
    9) แผนที่ + เบอร์โรงงาน
 -------------------------------------------------- */
