@@ -1670,8 +1670,8 @@ let inactivityWarned = {};   // ⭐ ใช้กันเตือนซ้ำ
 function startTimer(userId) {
   const mode = userState[userId]?.mode;
 
-  // ❌ ถ้า state นี้ไม่ใช่ flow สอบ → ไม่จับเวลา
-  if (!timedStates.includes(mode)) return;
+  // ❗ ถ้าไม่มี state เลย → ไม่ต้องจับเวลา
+  if (!mode) return;
 
   // เคลียร์ timer เดิม
   if (inactivityTimers[userId]) {
@@ -1683,7 +1683,7 @@ function startTimer(userId) {
     inactivityWarned[userId] = false;
   }
 
-  // ตั้ง timer ใหม่
+  // ตั้ง timer ใหม่ (2 นาที)
   inactivityTimers[userId] = setTimeout(() => {
 
     // ⭐ เตือนครั้งแรกเท่านั้น
@@ -1707,7 +1707,6 @@ function startTimer(userId) {
 
   }, 120000);
 }
-
 
 /* --------------------------------------------------
    WEBHOOK
