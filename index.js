@@ -848,53 +848,39 @@ async function handleFormAnswer(event, userId, text) {
   const key = formQuestions[step].key;
 
   // -----------------------------
-  // ตรวจความถูกต้องของข้อมูล
-  // -----------------------------
+// ตรวจความถูกต้องของข้อมูล
+// -----------------------------
 
-  // ตรวจเบอร์โทร (ต้องเป็นตัวเลข 10 หลัก)
-  if (key === "phone") {
-    const phone = text.trim();
+// ตรวจเบอร์โทร (ต้องเป็นตัวเลข 10 หลัก)
+if (key === "phone") {
+  const phone = text.trim();
 
-    if (!/^\d{10}$/.test(phone)) {
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text: "❌ เบอร์โทรไม่ถูกต้อง\nกรุณาพิมพ์เบอร์โทรศัพท์ 10 หลัก เช่น 0812345678"
-      });
-    }
+  if (!/^\d{10}$/.test(phone)) {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "❌ เบอร์โทรไม่ถูกต้อง\nกรุณาพิมพ์เบอร์โทรศัพท์ 10 หลัก เช่น 0812345678"
+    });
   }
+}
 
-  // ตรวจเลขบัตรประชาชน / Passport / Work Permit
-  if (key === "idcard") {
-    const idcard = text.trim();
+// ตรวจเลขบัตรประชาชน / Passport / Work Permit
+if (key === "idcard") {
+  const idcard = text.trim();
 
-    // ต้องเป็นตัวเลขทั้งหมด
-    if (!/^\d+$/.test(idcard)) {
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text:
+  // ตรวจรูปแบบ: ต้องเป็น A-Z / a-z / 0-9 ความยาว 6–13 ตัวอักษร
+  if (!/^[A-Za-z0-9]{6,13}$/.test(idcard)) {
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text:
 "❌ หมายเลขไม่ถูกต้อง\n" +
 "🇹🇭 คนไทย: ต้องกรอกเลขบัตรประชาชน 13 หลัก\n" +
-"🌏 ชาวต่างชาติ: กรุณากรอกหมายเลข Passport หรือ Work Permit (ไม่เกิน 9 หลัก)\n\n" +
+"🌏 ชาวต่างชาติ: กรุณากรอกหมายเลข Passport หรือ Work Permit (6–12 ตัวอักษร/ตัวเลข)\n\n" +
 "❌ Invalid number\n" +
 "Thai: Please enter your 13‑digit national ID\n" +
-"Foreigner: Passport or Work Permit (up to 9 digits)"
-      });
-    }
-
-    // ความยาวต้องอยู่ระหว่าง 7–13 หลัก
-    if (idcard.length < 7 || idcard.length > 13) {
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text:
-"❌ หมายเลขไม่ถูกต้อง\n" +
-"🇹🇭 คนไทย: ต้องกรอกเลขบัตรประชาชน 13 หลัก\n" +
-"🌏 ชาวต่างชาติ: กรุณากรอกหมายเลข Passport หรือ Work Permit (ไม่เกิน 9 หลัก)\n\n" +
-"❌ Invalid number\n" +
-"Thai: Please enter your 13‑digit national ID\n" +
-"Foreigner: Passport or Work Permit (up to 9 digits)"
-      });
-    }
+"Foreigner: Passport or Work Permit (6–12 characters)"
+    });
   }
+}
 
   // -----------------------------
   // ถ้าผ่านการตรวจ → เก็บข้อมูล
