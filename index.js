@@ -1957,8 +1957,8 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
   });
 }
 
-// 2) ปุ่ม 1 → Safety Hotline (เบอร์โทร 5 คน)
-if (msg.includes("Safety Hotline")) {
+// 2) ปุ่ม 1 → Safety Hotline
+if (msg.includes("safety") && msg.includes("hotline")) {
   return client.replyMessage(event.replyToken, {
     type: "flex",
     altText: "Safety Hotline",
@@ -2009,7 +2009,6 @@ if (msg.includes("Safety Hotline")) {
     }
   });
 }
-
 // 3) ปุ่ม 2 → แจ้งปัญหา (Flex สวย ๆ)
 if (msg.includes("แจ้งปัญหา")) {
   return client.replyMessage(event.replyToken, {
@@ -2077,11 +2076,13 @@ if (msg.includes("แจ้งปัญหา")) {
   });
 }
 
-// 4) Forward ข้อความทั้งหมดไปหาไก่
+/* --------------------------------------------------
+   4) Forward ข้อความทั้งหมดไปหาไก่ (เวอร์ชันนิ่งที่สุด)
+-------------------------------------------------- */
 if (
-  msg !== "ติดต่อทีมเซฟตี้" &&
-  msg !== "Safety Hotline" &&
-  msg !== "แจ้งปัญหา" &&
+  !msg.includes("ติดต่อทีมเซฟตี้") &&
+  !(msg.includes("safety") && msg.includes("hotline")) &&
+  !msg.includes("แจ้งปัญหา") &&
   !msg.includes("แผนที่") &&
   !msg.includes("map") &&
   !msg.includes("location") &&
@@ -2091,8 +2092,7 @@ if (
   await client.pushMessage(ADMIN_USER_ID, {
     type: "text",
     text: `📩 ข้อความจากผู้ใช้:\n${msg}`
-  });
-}
+  });}
 /* --------------------------------------------------
    9) แผนที่ + เบอร์โรงงาน
 -------------------------------------------------- */
