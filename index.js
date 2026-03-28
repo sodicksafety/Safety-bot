@@ -1872,7 +1872,7 @@ if (
 -------------------------------------------------- */
 const ADMIN_USER_ID = "U4a74c3933c0ecf9d2062768696ba3df8";   // ← ไอดีไก่
 
-// 1) ผู้ใช้กดเมนู 6 → ส่ง Flex 2 ปุ่ม
+// 1) ผู้ใช้กดเมนู 6 → ส่ง Flex 2 ปุ่ม (เวอร์ชันปุ่มใหญ่ ไม่โดนตัดคำ)
 if (msg.includes("ติดต่อทีมเซฟตี้")) {
   return client.replyMessage(event.replyToken, {
     type: "flex",
@@ -1883,6 +1883,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
         type: "box",
         layout: "vertical",
         spacing: "lg",
+        paddingAll: "20px",
         contents: [
           {
             type: "text",
@@ -1890,35 +1891,71 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             weight: "bold",
             size: "lg",
             align: "center",
-            color: "#1E90FF"
-          },
-          {
-            type: "button",
-            style: "primary",
             color: "#1E90FF",
-            action: {
-              type: "message",
-              label: "เบอร์ติดต่อทีมเซฟตี้ / Safety Contact",
-              text: "เบอร์ติดต่อทีมเซฟตี้"
-            }
+            wrap: true
           },
+
           {
-            type: "button",
-            style: "secondary",
-            action: {
-              type: "message",
-              label: "ส่งข้อความ ติดต่อ–แจ้งปัญหา / Report Issue",
-              text: "แจ้งปัญหา"
-            }
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#E8F3FF",
+            cornerRadius: "12px",
+            paddingAll: "12px",
+            contents: [
+              {
+                type: "text",
+                text: "เบอร์ติดต่อทีมเซฟตี้ / Safety Contact",
+                weight: "bold",
+                size: "md",
+                wrap: true,
+                color: "#1E90FF"
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: {
+                  type: "message",
+                  label: "เปิดเมนูนี้",
+                  text: "เบอร์ติดต่อทีมเซฟตี้"
+                }
+              }
+            ]
+          },
+
+          {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#FFF4E5",
+            cornerRadius: "12px",
+            paddingAll: "12px",
+            contents: [
+              {
+                type: "text",
+                text: "ส่งข้อความ ติดต่อ–แจ้งปัญหา / Report Issue",
+                weight: "bold",
+                size: "md",
+                wrap: true,
+                color: "#FF8C00"
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: {
+                  type: "message",
+                  label: "เปิดเมนูนี้",
+                  text: "แจ้งปัญหา"
+                }
+              }
+            ]
           }
         ]
       }
     }
   });
 }
-
 // 2) ปุ่ม 1 → ส่งเบอร์โทร 5 คน
-if (msg === "เบอร์ติดต่อทีมเซฟตี้") {
+if (msg.includes("เบอร์ติดต่อทีมเซฟตี้")) {
   return client.replyMessage(event.replyToken, {
     type: "flex",
     altText: "เบอร์ติดต่อทีมเซฟตี้",
@@ -1969,23 +2006,97 @@ if (msg === "เบอร์ติดต่อทีมเซฟตี้") {
     }
   });
 }
-
-// 3) ปุ่ม 2 → ส่งข้อความแจ้งปัญหา
-if (msg === "แจ้งปัญหา") {
+// 3) ปุ่ม 2 → ส่งข้อความแจ้งปัญหา (Flex สวย ๆ)
+if (msg.includes("แจ้งปัญหา")) {
   return client.replyMessage(event.replyToken, {
-    type: "text",
-    text:
-`📣 กรุณาแจ้งรายละเอียดปัญหาที่พบ  
-Please describe the issue you are reporting.
+    type: "flex",
+    altText: "แจ้งปัญหา / Report Issue",
+    contents: {
+      type: "bubble",
+      size: "mega",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "lg",
+        paddingAll: "20px",
+        contents: [
+          {
+            type: "text",
+            text: "📣 แจ้งปัญหา / Report Issue",
+            weight: "bold",
+            size: "xl",
+            color: "#1E90FF",
+            align: "center",
+            wrap: true
+          },
 
-โปรดพิมพ์ข้อมูลดังนี้ / Please include:
-1) รายละเอียดปัญหา  •  Issue details  
-2) ชื่อผู้แจ้ง  •  Your name  
-3) บริษัท  •  Company  
-4) เบอร์ติดต่อกลับ  •  Contact number`
+          {
+            type: "box",
+            layout: "vertical",
+            backgroundColor: "#F0F7FF",
+            cornerRadius: "12px",
+            paddingAll: "16px",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "กรุณากรอกรายละเอียดด้านล่าง\nPlease provide the following details:",
+                size: "sm",
+                color: "#555555",
+                wrap: true
+              },
+
+              {
+                type: "box",
+                layout: "vertical",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: "1) รายละเอียดปัญหา\n• Issue details",
+                    wrap: true,
+                    size: "md",
+                    color: "#000000"
+                  },
+                  {
+                    type: "text",
+                    text: "2) ชื่อผู้แจ้ง\n• Your name",
+                    wrap: true,
+                    size: "md",
+                    color: "#000000"
+                  },
+                  {
+                    type: "text",
+                    text: "3) บริษัท\n• Company",
+                    wrap: true,
+                    size: "md",
+                    color: "#000000"
+                  },
+                  {
+                    type: "text",
+                    text: "4) เบอร์ติดต่อกลับ\n• Contact number",
+                    wrap: true,
+                    size: "md",
+                    color: "#000000"
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            type: "text",
+            text: "พิมพ์ตอบกลับในช่องแชทได้เลยครับ 🙂",
+            wrap: true,
+            size: "sm",
+            color: "#1E90FF",
+            align: "center"
+          }
+        ]
+      }
+    }
   });
 }
-
 // 4) Forward ข้อความทั้งหมดไปหาไก่ (ยกเว้นข้อความระบบ + เมนูอื่น)
 if (
   msg !== "ติดต่อทีมเซฟตี้" &&
