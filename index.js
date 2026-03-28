@@ -1894,12 +1894,6 @@ if (
   return contractorMainMenu(event);
 }
 
-return res.status(200).end();
-} catch (err) {
-  console.error(err);
-  return res.status(500).end();
-}
-
 /* --------------------------------------------------
    8) ติดต่อทีมเซฟตี้
 -------------------------------------------------- */
@@ -1961,41 +1955,41 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
     }
   });
 }
-    /* --------------------------------------------------
-       9) แผนที่ + เบอร์โรงงาน
-    -------------------------------------------------- */
-    if (
-      msg.includes("แผนที่") ||
-      msg.includes("map") ||
-      msg.includes("location") ||
-      msg.includes("โรงงานอยู่ไหน")
-    ) {
-      return client.replyMessage(event.replyToken, [mapFlex, phoneFlex]);
+
+/* --------------------------------------------------
+   9) แผนที่ + เบอร์โรงงาน
+-------------------------------------------------- */
+if (
+  msg.includes("แผนที่") ||
+  msg.includes("map") ||
+  msg.includes("location") ||
+  msg.includes("โรงงานอยู่ไหน")
+) {
+  return client.replyMessage(event.replyToken, [mapFlex, phoneFlex]);
+}
+
+/* --------------------------------------------------
+   ⭐ SAFETY Q&A
+-------------------------------------------------- */
+const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
+if (foundQA) {
+  return reply(event, foundQA.answer);
+}
+
+/* --------------------------------------------------
+   ⭐ TEXT REPLIES
+-------------------------------------------------- */
+for (const cat of Object.keys(categories)) {
+  if (categories[cat].some(w => msg.includes(normalize(w)))) {
+    const replyText =
+      replies[cat][text] || replies[cat][normalize(text)] || null;
+
+    if (replyText) {
+      return reply(event, replyText);
     }
-
-    /* --------------------------------------------------
-       ⭐ SAFETY Q&A
-    -------------------------------------------------- */
-    const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
-    if (foundQA) {
-      return reply(event, foundQA.answer);
-    }
-
-    /* --------------------------------------------------
-       ⭐ TEXT REPLIES
-    -------------------------------------------------- */
-    for (const cat of Object.keys(categories)) {
-      if (categories[cat].some(w => msg.includes(normalize(w)))) {
-        const replyText =
-          replies[cat][text] || replies[cat][normalize(text)] || null;
-
-        if (replyText) {
-          return reply(event, replyText);
-        }
-      }
-    }
-
-    /* --------------------------------------------------
+  }
+}
+ /* --------------------------------------------------
        ⭐ Fallback (ข้อความเดิม + เบอร์โทร + ดีไซน์พรีเมียม)
     -------------------------------------------------- */
     return client.replyMessage(event.replyToken, {
@@ -2066,12 +2060,11 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
         }
       }
     });
-
-  } catch (err) {
-    console.error("❌ Webhook Error:", err);
-    return res.status(500).end();
-  }
-}); // ← ปิด webhook ครบแล้วตรงนี้!
+} catch (err) {
+  console.error("❌ Webhook Error:", err);
+  return res.status(500).end();
+}
+}); // ปิด webhook ตรงนี้
 
 /* --------------------------------------------------
    MAP FLEX (แผนที่โรงงาน 1–2)
