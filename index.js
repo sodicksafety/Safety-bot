@@ -1169,10 +1169,11 @@ async function finishExam(event, userId) {
   }
 
 /* --------------------------------------------------
-     ⭐ ถ้าผ่าน → บันทึกลง Google Sheet
+     ⭐ ถ้าผ่าน → แสดงปุ่มดาวน์โหลดบัตร (ไม่ต้องส่งซ้ำ)
 -------------------------------------------------- */
 
-await sendToGoogleSheet(userId, "ผ่าน", state.answers);
+// ❌ ห้ามส่งซ้ำเด็ดขาด (ลบออก)
+// await sendToGoogleSheet(userId, "ผ่าน", state.answers);
 
 // ⭐ ส่ง Flex ปุ่มดาวน์โหลดบัตรทันที
 const flexMessage = {
