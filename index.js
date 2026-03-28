@@ -1732,9 +1732,9 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       1) เงื่อนไขเฉพาะในกลุ่ม — ตอบเฉพาะเมื่อถูกเรียกชื่อ
+       1) เงื่อนไขเฉพาะในกลุ่ม — ตอบเฉพาะเมื่อถูกเรียกชื่อ (เฉพาะ message)
     -------------------------------------------------- */
-    if (event.source.type === "group") {
+    if (event.source.type === "group" && event.type === "message") {
       const triggers = ["บอท", "bot", "safety"];
       const lowerText = msg;
 
@@ -1742,127 +1742,126 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       if (!hasTrigger) return res.status(200).end();
     }
 
-   /* --------------------------------------------------
-   2) Emergency
--------------------------------------------------- */
-if (
-  msg.includes("อุบัติเหตุ") ||
-  msg.includes("ฉุกเฉิน") ||
-  msg.includes("ไฟไหม้") ||
-  msg.includes("บาดเจ็บ")
-) {
-  return reply(
-    event,
-    `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
+    /* --------------------------------------------------
+       2) Emergency
+    -------------------------------------------------- */
+    if (
+      msg.includes("อุบัติเหตุ") ||
+      msg.includes("ฉุกเฉิน") ||
+      msg.includes("ไฟไหม้") ||
+      msg.includes("บาดเจ็บ")
+    ) {
+      return reply(
+        event,
+        `⚠️ เหตุฉุกเฉิน กรุณาติดต่อทันที  
 โรงงาน 1: 102 / 127 / 129  
 โรงงาน 2: 137  
 ผู้จัดการ: 100`
-  );
-}
-
-/* --------------------------------------------------
-   3.5) เริ่มทำแบบทดสอบ
--------------------------------------------------- */
-if (msg.includes("ทำแบบทดสอบ")) {
-  clearUserState();
-  userState[userId] = {
-    mode: "pdpa",
-    step: 0,
-    formData: {},
-    currentQuestion: 1,
-    score: 0
-  };
-  return client.replyMessage(event.replyToken, pdpaFlex());
-}
-
-/* --------------------------------------------------
-   3) FLOW หลักของระบบสอบผู้รับเหมา
--------------------------------------------------- */
-if (userState[userId]) {
-  const state = userState[userId];
-
-  /* ------------------------------
-     PDPA
-  ------------------------------ */
-  if (state.mode === "pdpa") {
-    if (data && data.startsWith("pdpa_accept")) {
-
-      startTimer(userId);
-      state.mode = "job";
-
-      // ⭐⭐ แก้ตรงนี้ — แยกข้อความกับ Flex ออกจากกัน
-      await client.replyMessage(event.replyToken, askJobPositionText());
-      return client.pushMessage(userId, jobPositionFlex());
+      );
     }
 
-    return client.replyMessage(event.replyToken, pdpaFlex());
-  }
-
-  /* ------------------------------
-     เลือกตำแหน่งงาน
-  ------------------------------ */
-  if (state.mode === "job") {
-    if (data && data.startsWith("job=")) {
-      const job = data.replace("job=", "");
-      state.formData.position = job;
-
-      startTimer(userId);
-
-      state.mode = "form";
-      state.step = 0;
-      return client.replyMessage(event.replyToken, askFormQuestion(userId));
+    /* --------------------------------------------------
+       3.5) เริ่มทำแบบทดสอบ
+    -------------------------------------------------- */
+    if (msg.includes("ทำแบบทดสอบ")) {
+      clearUserState();
+      userState[userId] = {
+        mode: "pdpa",
+        step: 0,
+        formData: {},
+        currentQuestion: 1,
+        score: 0
+      };
+      return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "กรุณาเลือกตำแหน่งงานจากปุ่มด้านล่างนะครับ"
-    });
-  }
+    /* --------------------------------------------------
+       3) FLOW หลักของระบบสอบผู้รับเหมา
+    -------------------------------------------------- */
+    if (userState[userId]) {
+      const state = userState[userId];
 
-  /* ------------------------------
-     ฟอร์มกรอกข้อมูล
-  ------------------------------ */
-  if (state.mode === "form") {
-    startTimer(userId);
-    return handleFormAnswer(event, userId, text);
-  }
+      /* ------------------------------
+         PDPA
+      ------------------------------ */
+      if (state.mode === "pdpa") {
+        if (data && data.startsWith("pdpa_accept")) {
 
-  /* ------------------------------
-     ทำข้อสอบ
-  ------------------------------ */
-  if (state.mode === "exam") {
+          startTimer(userId);
+          state.mode = "job";
 
-    if (data && data.startsWith("answer_")) {
-      startTimer(userId);
-      return handleExamAnswer(event, userId, data);
-    }
+          await client.replyMessage(event.replyToken, askJobPositionText());
+          return client.pushMessage(userId, jobPositionFlex());
+        }
 
-    if (text) {
-      const qIndex = state.currentQuestion - 1;
-      const question = examQuestions[qIndex];
-      const normText = normalize(text);
-
-      const foundIndex = question.choices.findIndex(choice => {
-        const normChoice = normalize(choice);
-        return (
-          normText === normChoice ||
-          normText.includes(normChoice) ||
-          normChoice.includes(normText)
-        );
-      });
-
-      if (foundIndex !== -1) {
-        startTimer(userId);
-        return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+        return client.replyMessage(event.replyToken, pdpaFlex());
       }
 
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
-      });
-    }
-  }
-} // END if (userState[userId])
+      /* ------------------------------
+         เลือกตำแหน่งงาน
+      ------------------------------ */
+      if (state.mode === "job") {
+        if (data && data.startsWith("job=")) {
+          const job = data.replace("job=", "");
+          state.formData.position = job;
+
+          startTimer(userId);
+
+          state.mode = "form";
+          state.step = 0;
+          return client.replyMessage(event.replyToken, askFormQuestion(userId));
+        }
+
+        return client.replyMessage(event.replyToken, {
+          type: "text",
+          text: "กรุณาเลือกตำแหน่งงานจากปุ่มด้านล่างนะครับ"
+        });
+      }
+
+      /* ------------------------------
+         ฟอร์มกรอกข้อมูล
+      ------------------------------ */
+      if (state.mode === "form") {
+        startTimer(userId);
+        return handleFormAnswer(event, userId, text);
+      }
+
+      /* ------------------------------
+         ทำข้อสอบ
+      ------------------------------ */
+      if (state.mode === "exam") {
+
+        if (data && data.startsWith("answer_")) {
+          startTimer(userId);
+          return handleExamAnswer(event, userId, data);
+        }
+
+        if (text) {
+          const qIndex = state.currentQuestion - 1;
+          const question = examQuestions[qIndex];
+          const normText = normalize(text);
+
+          const foundIndex = question.choices.findIndex(choice => {
+            const normChoice = normalize(choice);
+            return (
+              normText === normChoice ||
+              normText.includes(normChoice) ||
+              normChoice.includes(normText)
+            );
+          });
+
+          if (foundIndex !== -1) {
+            startTimer(userId);
+            return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+          }
+
+          return client.replyMessage(event.replyToken, {
+            type: "text",
+            text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+          });
+        }
+      }
+    } // END if (userState[userId])
 
     /* --------------------------------------------------
        4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
@@ -1884,7 +1883,7 @@ if (userState[userId]) {
       return handleDownloadCertificate(event, userId);
     }
 
-  /* --------------------------------------------------
+    /* --------------------------------------------------
        4.5) เมนูผู้รับเหมา (ต้องอยู่หลัง FLOW สอบ และหลังเมนูอื่นทั้งหมด)
     -------------------------------------------------- */
     if (
@@ -1895,6 +1894,11 @@ if (userState[userId]) {
       return contractorMainMenu(event);
     }
 
+    return res.status(200).end();
+  } catch (err) {
+    console.error(err);
+    return res.status(500).end();
+  }
     /* --------------------------------------------------
        8) ติดต่อทีมเซฟตี้  ← ย้ายกลับเข้ามาใน webhook
     -------------------------------------------------- */
