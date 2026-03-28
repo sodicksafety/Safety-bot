@@ -988,17 +988,17 @@ async function handleExamAnswer(event, userId, data) {
   // ⭐ ไปข้อถัดไป
   state.currentQuestion++;
 
-  // ⭐ ถ้าจบข้อสอบ → ส่งไป finishExam()
-  if (state.currentQuestion > examQuestions.length) {
-    state.locked = false;
+ // ⭐ ถ้าจบข้อสอบ → ส่งไป finishExam()
+if (state.currentQuestion > examQuestions.length) {
+  state.locked = false;
 
-    // ⭐⭐⭐ เพิ่มบล็อกส่งข้อมูลไป Google Sheet ⭐⭐⭐
-    const passStatus = state.score >= 24 ? "ผ่าน" : "ไม่ผ่าน";
-    await sendToGoogleSheet(userId, passStatus, state.answers);
-    // ⭐⭐⭐ จบส่วนที่เพิ่ม ⭐⭐⭐
+  // ⭐⭐⭐ ส่งข้อมูลไป Google Sheet ⭐⭐⭐
+  const passStatus = state.score >= 24 ? "ผ่าน" : "ไม่ผ่าน";
+  await sendToGoogleSheet(userId, passStatus, state.answers);
+  // ⭐⭐⭐ จบส่วนที่เพิ่ม ⭐⭐⭐
 
-    return finishExam(event, userId);
-  }
+  return await finishExam(event, userId);
+}
 
   // ⭐ 5) ตรวจคำถามถัดไปว่าปลอดภัยไหม
   const nextQ = examQuestions[state.currentQuestion - 1];
@@ -1243,14 +1243,12 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
     company: state.formData.company,
     score: state.score,
     result: passStatus,
-
-    // ⭐ ส่งคำตอบ 30 ข้อไปให้ Apps Script
-    answers: fullAnswers
+    answers: fullAnswers                 // ⭐ ส่งคำตอบ 30 ข้อ
   };
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbwEN7tQWD_1YO14RbSOF_ZnnAxYCZwVGTZX-GgulUBdwYeRhI5ClUQNjJhFY8EwjKlw/exec",
+      "https://script.google.com/macros/s/AKfycbw6KW3nwbKS6uJH3te2l0Hfr5f2rGlTlBncZ5liOsZ1gC7S3UR_olluQiQiaR_PVRUA/exec",
       payload,
       {
         headers: {
@@ -1269,7 +1267,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbwEN7tQWD_1YO14RbSOF_ZnnAxYCZwVGTZX-GgulUBdwYeRhI5ClUQNjJhFY8EwjKlw/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbw6KW3nwbKS6uJH3te2l0Hfr5f2rGlTlBncZ5liOsZ1gC7S3UR_olluQiQiaR_PVRUA/exec?mode=get&userId=${userId}`
     );
     return res.data;
   } catch (err) {
