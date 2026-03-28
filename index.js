@@ -1882,209 +1882,209 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       }
     } // END if (userState[userId])
 
+    /* --------------------------------------------------
+       4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
+    -------------------------------------------------- */
+
+    if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
+      return client.replyMessage(event.replyToken, trainingMenu());
+    }
+
+    if (msg.includes("ผู้รับส่งสินค้า")) {
+      return client.replyMessage(event.replyToken, menuDelivery());
+    }
+
+    if (msg.includes("ผู้แก้ไขงาน")) {
+      return client.replyMessage(event.replyToken, menuVendor());
+    }
+
+    if (msg.includes("ดาวน์โหลดบัตร")) {
+      return handleDownloadCertificate(event, userId);
+    }
+
   /* --------------------------------------------------
-   4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
--------------------------------------------------- */
+       4.5) เมนูผู้รับเหมา (ต้องอยู่หลัง FLOW สอบ และหลังเมนูอื่นทั้งหมด)
+    -------------------------------------------------- */
+    if (
+      msg.includes("ข้อมูลผู้รับเหมา") ||
+      msg.includes("ผู้รับเหมา") ||
+      msg.includes("เมนูผู้รับเหมา")
+    ) {
+      return contractorMainMenu(event);
+    }
 
-if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
-  return client.replyMessage(event.replyToken, trainingMenu());
-}
-
-if (msg.includes("ผู้รับส่งสินค้า")) {
-  return client.replyMessage(event.replyToken, menuDelivery());
-}
-
-if (msg.includes("ผู้แก้ไขงาน")) {
-  return client.replyMessage(event.replyToken, menuVendor());
-}
-
-if (msg.includes("ดาวน์โหลดบัตร")) {
-  return handleDownloadCertificate(event, userId);
-}
-
-/* --------------------------------------------------
-   4.5) เมนูผู้รับเหมา (ต้องอยู่หลัง FLOW สอบ)
--------------------------------------------------- */
-if (
-  msg.includes("ข้อมูลผู้รับเหมา") ||
-  msg.includes("ผู้รับเหมา") ||
-  msg.includes("เมนูผู้รับเหมา")
-) {
-  return contractorMainMenu(event);
-}
     /* --------------------------------------------------
-   8) ติดต่อทีมเซฟตี้
--------------------------------------------------- */
-if (msg.includes("ติดต่อทีมเซฟตี้")) {
-  await client.replyMessage(event.replyToken, {
-    type: "image",
-    originalContentUrl:
-      "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-    previewImageUrl:
-      "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-  });
+       8) ติดต่อทีมเซฟตี้  ← ย้ายกลับเข้ามาใน webhook
+    -------------------------------------------------- */
+    if (msg.includes("ติดต่อทีมเซฟตี้")) {
+      await client.replyMessage(event.replyToken, {
+        type: "image",
+        originalContentUrl:
+          "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+        previewImageUrl:
+          "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
+      });
 
-  return client.pushMessage(userId, {
-    type: "flex",
-    altText: "เบอร์ติดต่อทีมเซฟตี้",
-    contents: {
-      type: "bubble",
-      body: {
-        type: "box",
-        layout: "vertical",
-        spacing: "md",
-        contents: [
-          {
-            type: "text",
-            text: "เลือกเบอร์ที่ต้องการโทร",
-            weight: "bold",
-            size: "lg",
-            align: "center"
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
-          },
-          {
-            type: "button",
-            style: "primary",
-            color: "#1E90FF",
-            action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
-          },
-          {
-            type: "button",
-            style: "secondary",
-            action: { type: "uri", label: "น้องกี้ (Sodick Environment)", uri: "tel:0949380425" }
+      return client.pushMessage(userId, {
+        type: "flex",
+        altText: "เบอร์ติดต่อทีมเซฟตี้",
+        contents: {
+          type: "bubble",
+          body: {
+            type: "box",
+            layout: "vertical",
+            spacing: "md",
+            contents: [
+              {
+                type: "text",
+                text: "เลือกเบอร์ที่ต้องการโทร",
+                weight: "bold",
+                size: "lg",
+                align: "center"
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
+              },
+              {
+                type: "button",
+                style: "primary",
+                color: "#1E90FF",
+                action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
+              },
+              {
+                type: "button",
+                style: "secondary",
+                action: { type: "uri", label: "น้องกี้ (Sodick Environment)", uri: "tel:0949380425" }
+              }
+            ]
           }
-        ]
-      }
+        }
+      });
     }
-  });
-}
 
     /* --------------------------------------------------
-   9) แผนที่ + เบอร์โรงงาน
--------------------------------------------------- */
-if (
-  msg.includes("แผนที่") ||
-  msg.includes("map") ||
-  msg.includes("location") ||
-  msg.includes("โรงงานอยู่ไหน")
-) {
-  return client.replyMessage(event.replyToken, [mapFlex, phoneFlex]);
-}
-
-/* --------------------------------------------------
-   ⭐ SAFETY Q&A
--------------------------------------------------- */
-const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
-if (foundQA) {
-  return reply(event, foundQA.answer);
-}
-
-/* --------------------------------------------------
-   ⭐ TEXT REPLIES
--------------------------------------------------- */
-for (const cat of Object.keys(categories)) {
-  if (categories[cat].some(w => msg.includes(normalize(w)))) {
-    const replyText =
-      replies[cat][text] || replies[cat][normalize(text)] || null;
-
-    if (replyText) {
-      return reply(event, replyText);
+       9) แผนที่ + เบอร์โรงงาน
+    -------------------------------------------------- */
+    if (
+      msg.includes("แผนที่") ||
+      msg.includes("map") ||
+      msg.includes("location") ||
+      msg.includes("โรงงานอยู่ไหน")
+    ) {
+      return client.replyMessage(event.replyToken, [mapFlex, phoneFlex]);
     }
-  }
-}
 
-/* --------------------------------------------------
-   ⭐ Fallback (ข้อความเดิม + เบอร์โทร + ดีไซน์พรีเมียม)
--------------------------------------------------- */
-return client.replyMessage(event.replyToken, {
-  type: "flex",
-  altText: "ไม่พบข้อมูลคำถามนี้ในระบบ",
-  contents: {
-    type: "bubble",
-    size: "mega",
-    styles: {
-      body: {
-        backgroundColor: "#F7F9FC"
+    /* --------------------------------------------------
+       ⭐ SAFETY Q&A
+    -------------------------------------------------- */
+    const foundQA = safetyQA.find(q => msg.includes(normalize(q.question)));
+    if (foundQA) {
+      return reply(event, foundQA.answer);
+    }
+
+    /* --------------------------------------------------
+       ⭐ TEXT REPLIES
+    -------------------------------------------------- */
+    for (const cat of Object.keys(categories)) {
+      if (categories[cat].some(w => msg.includes(normalize(w)))) {
+        const replyText =
+          replies[cat][text] || replies[cat][normalize(text)] || null;
+
+        if (replyText) {
+          return reply(event, replyText);
+        }
       }
-    },
-    body: {
-      type: "box",
-      layout: "vertical",
-      spacing: "lg",
-      paddingAll: "22px",
-      contents: [
-        {
+    }
+
+    /* --------------------------------------------------
+       ⭐ Fallback (ข้อความเดิม + เบอร์โทร + ดีไซน์พรีเมียม)
+    -------------------------------------------------- */
+    return client.replyMessage(event.replyToken, {
+      type: "flex",
+      altText: "ไม่พบข้อมูลคำถามนี้ในระบบ",
+      contents: {
+        type: "bubble",
+        size: "mega",
+        styles: {
+          body: {
+            backgroundColor: "#F7F9FC"
+          }
+        },
+        body: {
           type: "box",
           layout: "vertical",
-          paddingAll: "18px",
-          borderColor: "#0A4D8C",
-          borderWidth: "2px",
-          cornerRadius: "12px",
-          backgroundColor: "#FFFFFF",
+          spacing: "lg",
+          paddingAll: "22px",
           contents: [
             {
-              type: "text",
-              text: "❗ ไม่พบคำถามนี้ในระบบ",
-              weight: "bold",
-              size: "lg",
-              color: "#D00000",
-              wrap: true
-            },
-            {
-              type: "text",
-              text: "ขออภัยครับ 🙂\nระบบยังไม่มีคำตอบสำหรับคำถามนี้\nแต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ",
-              margin: "md",
-              size: "md",
-              color: "#333333",
-              wrap: true
-            },
-            {
-              type: "separator",
-              margin: "lg"
-            },
-            {
-              type: "text",
-              text: "📞 ติดต่อผู้พัฒนาระบบ\n      @Trerasak_Komol  (พี่ไก่)\n      โทร: 061-645-5095",
-              margin: "lg",
-              size: "sm",
-              color: "#0A4D8C",
-              wrap: true
-            },
-            {
-              type: "text",
-  	      text: "➕ เพิ่มเพื่อนผู้ดูแล\nพิมพ์ค้นหา: tk.2023",
-  	      margin: "md",
-  	      size: "sm",
-  	      color: "#0A4D8C",
- 	      wrap: true
+              type: "box",
+              layout: "vertical",
+              paddingAll: "18px",
+              borderColor: "#0A4D8C",
+              borderWidth: "2px",
+              cornerRadius: "12px",
+              backgroundColor: "#FFFFFF",
+              contents: [
+                {
+                  type: "text",
+                  text: "❗ ไม่พบคำถามนี้ในระบบ",
+                  weight: "bold",
+                  size: "lg",
+                  color: "#D00000",
+                  wrap: true
+                },
+                {
+                  type: "text",
+                  text: "ขออภัยครับ 🙂\nระบบยังไม่มีคำตอบสำหรับคำถามนี้\nแต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ",
+                  margin: "md",
+                  size: "md",
+                  color: "#333333",
+                  wrap: true
+                },
+                {
+                  type: "separator",
+                  margin: "lg"
+                },
+                {
+                  type: "text",
+                  text: "📞 ติดต่อผู้พัฒนาระบบ\n      @Trerasak_Komol  (พี่ไก่)\n      โทร: 061-645-5095",
+                  margin: "lg",
+                  size: "sm",
+                  color: "#0A4D8C",
+                  wrap: true
+                },
+                {
+                  type: "text",
+                  text: "➕ เพิ่มเพื่อนผู้ดูแล\nพิมพ์ค้นหา: tk.2023",
+                  margin: "md",
+                  size: "sm",
+                  color: "#0A4D8C",
+                  wrap: true
+                }
+              ]
             }
           ]
         }
-      ]
-    }
-  }
-});
+      }
+    });
 
-/* ⭐⭐⭐ ปิด TRY + ปิด WEBHOOK ตรงนี้ ⭐⭐⭐ */
-} catch (err) {
-  console.error("❌ Webhook Error:", err);
-  return res.status(500).end();
-}
+  } catch (err) {
+    console.error("❌ Webhook Error:", err);
+    return res.status(500).end();
+  }
 }); // ← ปิด webhook ครบแล้วตรงนี้!
 
 /* --------------------------------------------------
