@@ -1665,25 +1665,23 @@ function menuVendor() {
    INACTIVITY TIMER (เตือนครั้งเดียวเท่านั้น)
 -------------------------------------------------- */
 let inactivityTimers = {};
-let inactivityWarned = {};   // ⭐ ใช้กันเตือนซ้ำ
+let inactivityWarned = {};   // กันเตือนซ้ำ
 
 function startTimer(userId) {
   const mode = userState[userId]?.mode;
 
-  // ❗ ถ้าไม่มี state เลย → ไม่ต้องจับเวลา
+  // ❗ ถ้าไม่มี state → ไม่จับเวลา
   if (!mode) return;
 
-  // เคลียร์ timer เดิม
+  // ❗ เคลียร์ timer เดิมทุกครั้ง
   if (inactivityTimers[userId]) {
     clearTimeout(inactivityTimers[userId]);
   }
 
-  // รีเซ็ตสถานะเตือน ถ้าเพิ่งเริ่ม flow ใหม่
-  if (!inactivityWarned[userId]) {
-    inactivityWarned[userId] = false;
-  }
+  // ❗ reset การเตือนทุกครั้งที่เริ่ม flow ใหม่
+  inactivityWarned[userId] = false;
 
-  // ตั้ง timer ใหม่ (2 นาที)
+  // ⭐ ตั้ง timer ใหม่ (2 นาที)
   inactivityTimers[userId] = setTimeout(() => {
 
     // ⭐ เตือนครั้งแรกเท่านั้น
@@ -1695,10 +1693,10 @@ function startTimer(userId) {
         text: "⏳ ไม่มีการใช้งาน 2 นาที ระบบรีเซ็ตกลับสู่เมนูหลักแล้วครับ"
       });
 
-      // ล้าง state
+      // ❗ ล้าง state เพื่อป้องกัน flow ค้าง
       delete userState[userId];
 
-      // เคลียร์ timer
+      // ❗ เคลียร์ timer
       clearTimeout(inactivityTimers[userId]);
       delete inactivityTimers[userId];
 
@@ -1707,7 +1705,6 @@ function startTimer(userId) {
 
   }, 120000);
 }
-
 /* --------------------------------------------------
    WEBHOOK
 -------------------------------------------------- */
