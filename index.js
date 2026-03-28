@@ -1883,84 +1883,84 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       return handleDownloadCertificate(event, userId);
     }
 
-    /* --------------------------------------------------
-       4.5) เมนูผู้รับเหมา (ต้องอยู่หลัง FLOW สอบ และหลังเมนูอื่นทั้งหมด)
-    -------------------------------------------------- */
-    if (
-      msg.includes("ข้อมูลผู้รับเหมา") ||
-      msg.includes("ผู้รับเหมา") ||
-      msg.includes("เมนูผู้รับเหมา")
-    ) {
-      return contractorMainMenu(event);
-    }
+/* --------------------------------------------------
+   4.5) เมนูผู้รับเหมา
+-------------------------------------------------- */
+if (
+  msg.includes("ข้อมูลผู้รับเหมา") ||
+  msg.includes("ผู้รับเหมา") ||
+  msg.includes("เมนูผู้รับเหมา")
+) {
+  return contractorMainMenu(event);
+}
 
-    return res.status(200).end();
-  } catch (err) {
-    console.error(err);
-    return res.status(500).end();
-  }
-    /* --------------------------------------------------
-       8) ติดต่อทีมเซฟตี้  ← ย้ายกลับเข้ามาใน webhook
-    -------------------------------------------------- */
-    if (msg.includes("ติดต่อทีมเซฟตี้")) {
-      await client.replyMessage(event.replyToken, {
-        type: "image",
-        originalContentUrl:
-          "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
-        previewImageUrl:
-          "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
-      });
+return res.status(200).end();
+} catch (err) {
+  console.error(err);
+  return res.status(500).end();
+}
 
-      return client.pushMessage(userId, {
-        type: "flex",
-        altText: "เบอร์ติดต่อทีมเซฟตี้",
-        contents: {
-          type: "bubble",
-          body: {
-            type: "box",
-            layout: "vertical",
-            spacing: "md",
-            contents: [
-              {
-                type: "text",
-                text: "เลือกเบอร์ที่ต้องการโทร",
-                weight: "bold",
-                size: "lg",
-                align: "center"
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#1E90FF",
-                action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
-              },
-              {
-                type: "button",
-                style: "primary",
-                color: "#1E90FF",
-                action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
-              },
-              {
-                type: "button",
-                style: "secondary",
-                action: { type: "uri", label: "น้องกี้ (Sodick Environment)", uri: "tel:0949380425" }
-              }
-            ]
+/* --------------------------------------------------
+   8) ติดต่อทีมเซฟตี้
+-------------------------------------------------- */
+if (msg.includes("ติดต่อทีมเซฟตี้")) {
+  await client.replyMessage(event.replyToken, {
+    type: "image",
+    originalContentUrl:
+      "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs",
+    previewImageUrl:
+      "https://drive.google.com/uc?export=view&id=18x1R8O2FLduj-lFn22lWphUxh-qsodxs"
+  });
+
+  return client.pushMessage(userId, {
+    type: "flex",
+    altText: "เบอร์ติดต่อทีมเซฟตี้",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: "เลือกเบอร์ที่ต้องการโทร",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ช้าง (Safety Mgr.)", uri: "tel:0813765583" }
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
+            action: { type: "uri", label: "พี่ไก่ (Safety Factory1)", uri: "tel:0616455095" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องพิน (Safety Factory2)", uri: "tel:0832374357" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องดุจ (Safety Factory1)", uri: "tel:0816954474" }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: { type: "uri", label: "น้องกี้ (Sodick Environment)", uri: "tel:0949380425" }
           }
-        }
-      });
+        ]
+      }
     }
-
+  });
+}
     /* --------------------------------------------------
        9) แผนที่ + เบอร์โรงงาน
     -------------------------------------------------- */
