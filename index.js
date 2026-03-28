@@ -1872,7 +1872,7 @@ if (
 -------------------------------------------------- */
 const ADMIN_USER_ID = "U4a74c3933c0ecf9d2062768696ba3df8";   // ← ไอดีไก่
 
-// 1) ผู้ใช้กดเมนู 6 → ส่ง Flex 2 ปุ่ม (เวอร์ชันปุ่มใหญ่ ไม่โดนตัดคำ)
+// 1) เมนู 6 → Flex 2 ปุ่ม
 if (msg.includes("ติดต่อทีมเซฟตี้")) {
   return client.replyMessage(event.replyToken, {
     type: "flex",
@@ -1895,6 +1895,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             wrap: true
           },
 
+          // ปุ่ม 1 → Safety Hotline
           {
             type: "box",
             layout: "vertical",
@@ -1904,7 +1905,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             contents: [
               {
                 type: "text",
-                text: "เบอร์ติดต่อทีมเซฟตี้ / Safety Contact",
+                text: "Safety Hotline",
                 weight: "bold",
                 size: "md",
                 wrap: true,
@@ -1916,13 +1917,14 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
                 color: "#1E90FF",
                 action: {
                   type: "message",
-                  label: "เปิดเมนูนี้",
-                  text: "เบอร์ติดต่อทีมเซฟตี้"
+                  label: "Open",
+                  text: "Safety Hotline"
                 }
               }
             ]
           },
 
+          // ปุ่ม 2 → แจ้งปัญหา
           {
             type: "box",
             layout: "vertical",
@@ -1954,11 +1956,12 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
     }
   });
 }
-// 2) ปุ่ม 1 → ส่งเบอร์โทร 5 คน
-if (msg.includes("เบอร์ติดต่อทีมเซฟตี้")) {
+
+// 2) ปุ่ม 1 → Safety Hotline (เบอร์โทร 5 คน)
+if (msg === "Safety Hotline") {
   return client.replyMessage(event.replyToken, {
     type: "flex",
-    altText: "เบอร์ติดต่อทีมเซฟตี้",
+    altText: "Safety Hotline",
     contents: {
       type: "bubble",
       body: {
@@ -1968,7 +1971,7 @@ if (msg.includes("เบอร์ติดต่อทีมเซฟตี้")
         contents: [
           {
             type: "text",
-            text: "เบอร์ติดต่อทีมเซฟตี้ / Safety Contact",
+            text: "Safety Hotline",
             weight: "bold",
             size: "lg",
             align: "center",
@@ -2006,7 +2009,8 @@ if (msg.includes("เบอร์ติดต่อทีมเซฟตี้")
     }
   });
 }
-// 3) ปุ่ม 2 → ส่งข้อความแจ้งปัญหา (Flex สวย ๆ)
+
+// 3) ปุ่ม 2 → แจ้งปัญหา (Flex สวย ๆ)
 if (msg.includes("แจ้งปัญหา")) {
   return client.replyMessage(event.replyToken, {
     type: "flex",
@@ -2045,40 +2049,15 @@ if (msg.includes("แจ้งปัญหา")) {
                 color: "#555555",
                 wrap: true
               },
-
               {
                 type: "box",
                 layout: "vertical",
                 spacing: "sm",
                 contents: [
-                  {
-                    type: "text",
-                    text: "1) รายละเอียดปัญหา\n• Issue details",
-                    wrap: true,
-                    size: "md",
-                    color: "#000000"
-                  },
-                  {
-                    type: "text",
-                    text: "2) ชื่อผู้แจ้ง\n• Your name",
-                    wrap: true,
-                    size: "md",
-                    color: "#000000"
-                  },
-                  {
-                    type: "text",
-                    text: "3) บริษัท\n• Company",
-                    wrap: true,
-                    size: "md",
-                    color: "#000000"
-                  },
-                  {
-                    type: "text",
-                    text: "4) เบอร์ติดต่อกลับ\n• Contact number",
-                    wrap: true,
-                    size: "md",
-                    color: "#000000"
-                  }
+                  { type: "text", text: "1) รายละเอียดปัญหา\n• Issue details", wrap: true },
+                  { type: "text", text: "2) ชื่อผู้แจ้ง\n• Your name", wrap: true },
+                  { type: "text", text: "3) บริษัท\n• Company", wrap: true },
+                  { type: "text", text: "4) เบอร์ติดต่อกลับ\n• Contact number", wrap: true }
                 ]
               }
             ]
@@ -2097,10 +2076,11 @@ if (msg.includes("แจ้งปัญหา")) {
     }
   });
 }
-// 4) Forward ข้อความทั้งหมดไปหาไก่ (ยกเว้นข้อความระบบ + เมนูอื่น)
+
+// 4) Forward ข้อความทั้งหมดไปหาไก่
 if (
   msg !== "ติดต่อทีมเซฟตี้" &&
-  msg !== "เบอร์ติดต่อทีมเซฟตี้" &&
+  msg !== "Safety Hotline" &&
   msg !== "แจ้งปัญหา" &&
   !msg.includes("แผนที่") &&
   !msg.includes("map") &&
