@@ -1248,7 +1248,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
 
   try {
     await axios.post(
-      "https://script.google.com/macros/s/AKfycbw6KW3nwbKS6uJH3te2l0Hfr5f2rGlTlBncZ5liOsZ1gC7S3UR_olluQiQiaR_PVRUA/exec",
+      "https://script.google.com/macros/s/AKfycbz1Vq6laJUtfmsFAzjIzBJLHHeXt6Gztdg9PbXkDDMxIL6BMubbj4e5ls2303WaqkZE/exec",
       payload,
       {
         headers: {
@@ -1267,7 +1267,7 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
 async function getCertificateUrl(userId) {
   try {
     const res = await axios.get(
-      `https://script.google.com/macros/s/AKfycbw6KW3nwbKS6uJH3te2l0Hfr5f2rGlTlBncZ5liOsZ1gC7S3UR_olluQiQiaR_PVRUA/exec?mode=get&userId=${userId}`
+      `https://script.google.com/macros/s/AKfycbz1Vq6laJUtfmsFAzjIzBJLHHeXt6Gztdg9PbXkDDMxIL6BMubbj4e5ls2303WaqkZE/exec?mode=get&userId=${userId}`
     );
     return res.data;
   } catch (err) {
