@@ -1958,7 +1958,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
 }
 
 // 2) ปุ่ม 1 → Safety Hotline (เบอร์โทร 5 คน)
-if (msg === "Safety Hotline") {
+if (msg.includes("Safety Hotline")) {
   return client.replyMessage(event.replyToken, {
     type: "flex",
     altText: "Safety Hotline",
