@@ -726,16 +726,6 @@ function pdpaFlex() {
 }
 
 /* --------------------------------------------------
-   ข้อความแจ้งเตือนก่อนเลือกตำแหน่งงาน (ไทย + อังกฤษ)
--------------------------------------------------- */
-function askJobPositionText() {
-  return {
-    type: "text",
-    text: "กรุณาเลือกตำแหน่งงานของท่าน\nPlease select your job position"
-  };
-}
-
-/* --------------------------------------------------
    FLEX เลือกตำแหน่งงาน (ไทย + อังกฤษ)
 -------------------------------------------------- */
 function jobPositionFlex() {
@@ -815,10 +805,6 @@ const formQuestions = [
   { 
     key: "fullname", 
     text: "📝 กรุณาพิมพ์ชื่อ–นามสกุลของคุณ\n📝 Please type your full name" 
-  },
-  { 
-    key: "position",
-    text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบน\n💼 Please select your job position"
   },
   { 
     key: "phone", 
@@ -1777,42 +1763,48 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
 if (userState[userId]) {
   const state = userState[userId];
 
-  /* ------------------------------
-     PDPA
-  ------------------------------ */
-  if (state.mode === "pdpa") {
-    if (data && data.startsWith("pdpa_accept")) {
+ /* ------------------------------
+   PDPA
+------------------------------ */
+if (state.mode === "pdpa") {
+  if (data && data.startsWith("pdpa_accept")) {
 
-      startTimer(userId);
-      state.mode = "job";
+    startTimer(userId);
+    state.mode = "job";
 
-      await client.replyMessage(event.replyToken, askJobPositionText());
-      return client.pushMessage(userId, jobPositionFlex());
-    }
-
-    return client.replyMessage(event.replyToken, pdpaFlex());
-  }
-
-  /* ------------------------------
-     เลือกตำแหน่งงาน
-  ------------------------------ */
-  if (state.mode === "job") {
-    if (data && data.startsWith("job=")) {
-      const job = data.replace("job=", "");
-      state.formData.position = job;
-
-      startTimer(userId);
-
-      state.mode = "form";
-      state.step = 0;
-      return client.replyMessage(event.replyToken, askFormQuestion(userId));
-    }
-
-    return client.replyMessage(event.replyToken, {
+    // ⭐ ข้อความหลักแบบสวย ๆ
+    await client.replyMessage(event.replyToken, {
       type: "text",
-      text: "กรุณาเลือกตำแหน่งงานจากปุ่มด้านล่างนะครับ"
+      text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
     });
+
+    return client.pushMessage(userId, jobPositionFlex());
   }
+
+  return client.replyMessage(event.replyToken, pdpaFlex());
+}
+
+/* ------------------------------
+   เลือกตำแหน่งงาน
+------------------------------ */
+if (state.mode === "job") {
+  if (data && data.startsWith("job=")) {
+    const job = data.replace("job=", "");
+    state.formData.position = job;
+
+    startTimer(userId);
+
+    state.mode = "form";
+    state.step = 0;
+    return client.replyMessage(event.replyToken, askFormQuestion(userId));
+  }
+
+  // ⭐ ข้อความเตือนแบบไม่ซ้ำกับ PDPA
+  return client.replyMessage(event.replyToken, {
+    type: "text",
+    text: "โปรดกดปุ่มเลือกตำแหน่งงานจากด้านบนก่อนนะครับ 😊"
+  });
+}
 
   /* ------------------------------
      ฟอร์มกรอกข้อมูล
