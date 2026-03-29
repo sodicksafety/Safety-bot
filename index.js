@@ -1,11 +1,3 @@
-ลองใช้ AI ในแอปโปรดของคุณโดยตรง … ใช้ Gemini เพื่อสร้างฉบับร่างและปรับแต่งเนื้อหา รวมถึงรับ Gemini Pro ที่มีสิทธิ์เข้าถึง AI รุ่นถัดไปของ Google
-require("dotenv").config();
-const express = require("express");
-const line = require("@line/bot-sdk");
-const axios = require("axios");
-
-const app = express();
-
 /* --------------------------------------------------
    CONFIG
 -------------------------------------------------- */
