@@ -1097,11 +1097,9 @@ async function finishExam(event, userId) {
     `⏳ กรุณารอประมาณ 20 วินาที\n` +
     `เพื่อให้ระบบดาวน์โหลดข้อมูลจากเซิร์ฟเวอร์\n` +
     `อย่าเพิ่งเปลี่ยนหน้า`
-  });
+});
 
-  /* --------------------------------------------------
-     ❌ ถ้าไม่ผ่าน → ส่งปุ่มทำข้อสอบใหม่ (เวอร์ชันไม่ใช้ pushMessage)
-  -------------------------------------------------- */
+  // ❌ ถ้าไม่ผ่าน
   if (!pass) {
 
     // ล้าง state เดิมก่อน
@@ -1153,20 +1151,17 @@ async function finishExam(event, userId) {
       }
     };
 
-    // ⭐ ส่งข้อความ + Flex พร้อมกันใน reply เดียว (ปลอดภัยที่สุด)
-    return client.replyMessage(event.replyToken, [
-      {
-        type: "text",
-        text: "คุณไม่ผ่านการทดสอบครับ กรุณาทำใหม่อีกครั้ง"
-      },
-      retryFlex
-    ]);
+    return client.pushMessage(userId, retryFlex);
   }
 
-  /* --------------------------------------------------
+/* --------------------------------------------------
      ⭐ ถ้าผ่าน → แสดงปุ่มดาวน์โหลดบัตร (ไม่ต้องส่งซ้ำ)
-  -------------------------------------------------- */
+-------------------------------------------------- */
 
+// ❌ ห้ามส่งซ้ำเด็ดขาด (ลบออก)
+// await sendToGoogleSheet(userId, "ผ่าน", state.answers);
+
+// ⭐ ส่ง Flex ปุ่มดาวน์โหลดบัตรทันที
 const flexMessage = {
   type: "flex",
   altText: "ดาวน์โหลดบัตรผู้รับเหมา",
@@ -1200,19 +1195,19 @@ const flexMessage = {
             text: "ดาวน์โหลดบัตร"
           },
           margin: "lg"
-       }
+        }
       ]
     }
   }
 };
 
-// ⭐ ใช้ replyMessage แบบถูกต้อง
-await client.replyMessage(event.replyToken, flexMessage);
+// ⭐ ส่ง Flex ก่อน แล้วค่อยล้าง state (สำคัญมาก)
+await client.pushMessage(userId, flexMessage);
 
-// ⭐ ล้าง state หลังสุด
+// ⭐ ล้าง state หลังสุด (ถูกต้อง)
 delete userState[userId];
 
-}   // ← ปิดฟังก์ชัน finishExam()
+}   // ← ปิดฟังก์ชัน finishExam() ให้ครบ
 
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ + ตำแหน่งงาน)
@@ -1638,35 +1633,41 @@ function menuVendor() {
   };
 }
 /* --------------------------------------------------
-   INACTIVITY TIMER (เวอร์ชันไม่ใช้ pushMessage)
+   INACTIVITY TIMER (เตือนครั้งเดียวเท่านั้น)
 -------------------------------------------------- */
 let inactivityTimers = {};
-let inactivityWarned = {};
+let inactivityWarned = {};   // กันเตือนซ้ำ
 
 function startTimer(userId) {
   const mode = userState[userId]?.mode;
 
+  // ❗ ถ้าไม่มี state → ไม่จับเวลา
   if (!mode) return;
 
+  // ❗ เคลียร์ timer เดิมทุกครั้ง
   if (inactivityTimers[userId]) {
     clearTimeout(inactivityTimers[userId]);
   }
 
+  // ❗ reset การเตือนทุกครั้งที่เริ่ม flow ใหม่
   inactivityWarned[userId] = false;
 
+  // ⭐ ตั้ง timer ใหม่ (2 นาที)
   inactivityTimers[userId] = setTimeout(() => {
 
+    // ⭐ เตือนครั้งแรกเท่านั้น
     if (!inactivityWarned[userId]) {
       inactivityWarned[userId] = true;
 
-      // ⭐ บันทึก flag ไว้ก่อน → จะส่งข้อความเตือนเมื่อผู้ใช้ส่งข้อความครั้งถัดไป
-      userState[userId] = {
-        mode: "INACTIVE_RESET"
-      };
+      client.pushMessage(userId, {
+        type: "text",
+        text: "⏳ ไม่มีการใช้งาน 2 นาที ระบบรีเซ็ตกลับสู่เมนูหลักแล้วครับ"
+      });
 
-      // ⭐ ล้าง state เดิม
-      delete userState[userId + "_flow"];
+      // ❗ ล้าง state เพื่อป้องกัน flow ค้าง
+      delete userState[userId];
 
+      // ❗ เคลียร์ timer
       clearTimeout(inactivityTimers[userId]);
       delete inactivityTimers[userId];
 
@@ -1741,8 +1742,14 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
-  /* ------------------------------
-   PDPA (เวอร์ชันแก้ pushMessage)
+  /* --------------------------------------------------
+   3) FLOW หลักของระบบสอบผู้รับเหมา
+-------------------------------------------------- */
+if (userState[userId]) {
+  const state = userState[userId];
+
+ /* ------------------------------
+   PDPA
 ------------------------------ */
 if (state.mode === "pdpa") {
   if (data && data.startsWith("pdpa_accept")) {
@@ -1750,14 +1757,13 @@ if (state.mode === "pdpa") {
     startTimer(userId);
     state.mode = "job";
 
-    // ⭐ ส่งข้อความ + Flex พร้อมกันใน reply เดียว
-    return client.replyMessage(event.replyToken, [
-      {
-        type: "text",
-        text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
-      },
-      jobPositionFlex()
-    ]);
+    // ⭐ ข้อความหลักแบบสวย ๆ
+    await client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
+    });
+
+    return client.pushMessage(userId, jobPositionFlex());
   }
 
   return client.replyMessage(event.replyToken, pdpaFlex());
@@ -1793,41 +1799,42 @@ if (state.mode === "job") {
     return handleFormAnswer(event, userId, text);
   }
 
- /* ------------------------------
+  /* ------------------------------
      ทำข้อสอบ
   ------------------------------ */
-if (state.mode === "exam") {
+  if (state.mode === "exam") {
 
-  if (data && data.startsWith("answer_")) {
-    startTimer(userId);
-    return handleExamAnswer(event, userId, data);
-  }
-
-  if (text) {
-    const qIndex = state.currentQuestion - 1;
-    const question = examQuestions[qIndex];
-    const normText = normalize(text);
-
-    const foundIndex = question.choices.findIndex(choice => {
-      const normChoice = normalize(choice);
-      return (
-        normText === normChoice ||
-        normText.includes(normChoice) ||
-        normChoice.includes(normText)
-      );
-    });
-
-    if (foundIndex !== -1) {
+    if (data && data.startsWith("answer_")) {
       startTimer(userId);
-      return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+      return handleExamAnswer(event, userId, data);
     }
 
-    return client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
-    });
+    if (text) {
+      const qIndex = state.currentQuestion - 1;
+      const question = examQuestions[qIndex];
+      const normText = normalize(text);
+
+      const foundIndex = question.choices.findIndex(choice => {
+        const normChoice = normalize(choice);
+        return (
+          normText === normChoice ||
+          normText.includes(normChoice) ||
+          normChoice.includes(normText)
+        );
+      });
+
+      if (foundIndex !== -1) {
+        startTimer(userId);
+        return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+      }
+
+      return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+      });
+    }
   }
-} // END if (state.mode === "exam")
+} // END if (userState[userId])
 
     /* --------------------------------------------------
        4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
@@ -2104,13 +2111,13 @@ const isNotQuestion = !questionWords.some(w => msg.includes(w));
 // 5) สรุปว่าเป็นการแจ้งปัญหาไหม
 const isReportIssue = (isDangerWord || isLongSentence) && isNotMenu && isNotQuestion;
 
-// 6) ถ้าเป็นการแจ้งปัญหา → ส่งต่อให้ไก่ (ไม่ใช้ pushMessage)
+// 6) ถ้าเป็นการแจ้งปัญหา → ส่งต่อให้ไก่
 if (isReportIssue) {
+    await client.pushMessage(ADMIN_USER_ID, {
+        type: "text",
+        text: `📩 มีผู้ใช้งานแจ้งปัญหา:\n${msg}`
+    });
 
-    // ⭐ ส่งแจ้งเตือนกลับไปหาไก่ผ่าน replyToken ของผู้ใช้
-    console.log("📩 แจ้งปัญหาใหม่:", msg);
-
-    // ⭐ ตอบกลับผู้ใช้
     return client.replyMessage(event.replyToken, {
         type: "text",
         text: "ระบบได้รับแจ้งปัญหาแล้วค่ะ ทีมงานจะตรวจสอบให้เร็วที่สุดค่ะ"
