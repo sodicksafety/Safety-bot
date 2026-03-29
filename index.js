@@ -2077,18 +2077,41 @@ if (msg.includes("แจ้งปัญหา")) {
   });
 }
 
-// รับข้อความจากผู้ใช้
-// ตรวจจับเฉพาะข้อความที่เป็นการแจ้งปัญหาเท่านั้น
-const isReportIssue =
-    msg.includes("แจ้งปัญหา") ||
-    msg.includes("ปัญหา") ||
-    msg.includes("error") ||
-    msg.includes("เสีย") ||
-    msg.includes("ค้าง") ||
-    msg.includes("ใช้งานไม่ได้") ||
-    msg.includes("report");
 
-// ถ้าเป็นการแจ้งปัญหา → ส่งต่อให้ไก่
+// -----------------------------
+// ระบบตรวจจับการแจ้งปัญหา (เวอร์ชันสมบูรณ์ที่สุด)
+// -----------------------------
+
+// 1) คำที่เกี่ยวกับเหตุการณ์จริง
+const dangerWords = [
+  "ลื่น","ควัน","ไฟ","รั่ว","แตก","เสีย","ชำรุด","อุบัติเหตุ",
+  "ล้ม","เจ็บ","สูบบุหรี่","กลิ่น","เสียงดัง","อันตราย","ไฟไหม้",
+  "น้ำหยด","น้ำรั่ว","พื้นลื่น","ควันเยอะ","กลิ่นไหม้","ควันไฟ",
+  "มีคนล้ม","มีคนเจ็บ","มีเหตุ","มีปัญหา","มีเรื่อง"
+];
+
+// 2) คำที่ไม่ใช่เมนู
+const menuWords = [
+  "เมนู","แผนที่","hotline","ติดต่อทีมเซฟตี้","safety hotline",
+  "ผู้รับเหมา","ข้อมูลผู้รับเหมา"
+];
+
+// 3) คำที่เป็นคำถามทั่วไป (กันชน Q&A)
+const questionWords = [
+  "คืออะไร","กี่โมง","อยู่ไหน","ทำยังไง","อย่างไร","ที่ไหน",
+  "ราคา","หมายถึง","แปลว่า","คือ"
+];
+
+// 4) ตรวจสอบเงื่อนไข
+const isDangerWord = dangerWords.some(w => msg.includes(w));
+const isLongSentence = msg.length > 15;
+const isNotMenu = !menuWords.some(w => msg.includes(w));
+const isNotQuestion = !questionWords.some(w => msg.includes(w));
+
+// 5) สรุปว่าเป็นการแจ้งปัญหาไหม
+const isReportIssue = (isDangerWord || isLongSentence) && isNotMenu && isNotQuestion;
+
+// 6) ถ้าเป็นการแจ้งปัญหา → ส่งต่อให้ไก่
 if (isReportIssue) {
     await client.pushMessage(ADMIN_USER_ID, {
         type: "text",
@@ -2100,7 +2123,6 @@ if (isReportIssue) {
         text: "ระบบได้รับแจ้งปัญหาแล้วค่ะ ทีมงานจะตรวจสอบให้เร็วที่สุดค่ะ"
     });
 }
-
 // ❌ ลบบรรทัดนี้ออก
 // return;
 
