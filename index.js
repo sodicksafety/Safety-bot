@@ -1089,15 +1089,15 @@ async function finishExam(event, userId) {
 
   // ส่งผลสอบ
   await client.replyMessage(event.replyToken, {
-  type: "text",
-  text:
-    `สรุปผลการทำแบบทดสอบ\n` +
-    `คะแนนของคุณ: ${score}/${total}\n` +
-    `ผลสอบ: ${pass ? "ผ่าน ✅" : "ไม่ผ่าน ❌"}\n\n` +
-    `⏳ กรุณารอประมาณ 20 วินาที\n` +
-    `เพื่อให้ระบบดาวน์โหลดข้อมูลจากเซิร์ฟเวอร์\n` +
-    `อย่าเพิ่งเปลี่ยนหน้า`
-});
+    type: "text",
+    text:
+      `สรุปผลการทำแบบทดสอบ\n` +
+      `คะแนนของคุณ: ${score}/${total}\n` +
+      `ผลสอบ: ${pass ? "ผ่าน ✅" : "ไม่ผ่าน ❌"}\n\n` +
+      `⏳ กรุณารอประมาณ 20 วินาที\n` +
+      `เพื่อให้ระบบดาวน์โหลดข้อมูลจากเซิร์ฟเวอร์\n` +
+      `อย่าเพิ่งเปลี่ยนหน้า`
+  });
 
   // ❌ ถ้าไม่ผ่าน
   if (!pass) {
@@ -1127,10 +1127,10 @@ async function finishExam(event, userId) {
             {
               type: "text",
               text:
-"ต้องได้อย่างน้อย 24 คะแนนจึงจะผ่าน\n" +
-"กรุณากดปุ่มด้านล่างเพื่อทำข้อสอบใหม่\n\n" +
-"Minimum score to pass: 24/30\n" +
-"Press the button below to retake the exam.",
+                "ต้องได้อย่างน้อย 24 คะแนนจึงจะผ่าน\n" +
+                "กรุณากดปุ่มด้านล่างเพื่อทำข้อสอบใหม่\n\n" +
+                "Minimum score to pass: 24/30\n" +
+                "Press the button below to retake the exam.",
               wrap: true,
               size: "sm",
               align: "center"
@@ -1151,9 +1151,16 @@ async function finishExam(event, userId) {
       }
     };
 
-    return client.pushMessage(userId, retryFlex);
-  }
+    // ⭐ ป้องกันบอทล้มเมื่อ quota push หมด
+    try {
+      await client.pushMessage(userId, retryFlex);
+    } catch (err) {
+      console.error("Push error:", err.response?.data || err);
+    }
 
+    return;
+  }
+}
 /* --------------------------------------------------
      ⭐ ถ้าผ่าน → แสดงปุ่มดาวน์โหลดบัตร (ไม่ต้องส่งซ้ำ)
 -------------------------------------------------- */
@@ -1201,8 +1208,12 @@ const flexMessage = {
   }
 };
 
-// ⭐ ส่ง Flex ก่อน แล้วค่อยล้าง state (สำคัญมาก)
-await client.pushMessage(userId, flexMessage);
+// ⭐ ป้องกันบอทล้มเมื่อ quota push หมด
+try {
+  await client.pushMessage(userId, flexMessage);
+} catch (err) {
+  console.error("Push error:", err.response?.data || err);
+}
 
 // ⭐ ล้าง state หลังสุด (ถูกต้อง)
 delete userState[userId];
@@ -1641,36 +1652,32 @@ let inactivityWarned = {};   // กันเตือนซ้ำ
 function startTimer(userId) {
   const mode = userState[userId]?.mode;
 
-  // ❗ ถ้าไม่มี state → ไม่จับเวลา
   if (!mode) return;
 
-  // ❗ เคลียร์ timer เดิมทุกครั้ง
   if (inactivityTimers[userId]) {
     clearTimeout(inactivityTimers[userId]);
   }
 
-  // ❗ reset การเตือนทุกครั้งที่เริ่ม flow ใหม่
   inactivityWarned[userId] = false;
 
-  // ⭐ ตั้ง timer ใหม่ (2 นาที)
-  inactivityTimers[userId] = setTimeout(() => {
+  inactivityTimers[userId] = setTimeout(async () => {
 
-    // ⭐ เตือนครั้งแรกเท่านั้น
     if (!inactivityWarned[userId]) {
       inactivityWarned[userId] = true;
 
-      client.pushMessage(userId, {
-        type: "text",
-        text: "⏳ ไม่มีการใช้งาน 2 นาที ระบบรีเซ็ตกลับสู่เมนูหลักแล้วครับ"
-      });
+      // ⭐ ครอบ try/catch กันบอทล้ม
+      try {
+        await client.pushMessage(userId, {
+          type: "text",
+          text: "⏳ ไม่มีการใช้งาน 2 นาที ระบบรีเซ็ตกลับสู่เมนูหลักแล้วครับ"
+        });
+      } catch (err) {
+        console.error("Push error:", err.response?.data || err);
+      }
 
-      // ❗ ล้าง state เพื่อป้องกัน flow ค้าง
       delete userState[userId];
-
-      // ❗ เคลียร์ timer
       clearTimeout(inactivityTimers[userId]);
       delete inactivityTimers[userId];
-
       return;
     }
 
@@ -1742,31 +1749,39 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
-  /* --------------------------------------------------
+ /* --------------------------------------------------
    3) FLOW หลักของระบบสอบผู้รับเหมา
 -------------------------------------------------- */
 if (userState[userId]) {
   const state = userState[userId];
 
- /* ------------------------------
-   PDPA
------------------------------- */
-if (state.mode === "pdpa") {
-  if (data && data.startsWith("pdpa_accept")) {
+  /* ------------------------------
+     PDPA
+  ------------------------------ */
+  if (state.mode === "pdpa") {
+    if (data && data.startsWith("pdpa_accept")) {
 
-    startTimer(userId);
-    state.mode = "job";
+      startTimer(userId);
+      state.mode = "job";
 
-    // ⭐ ข้อความหลักแบบสวย ๆ
-    await client.replyMessage(event.replyToken, {
-      type: "text",
-      text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
-    });
+      // ⭐ ตอบกลับปกติ
+      await client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
+      });
 
-    return client.pushMessage(userId, jobPositionFlex());
+      // ⭐ ป้องกันบอทล้มเมื่อ quota push หมด
+      try {
+        await client.pushMessage(userId, jobPositionFlex());
+      } catch (err) {
+        console.error("Push error:", err.response?.data || err);
+      }
+
+      return;
+    }
+
+    return client.replyMessage(event.replyToken, pdpaFlex());
   }
-
-  return client.replyMessage(event.replyToken, pdpaFlex());
 }
 
 /* ------------------------------
@@ -2113,10 +2128,16 @@ const isReportIssue = (isDangerWord || isLongSentence) && isNotMenu && isNotQues
 
 // 6) ถ้าเป็นการแจ้งปัญหา → ส่งต่อให้ไก่
 if (isReportIssue) {
-    await client.pushMessage(ADMIN_USER_ID, {
-        type: "text",
-        text: `📩 มีผู้ใช้งานแจ้งปัญหา:\n${msg}`
-    });
+
+    // ⭐ ป้องกันบอทล้มเมื่อ quota push หมด
+    try {
+        await client.pushMessage(ADMIN_USER_ID, {
+            type: "text",
+            text: `📩 มีผู้ใช้งานแจ้งปัญหา:\n${msg}`
+        });
+    } catch (err) {
+        console.error("Push error:", err.response?.data || err);
+    }
 
     return client.replyMessage(event.replyToken, {
         type: "text",
