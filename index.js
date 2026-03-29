@@ -1682,45 +1682,33 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
     }
 
     /* --------------------------------------------------
-       3.5) เริ่มทำแบบทดสอบ
-    -------------------------------------------------- */
-    if (msg.includes("ทำแบบทดสอบ")) {
-      clearUserState();
-      userState[userId] = {
-        mode: "pdpa",
-        step: 0,
-        formData: {},
-        currentQuestion: 1,
-        score: 0
-      };
-      return client.replyMessage(event.replyToken, pdpaFlex());
-    }
+   3.5) เริ่มทำแบบทดสอบ (PDPA + ตำแหน่งงานขึ้นพร้อมกัน)
+-------------------------------------------------- */
+if (msg.includes("ทำแบบทดสอบ")) {
+  clearUserState();
+  userState[userId] = {
+    mode: "job",   // ⭐ ข้าม pdpa mode ไปเลย
+    step: 0,
+    formData: {},
+    currentQuestion: 1,
+    score: 0
+  };
 
- /* --------------------------------------------------
+  return client.replyMessage(event.replyToken, [
+    pdpaFlex(),   // ⭐ PDPA แบบอ่านอย่างเดียว (มีอันเดียว)
+    {
+      type: "text",
+      text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
+    },
+    jobPositionFlex()   // ⭐ เมนูเลือกตำแหน่งงาน
+  ]);
+}
+
+/* --------------------------------------------------
    3) FLOW หลักของระบบสอบผู้รับเหมา
 -------------------------------------------------- */
 if (userState[userId]) {
   const state = userState[userId];
-
-  /* ------------------------------
-     PDPA → ไป job ทันที
-  ------------------------------ */
-  if (state.mode === "pdpa") {
-
-    startTimer(userId);
-    state.mode = "job";
-
-    await client.replyMessage(event.replyToken, [
-      pdpaInfoFlex(),
-      {
-        type: "text",
-        text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
-      },
-      jobPositionFlex()
-    ]);
-
-    return;
-  }
 
   /* ------------------------------
      เลือกตำแหน่งงาน
@@ -1789,25 +1777,25 @@ if (userState[userId]) {
 
 } // ← ปิด if (userState[userId]) อย่างถูกต้อง
 
-    /* --------------------------------------------------
-       4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
-    -------------------------------------------------- */
+/* --------------------------------------------------
+   4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
+-------------------------------------------------- */
 
-    if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
-      return client.replyMessage(event.replyToken, trainingMenu());
-    }
+if (msg.includes("สื่อ") && msg.includes("อบรม") && msg.includes("ผู้รับเหมา")) {
+  return client.replyMessage(event.replyToken, trainingMenu());
+}
 
-    if (msg.includes("ผู้รับส่งสินค้า")) {
-      return client.replyMessage(event.replyToken, menuDelivery());
-    }
+if (msg.includes("ผู้รับส่งสินค้า")) {
+  return client.replyMessage(event.replyToken, menuDelivery());
+}
 
-    if (msg.includes("ผู้แก้ไขงาน")) {
-      return client.replyMessage(event.replyToken, menuVendor());
-    }
+if (msg.includes("ผู้แก้ไขงาน")) {
+  return client.replyMessage(event.replyToken, menuVendor());
+}
 
-    if (msg.includes("ดาวน์โหลดบัตร")) {
-      return handleDownloadCertificate(event, userId);
-    }
+if (msg.includes("ดาวน์โหลดบัตร")) {
+  return handleDownloadCertificate(event, userId);
+}
 
 /* --------------------------------------------------
    4.5) เมนูผู้รับเหมา
