@@ -1531,14 +1531,14 @@ async function deliveryMenu(event) {
 }
 
 /* --------------------------------------------------
-   DELIVERY MENU (Panasonic Clean Card UI)
+   DELIVERY MENU (Panasonic Clean Card UI) — FIXED
 -------------------------------------------------- */
 function menuDelivery() {
 
   const items = [
-    ["วีดีโออบรม", "uri", "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=drivesdk"],
+    ["วีดีโออบรม", "uri", "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=sharing"],
     ["ทำแบบทดสอบ", "message", "ทำแบบทดสอบ"],
-    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drivesdk"]
+    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drive_link"]
   ];
 
   return {
@@ -1580,16 +1580,15 @@ function menuDelivery() {
   };
 }
 /* --------------------------------------------------
-   VENDOR MENU (Panasonic Clean Card UI)
+   VENDOR MENU (Panasonic Clean Card UI) — FIXED
 -------------------------------------------------- */
 function menuVendor() {
 
   const items = [
-    ["วีดีโออบรม", "uri", "https://drive.google.com/YOUR_VIDEO_LINK"],
-    ["ทำแบบทดสอบ", "message", "ทำแบบทดสอบ"],
-    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/YOUR_TRAINING_DOC"],
-    ["ใบขอเข้ามาทำงาน", "uri", "https://drive.google.com/YOUR_WORK_REQUEST"],
-    ["ใบตรวจสอบเครื่องมือ", "uri", "https://drive.google.com/YOUR_TOOL_CHECK"]
+    ["วีดีโออบรม", "uri", "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=sharing"],
+    ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drive_link"],
+    ["ใบขอเข้ามาทำงาน", "uri", "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drive_link"],
+    ["ใบตรวจสอบเครื่องมือ", "uri", "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drive_link"]
   ];
 
   return {
@@ -2076,26 +2075,34 @@ if (msg.includes("แจ้งปัญหา")) {
   });
 }
 
-/* --------------------------------------------------
-   4) Forward ข้อความทั้งหมดไปหาไก่ (เวอร์ชันนิ่งที่สุด)
--------------------------------------------------- */
-if (
-  !msg.includes("ติดต่อทีมเซฟตี้") &&
-  !(msg.includes("safety") && msg.includes("hotline")) &&
-  !msg.includes("แจ้งปัญหา") &&
-  !msg.includes("แผนที่") &&
-  !msg.includes("map") &&
-  !msg.includes("location") &&
-  !msg.includes("ผู้รับเหมา") &&
-  !msg.includes("ดาวน์โหลดบัตร")
-) {
-  await client.pushMessage(ADMIN_USER_ID, {
-    type: "text",
-    text: `📩 ข้อความจากผู้ใช้:\n${msg}`
-  });
+// รับข้อความจากผู้ใช้
+const msg = event.message.text.trim();
 
-  return;   // ⭐⭐ สำคัญที่สุด — กัน fallback ไม่ให้ตอบว่า "ไม่พบคำถามนี้ในระบบ"
+// ตรวจจับเฉพาะข้อความที่เป็นการแจ้งปัญหาเท่านั้น
+const isReportIssue =
+    msg.includes("แจ้งปัญหา") ||
+    msg.includes("ปัญหา") ||
+    msg.includes("error") ||
+    msg.includes("เสีย") ||
+    msg.includes("ค้าง") ||
+    msg.includes("ใช้งานไม่ได้") ||
+    msg.includes("report");
+
+// ถ้าเป็นการแจ้งปัญหา → ส่งต่อให้ไก่
+if (isReportIssue) {
+    await client.pushMessage(ADMIN_USER_ID, {
+        type: "text",
+        text: `📩 มีผู้ใช้งานแจ้งปัญหา:\n${msg}`
+    });
+
+    return client.replyMessage(event.replyToken, {
+        type: "text",
+        text: "ระบบได้รับแจ้งปัญหาแล้วค่ะ ทีมงานจะตรวจสอบให้เร็วที่สุดค่ะ"
+    });
 }
+
+// ถ้าไม่ใช่การแจ้งปัญหา → ให้บอททำงานตามเงื่อนไขด้านบน
+return;   // สำคัญมาก ห้ามส่งต่อข้อความทั่วไป
 
 /* --------------------------------------------------
    9) แผนที่ + เบอร์โรงงาน
