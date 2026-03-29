@@ -1740,7 +1740,7 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
- /* --------------------------------------------------
+/* --------------------------------------------------
    3) FLOW หลักของระบบสอบผู้รับเหมา
 -------------------------------------------------- */
 if (userState[userId]) {
@@ -1755,13 +1755,11 @@ if (userState[userId]) {
       startTimer(userId);
       state.mode = "job";
 
-      // ⭐ ตอบกลับปกติ
       await client.replyMessage(event.replyToken, {
         type: "text",
         text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
       });
 
-      // ⭐ ป้องกันบอทล้มเมื่อ quota push หมด
       try {
         await client.pushMessage(userId, jobPositionFlex());
       } catch (err) {
@@ -1773,29 +1771,27 @@ if (userState[userId]) {
 
     return client.replyMessage(event.replyToken, pdpaFlex());
   }
-}
 
-/* ------------------------------
-   เลือกตำแหน่งงาน
------------------------------- */
-if (state.mode === "job") {
-  if (data && data.startsWith("job=")) {
-    const job = data.replace("job=", "");
-    state.formData.position = job;
+  /* ------------------------------
+     เลือกตำแหน่งงาน
+  ------------------------------ */
+  if (state.mode === "job") {
+    if (data && data.startsWith("job=")) {
+      const job = data.replace("job=", "");
+      state.formData.position = job;
 
-    startTimer(userId);
+      startTimer(userId);
 
-    state.mode = "form";
-    state.step = 0;
-    return client.replyMessage(event.replyToken, askFormQuestion(userId));
+      state.mode = "form";
+      state.step = 0;
+      return client.replyMessage(event.replyToken, askFormQuestion(userId));
+    }
+
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "โปรดกดปุ่มเลือกตำแหน่งงานจากด้านบนก่อนนะครับ 😊"
+    });
   }
-
-  // ⭐ ข้อความเตือนแบบไม่ซ้ำกับ PDPA
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: "โปรดกดปุ่มเลือกตำแหน่งงานจากด้านบนก่อนนะครับ 😊"
-  });
-}
 
   /* ------------------------------
      ฟอร์มกรอกข้อมูล
@@ -1840,8 +1836,7 @@ if (state.mode === "job") {
       });
     }
   }
-} // END if (userState[userId])
-
+}
     /* --------------------------------------------------
        4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
     -------------------------------------------------- */
