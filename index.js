@@ -634,12 +634,12 @@ function examFlex(questionObj, number) {
 }
 
 /* --------------------------------------------------
-   PDPA FLEX (Panasonic Clean Card UI) — FIXED LINK
+   PDPA FLEX (อ่านอย่างเดียว + ลิงก์เว็บบริษัท)
 -------------------------------------------------- */
 function pdpaFlex() {
   return {
     type: "flex",
-    altText: "ยินยอม PDPA",
+    altText: "นโยบาย PDPA",
     contents: {
       type: "bubble",
       size: "mega",
@@ -679,52 +679,23 @@ function pdpaFlex() {
           },
 
           {
-            type: "text",
-            text: "🔗 เปิดนโยบาย PDPA (คลิกที่นี่)",
-            wrap: true,
-            size: "sm",
-            color: "#0066CC",
+            type: "button",
+            style: "primary",
+            color: "#1E90FF",
             action: {
               type: "uri",
+              label: "เปิดนโยบาย PDPA",
               uri: "https://www.sodick.co.th/Privacy%20Policy/AN-2022-0103-Announcement%20Personal%20Data%20Policy%20(THA).pdf"
             }
-          },
-
-          {
-            type: "text",
-            text: "โปรดเปิดไฟล์นโยบาย PDPA ก่อนกดยอมรับ",
-            wrap: true,
-            size: "sm",
-            color: "#666666"
           }
         ]
       },
-
-      footer: {
-  type: "box",
-  layout: "vertical",
-  spacing: "md",
-  contents: [
-    {
-      type: "button",
-      style: "primary",
-      color: "#1E90FF",
-      action: {
-        type: "postback",
-        label: "ยอมรับและกรอกข้อมูล",
-        data: "pdpa_accept"
-      }
-    }
-  ]
-},
-
       styles: {
         body: { separator: true }
       }
     }
   };
 }
-
 /* --------------------------------------------------
    FLEX เลือกตำแหน่งงาน (ไทย + อังกฤษ)
 -------------------------------------------------- */
@@ -1077,35 +1048,30 @@ function examFlex(questionObj, number) {
   };
 }
 /* --------------------------------------------------
-   FINISH EXAM
-   (สรุปผล → ส่งคะแนน → ออกบัตร)
+   FINISH EXAM (เวอร์ชันไม่ใช้ pushMessage)
 -------------------------------------------------- */
 async function finishExam(event, userId) {
   const state = userState[userId];
   const score = state.score;
   const total = examQuestions.length;
 
-  const pass = score >= 24;   // ผ่านเมื่อได้ 24 คะแนนขึ้นไป
+  const pass = score >= 24;
 
-  // ส่งผลสอบ
-  await client.replyMessage(event.replyToken, {
-  type: "text",
-  text:
-    `สรุปผลการทำแบบทดสอบ\n` +
-    `คะแนนของคุณ: ${score}/${total}\n` +
-    `ผลสอบ: ${pass ? "ผ่าน ✅" : "ไม่ผ่าน ❌"}\n\n` +
-    `⏳ กรุณารอประมาณ 20 วินาที\n` +
-    `เพื่อให้ระบบดาวน์โหลดข้อมูลจากเซิร์ฟเวอร์\n` +
-    `อย่าเพิ่งเปลี่ยนหน้า`
-});
+  // ⭐ สร้างข้อความสรุปผลสอบ
+  const summaryText = {
+    type: "text",
+    text:
+      `สรุปผลการทำแบบทดสอบ\n` +
+      `คะแนนของคุณ: ${score}/${total}\n` +
+      `ผลสอบ: ${pass ? "ผ่าน ✅" : "ไม่ผ่าน ❌"}\n\n` +
+      `⏳ กรุณารอประมาณ 20 วินาที\n` +
+      `เพื่อให้ระบบดาวน์โหลดข้อมูลจากเซิร์ฟเวอร์\n` +
+      `อย่าเพิ่งเปลี่ยนหน้า`
+  };
 
   // ❌ ถ้าไม่ผ่าน
   if (!pass) {
 
-    // ล้าง state เดิมก่อน
-    delete userState[userId];
-
-    // ⭐ Flex ปุ่มเริ่มทำข้อสอบใหม่ทันที
     const retryFlex = {
       type: "flex",
       altText: "ทำข้อสอบใหม่",
@@ -1127,10 +1093,10 @@ async function finishExam(event, userId) {
             {
               type: "text",
               text:
-"ต้องได้อย่างน้อย 24 คะแนนจึงจะผ่าน\n" +
-"กรุณากดปุ่มด้านล่างเพื่อทำข้อสอบใหม่\n\n" +
-"Minimum score to pass: 24/30\n" +
-"Press the button below to retake the exam.",
+                "ต้องได้อย่างน้อย 24 คะแนนจึงจะผ่าน\n" +
+                "กรุณากดปุ่มด้านล่างเพื่อทำข้อสอบใหม่\n\n" +
+                "Minimum score to pass: 24/30\n" +
+                "Press the button below to retake the exam.",
               wrap: true,
               size: "sm",
               align: "center"
@@ -1151,64 +1117,61 @@ async function finishExam(event, userId) {
       }
     };
 
-    return client.pushMessage(userId, retryFlex);
+    // ⭐ ส่งสรุปผล + ปุ่มทำใหม่ ใน reply เดียว
+    await client.replyMessage(event.replyToken, [summaryText, retryFlex]);
+
+    delete userState[userId];
+    return;
   }
 
-/* --------------------------------------------------
-     ⭐ ถ้าผ่าน → แสดงปุ่มดาวน์โหลดบัตร (ไม่ต้องส่งซ้ำ)
--------------------------------------------------- */
+  /* --------------------------------------------------
+     ⭐ ถ้าผ่าน → ส่งปุ่มดาวน์โหลดบัตร
+  -------------------------------------------------- */
 
-// ❌ ห้ามส่งซ้ำเด็ดขาด (ลบออก)
-// await sendToGoogleSheet(userId, "ผ่าน", state.answers);
-
-// ⭐ ส่ง Flex ปุ่มดาวน์โหลดบัตรทันที
-const flexMessage = {
-  type: "flex",
-  altText: "ดาวน์โหลดบัตรผู้รับเหมา",
-  contents: {
-    type: "bubble",
-    body: {
-      type: "box",
-      layout: "vertical",
-      contents: [
-        {
-          type: "text",
-          text: "ผ่านการทดสอบแล้ว 🎉",
-          weight: "bold",
-          size: "lg",
-          align: "center"
-        },
-        {
-          type: "text",
-          text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ",
-          size: "sm",
-          align: "center",
-          margin: "md"
-        },
-        {
-          type: "button",
-          style: "primary",
-          color: "#1DB446",
-          action: {
-            type: "message",
-            label: "ดาวน์โหลดบัตร",
-            text: "ดาวน์โหลดบัตร"
+  const flexMessage = {
+    type: "flex",
+    altText: "ดาวน์โหลดบัตรผู้รับเหมา",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: "ผ่านการทดสอบแล้ว 🎉",
+            weight: "bold",
+            size: "lg",
+            align: "center"
           },
-          margin: "lg"
-        }
-      ]
+          {
+            type: "text",
+            text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ",
+            size: "sm",
+            align: "center",
+            margin: "md"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1DB446",
+            action: {
+              type: "message",
+              label: "ดาวน์โหลดบัตร",
+              text: "ดาวน์โหลดบัตร"
+            },
+            margin: "lg"
+          }
+        ]
+      }
     }
-  }
-};
+  };
 
-// ⭐ ส่ง Flex ก่อน แล้วค่อยล้าง state (สำคัญมาก)
-await client.pushMessage(userId, flexMessage);
+  // ⭐ ส่งสรุปผล + ปุ่มดาวน์โหลดบัตร ใน reply เดียว
+  await client.replyMessage(event.replyToken, [summaryText, flexMessage]);
 
-// ⭐ ล้าง state หลังสุด (ถูกต้อง)
-delete userState[userId];
-
-}   // ← ปิดฟังก์ชัน finishExam() ให้ครบ
-
+  delete userState[userId];
+}
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ + ตำแหน่งงาน)
 -------------------------------------------------- */
@@ -1633,44 +1596,35 @@ function menuVendor() {
   };
 }
 /* --------------------------------------------------
-   INACTIVITY TIMER (เตือนครั้งเดียวเท่านั้น)
+   INACTIVITY TIMER (เวอร์ชันไม่ใช้ pushMessage)
 -------------------------------------------------- */
 let inactivityTimers = {};
-let inactivityWarned = {};   // กันเตือนซ้ำ
+let inactivityWarned = {};
 
 function startTimer(userId) {
   const mode = userState[userId]?.mode;
-
-  // ❗ ถ้าไม่มี state → ไม่จับเวลา
   if (!mode) return;
 
-  // ❗ เคลียร์ timer เดิมทุกครั้ง
   if (inactivityTimers[userId]) {
     clearTimeout(inactivityTimers[userId]);
   }
 
-  // ❗ reset การเตือนทุกครั้งที่เริ่ม flow ใหม่
   inactivityWarned[userId] = false;
 
-  // ⭐ ตั้ง timer ใหม่ (2 นาที)
-  inactivityTimers[userId] = setTimeout(() => {
+  inactivityTimers[userId] = setTimeout(async () => {
 
-    // ⭐ เตือนครั้งแรกเท่านั้น
     if (!inactivityWarned[userId]) {
       inactivityWarned[userId] = true;
 
-      client.pushMessage(userId, {
+      // ⭐ ใช้ multicast แทน pushMessage
+      await client.multicast([userId], {
         type: "text",
         text: "⏳ ไม่มีการใช้งาน 2 นาที ระบบรีเซ็ตกลับสู่เมนูหลักแล้วครับ"
       });
 
-      // ❗ ล้าง state เพื่อป้องกัน flow ค้าง
       delete userState[userId];
-
-      // ❗ เคลียร์ timer
       clearTimeout(inactivityTimers[userId]);
       delete inactivityTimers[userId];
-
       return;
     }
 
@@ -1742,54 +1696,52 @@ app.post("/webhook", line.middleware(config), async (req, res) => {
       return client.replyMessage(event.replyToken, pdpaFlex());
     }
 
-  /* --------------------------------------------------
+ /* --------------------------------------------------
    3) FLOW หลักของระบบสอบผู้รับเหมา
 -------------------------------------------------- */
 if (userState[userId]) {
   const state = userState[userId];
 
- /* ------------------------------
-   PDPA
------------------------------- */
-if (state.mode === "pdpa") {
-  if (data && data.startsWith("pdpa_accept")) {
+  /* ------------------------------
+     PDPA → ไป job ทันที
+  ------------------------------ */
+  if (state.mode === "pdpa") {
 
     startTimer(userId);
     state.mode = "job";
 
-    // ⭐ ข้อความหลักแบบสวย ๆ
-    await client.replyMessage(event.replyToken, {
+    await client.replyMessage(event.replyToken, [
+      pdpaInfoFlex(),
+      {
+        type: "text",
+        text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
+      },
+      jobPositionFlex()
+    ]);
+
+    return;
+  }
+
+  /* ------------------------------
+     เลือกตำแหน่งงาน
+  ------------------------------ */
+  if (state.mode === "job") {
+    if (data && data.startsWith("job=")) {
+      const job = data.replace("job=", "");
+      state.formData.position = job;
+
+      startTimer(userId);
+
+      state.mode = "form";
+      state.step = 0;
+      return client.replyMessage(event.replyToken, askFormQuestion(userId));
+    }
+
+    return client.replyMessage(event.replyToken, {
       type: "text",
-      text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
+      text: "โปรดกดปุ่มเลือกตำแหน่งงานจากด้านบนก่อนนะครับ 😊"
     });
-
-    return client.pushMessage(userId, jobPositionFlex());
   }
-
-  return client.replyMessage(event.replyToken, pdpaFlex());
-}
-
-/* ------------------------------
-   เลือกตำแหน่งงาน
------------------------------- */
-if (state.mode === "job") {
-  if (data && data.startsWith("job=")) {
-    const job = data.replace("job=", "");
-    state.formData.position = job;
-
-    startTimer(userId);
-
-    state.mode = "form";
-    state.step = 0;
-    return client.replyMessage(event.replyToken, askFormQuestion(userId));
-  }
-
-  // ⭐ ข้อความเตือนแบบไม่ซ้ำกับ PDPA
-  return client.replyMessage(event.replyToken, {
-    type: "text",
-    text: "โปรดกดปุ่มเลือกตำแหน่งงานจากด้านบนก่อนนะครับ 😊"
-  });
-}
 
   /* ------------------------------
      ฟอร์มกรอกข้อมูล
@@ -1834,7 +1786,8 @@ if (state.mode === "job") {
       });
     }
   }
-} // END if (userState[userId])
+
+} // ← ปิด if (userState[userId]) อย่างถูกต้อง
 
     /* --------------------------------------------------
        4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
