@@ -1917,7 +1917,7 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
                 color: "#1E90FF",
                 action: {
                   type: "message",
-                  label: "Open",
+                  label: "Tel-เบอร์โทรติดต่อ",
                   text: "Safety Hotline"
                 }
               }
@@ -1934,20 +1934,21 @@ if (msg.includes("ติดต่อทีมเซฟตี้")) {
             contents: [
               {
                 type: "text",
-                text: "ส่งข้อความ ติดต่อ–แจ้งปัญหา / Report Issue",
+                text: "ส่งข้อความปัญหา/Report",
                 weight: "bold",
                 size: "md",
                 wrap: true,
                 color: "#FF8C00"
               },
               {
-                type: "button",
-                style: "secondary",
-                action: {
-                  type: "message",
-                  label: "เปิดเมนูนี้",
-                  text: "แจ้งปัญหา"
-                }
+ 		 "type": "button",
+ 		 "style": "primary",
+ 		 "color": "#1E90FF",
+ 		 "action": {
+   		 "type": "message",
+  		  "label": "กดปุ่มเพื่อแจ้ง",
+ 		   "text": "แจ้งปัญหา"
+ 		 }
               }
             ]
           }
@@ -2027,7 +2028,7 @@ if (msg.includes("แจ้งปัญหา")) {
             type: "text",
             text: "📣 แจ้งปัญหา / Report Issue",
             weight: "bold",
-            size: "xl",
+            size: "lg",
             color: "#1E90FF",
             align: "center",
             wrap: true
@@ -2175,7 +2176,7 @@ for (const cat of Object.keys(categories)) {
                 },
                 {
                   type: "text",
-                  text: "ขออภัยครับ 🙂\nระบบยังไม่มีคำตอบสำหรับคำถามนี้\nแต่เราจะอัปเดตฐานข้อมูลอย่างต่อเนื่องครับ",
+                  text: "ขออภัยครับ 🙂\nระบบไม่มีคำตอบสำหรับคำถามนี้\nแผนกจะอัปเดตข้อมูลอย่างต่อเนื่อง",
                   margin: "md",
                   size: "md",
                   color: "#333333",
