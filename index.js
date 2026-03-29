@@ -1125,9 +1125,13 @@ async function finishExam(event, userId) {
   }
 
   /* --------------------------------------------------
+     ⭐ ถ้าผ่าน → บันทึกลง Google Sheet
+  -------------------------------------------------- */
+  await sendToGoogleSheet(userId, "ผ่าน", state.answers);
+
+  /* --------------------------------------------------
      ⭐ ถ้าผ่าน → ส่งปุ่มดาวน์โหลดบัตร
   -------------------------------------------------- */
-
   const flexMessage = {
     type: "flex",
     altText: "ดาวน์โหลดบัตรผู้รับเหมา",
@@ -1171,8 +1175,7 @@ async function finishExam(event, userId) {
   await client.replyMessage(event.replyToken, [summaryText, flexMessage]);
 
   delete userState[userId];
-}
-/* --------------------------------------------------
+}/* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ + ตำแหน่งงาน)
 -------------------------------------------------- */
 async function sendToGoogleSheet(userId, passStatus, answers = []) {
