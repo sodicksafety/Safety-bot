@@ -1580,12 +1580,13 @@ function menuDelivery() {
   };
 }
 /* --------------------------------------------------
-   VENDOR MENU (Panasonic Clean Card UI) — FIXED
+   VENDOR MENU (Panasonic Clean Card UI) — FIXED + Restore Exam Button
 -------------------------------------------------- */
 function menuVendor() {
 
   const items = [
     ["วีดีโออบรม", "uri", "https://drive.google.com/file/d/1bz2qUynfvSFNuS3FoM1iGcLIn3Z8m0fb/view?usp=sharing"],
+    ["ทำแบบทดสอบ", "message", "ทำแบบทดสอบ"],   // ← พี่เอากลับมาให้แล้ว
     ["เอกสารบันทึกการอบรม", "uri", "https://drive.google.com/file/d/1QWnOr9Cmkdbsmp0byIlocZmmVIjcPqWe/view?usp=drive_link"],
     ["ใบขอเข้ามาทำงาน", "uri", "https://drive.google.com/file/d/1m9zT6FEHTFs_GdXIcKrr3WCngONKn4OV/view?usp=drive_link"],
     ["ใบตรวจสอบเครื่องมือ", "uri", "https://drive.google.com/file/d/1HJxEXai6--EduOXJTDGtvl0-Sfu5_k7c/view?usp=drive_link"]
@@ -2099,8 +2100,9 @@ if (isReportIssue) {
     });
 }
 
-// ถ้าไม่ใช่การแจ้งปัญหา → ให้บอททำงานตามเงื่อนไขด้านบน
-return;   // สำคัญมาก ห้ามส่งต่อข้อความทั่วไป
+// ❌ ลบบรรทัดนี้ออก
+// return;
+
 /* --------------------------------------------------
    9) แผนที่ + เบอร์โรงงาน
 -------------------------------------------------- */
