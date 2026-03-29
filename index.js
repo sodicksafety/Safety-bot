@@ -1793,42 +1793,41 @@ if (state.mode === "job") {
     return handleFormAnswer(event, userId, text);
   }
 
-  /* ------------------------------
+ /* ------------------------------
      ทำข้อสอบ
   ------------------------------ */
-  if (state.mode === "exam") {
+if (state.mode === "exam") {
 
-    if (data && data.startsWith("answer_")) {
-      startTimer(userId);
-      return handleExamAnswer(event, userId, data);
-    }
-
-    if (text) {
-      const qIndex = state.currentQuestion - 1;
-      const question = examQuestions[qIndex];
-      const normText = normalize(text);
-
-      const foundIndex = question.choices.findIndex(choice => {
-        const normChoice = normalize(choice);
-        return (
-          normText === normChoice ||
-          normText.includes(normChoice) ||
-          normChoice.includes(normText)
-        );
-      });
-
-      if (foundIndex !== -1) {
-        startTimer(userId);
-        return handleExamAnswer(event, userId, `answer_${foundIndex}`);
-      }
-
-      return client.replyMessage(event.replyToken, {
-        type: "text",
-        text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
-      });
-    }
+  if (data && data.startsWith("answer_")) {
+    startTimer(userId);
+    return handleExamAnswer(event, userId, data);
   }
-} // END if (userState[userId])
+
+  if (text) {
+    const qIndex = state.currentQuestion - 1;
+    const question = examQuestions[qIndex];
+    const normText = normalize(text);
+
+    const foundIndex = question.choices.findIndex(choice => {
+      const normChoice = normalize(choice);
+      return (
+        normText === normChoice ||
+        normText.includes(normChoice) ||
+        normChoice.includes(normText)
+      );
+    });
+
+    if (foundIndex !== -1) {
+      startTimer(userId);
+      return handleExamAnswer(event, userId, `answer_${foundIndex}`);
+    }
+
+    return client.replyMessage(event.replyToken, {
+      type: "text",
+      text: "กรุณาเลือกคำตอบโดยการกดปุ่มด้านล่างนะครับ 😊"
+    });
+  }
+} // END if (state.mode === "exam")
 
     /* --------------------------------------------------
        4) เมนูอื่น ๆ (ไม่เกี่ยวกับสอบ)
