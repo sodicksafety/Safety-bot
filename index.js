@@ -1207,67 +1207,9 @@ async function finishExam(event, userId) {
     console.error("Push error:", err.response?.data || err);
   }
 
+  // ⭐ ล้าง state หลังสุด
   delete userState[userId];
-}   // ← ปิดฟังก์ชัน finishExam() ตรงนี้
-
-/* --------------------------------------------------
-     ⭐ ถ้าผ่าน → แสดงปุ่มดาวน์โหลดบัตร (ไม่ต้องส่งซ้ำ)
--------------------------------------------------- */
-
-// ❌ ห้ามส่งซ้ำเด็ดขาด (ลบออก)
-// await sendToGoogleSheet(userId, "ผ่าน", state.answers);
-
-// ⭐ ส่ง Flex ปุ่มดาวน์โหลดบัตรทันที
-const flexMessage = {
-  type: "flex",
-  altText: "ดาวน์โหลดบัตรผู้รับเหมา",
-  contents: {
-    type: "bubble",
-    body: {
-      type: "box",
-      layout: "vertical",
-      contents: [
-        {
-          type: "text",
-          text: "ผ่านการทดสอบแล้ว 🎉",
-          weight: "bold",
-          size: "lg",
-          align: "center"
-        },
-        {
-          type: "text",
-          text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ",
-          size: "sm",
-          align: "center",
-          margin: "md"
-        },
-        {
-          type: "button",
-          style: "primary",
-          color: "#1DB446",
-          action: {
-            type: "message",
-            label: "ดาวน์โหลดบัตร",
-            text: "ดาวน์โหลดบัตร"
-          },
-          margin: "lg"
-        }
-      ]
-    }
-  }
-};
-
-// ⭐ ป้องกันบอทล้มเมื่อ quota push หมด
-try {
-  await client.pushMessage(userId, flexMessage);
-} catch (err) {
-  console.error("Push error:", err.response?.data || err);
-}
-
-// ⭐ ล้าง state หลังสุด (ถูกต้อง)
-delete userState[userId];
-
-}   // ← ปิดฟังก์ชัน finishExam() ให้ครบ
+}   // ← ปิดฟังก์ชัน finishExam() ตัวเดียวพอ
 
 /* --------------------------------------------------
    SEND TO GOOGLE SHEET (เวอร์ชันรองรับคำตอบ 30 ข้อ + ตำแหน่งงาน)
