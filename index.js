@@ -1160,7 +1160,56 @@ async function finishExam(event, userId) {
 
     return;
   }
-}
+
+  // ⭐ ถ้าผ่าน → ส่งปุ่มดาวน์โหลดบัตร
+  const flexMessage = {
+    type: "flex",
+    altText: "ดาวน์โหลดบัตรผู้รับเหมา",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: "ผ่านการทดสอบแล้ว 🎉",
+            weight: "bold",
+            size: "lg",
+            align: "center"
+          },
+          {
+            type: "text",
+            text: "ระบบกำลังออกบัตรผู้รับเหมาให้คุณ",
+            size: "sm",
+            align: "center",
+            margin: "md"
+          },
+          {
+            type: "button",
+            style: "primary",
+            color: "#1DB446",
+            action: {
+              type: "message",
+              label: "ดาวน์โหลดบัตร",
+              text: "ดาวน์โหลดบัตร"
+            },
+            margin: "lg"
+          }
+        ]
+      }
+    }
+  };
+
+  try {
+    await client.pushMessage(userId, flexMessage);
+  } catch (err) {
+    console.error("Push error:", err.response?.data || err);
+  }
+
+  delete userState[userId];
+}   // ← ปิดฟังก์ชัน finishExam() ตรงนี้
+
 /* --------------------------------------------------
      ⭐ ถ้าผ่าน → แสดงปุ่มดาวน์โหลดบัตร (ไม่ต้องส่งซ้ำ)
 -------------------------------------------------- */
