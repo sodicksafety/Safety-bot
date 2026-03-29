@@ -1200,14 +1200,14 @@ const flexMessage = {
             text: "ดาวน์โหลดบัตร"
           },
           margin: "lg"
-        }
+       }
       ]
     }
   }
 };
 
-// ⭐ เปลี่ยนจาก pushMessage → replyMessage
-await client.replyMessage(replyToken, flexMessage);
+// ⭐ ใช้ replyMessage แบบถูกต้อง
+await client.replyMessage(event.replyToken, flexMessage);
 
 // ⭐ ล้าง state หลังสุด
 delete userState[userId];
