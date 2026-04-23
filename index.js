@@ -673,13 +673,13 @@ async function handleExamAnswer(event, userId, data) {
 if (state.currentQuestion > examQuestions.length) {
   state.locked = false;
 
-  // ⭐⭐⭐ ส่งข้อมูลไป Google Sheet ⭐⭐⭐
-  const passStatus = state.score >= 24 ? "ผ่าน" : "ไม่ผ่าน";
-  await sendToGoogleSheet(userId, passStatus, state.answers);
-  // ⭐⭐⭐ จบส่วนที่เพิ่ม ⭐⭐⭐
+  // ❌ ลบบล็อกส่งข้อมูลออก
+  // const passStatus = state.score >= 24 ? "ผ่าน" : "ไม่ผ่าน";
+  // await sendToGoogleSheet(userId, passStatus, state.answers);
 
   return await finishExam(event, userId);
 }
+
 
   // ⭐ 5) ตรวจคำถามถัดไปว่าปลอดภัยไหม
   const nextQ = examQuestions[state.currentQuestion - 1];
