@@ -1423,7 +1423,7 @@ if (msg.includes("ทำแบบทดสอบ")) {
     pdpaFlex(),   // ⭐ PDPA แบบอ่านอย่างเดียว (มีอันเดียว)
     {
       type: "text",
-      text: "💼 กรุณาเลือกตำแหน่งงานของคุณจากเมนูด้านบนครับ\n💼 Please select your job position"
+      text: "💼 กรุณาเลือกตำแหน่งงานจากตัวเลือกด้านล่างครับ\n💼 Please select your job position"
     },
     jobPositionFlex()   // ⭐ เมนูเลือกตำแหน่งงาน
   ]);
@@ -1452,7 +1452,7 @@ if (userState[userId]) {
 
     return client.replyMessage(event.replyToken, {
       type: "text",
-      text: "โปรดกดปุ่มเลือกตำแหน่งงานจากด้านบนก่อนนะครับ 😊"
+      text: "กรุณาเลือกตำแหน่งงานจากตัวเลือกด้านล่างครับ 😊"
     });
   }
 
