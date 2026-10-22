@@ -16,10 +16,11 @@ if (!config.channelAccessToken || !config.channelSecret) {
 const client = new line.Client(config);
 const PORT = Number(process.env.PORT || 3000);
 const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696ba3df8";
+// Apps Script เดิมยังใช้ได้ ถ้ารองรับ JSON status จะตรวจบัตรล่าสุด/หมดอายุได้เต็มรูปแบบ
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.6.0-single-language-selection";
+const APP_VERSION = "4.7.0-safe-latest-card-client";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -540,10 +541,137 @@ async function finishExam(event,userId){
   const result=resultFlex(score,total,pass,state); if(pass){const saved=await sendToGoogleSheet(userId,"ผ่าน",state.answers);discardAllSessions(userId);if(!saved)return reply(event,[result,textMessage(state.language==="en"?"⚠️ The result could not be saved. Please contact Safety.":"⚠️ บันทึกผลไม่สำเร็จ กรุณาติดต่อทีม Safety")]);return reply(event,result);} discardAllSessions(userId);return reply(event,result);
 }
 async function sendToGoogleSheet(userId,passStatus,answers=[]){const state=userState.get(userId);if(!state)return false;const payload={userId,fullname:state.formData.fullname,position:state.formData.position,phone:state.formData.phone,idcard:state.formData.idcard,company:state.formData.company,score:state.score,result:passStatus,answers:Array.from({length:30},(_,i)=>answers[i]??"")};try{const r=await axios.post(GOOGLE_SCRIPT_URL,payload,{headers:{"Content-Type":"application/json"},timeout:30000});return r.status>=200&&r.status<300;}catch(e){console.error("Google Sheet error:",e.response?.data||e.message);return false;}}
-async function getCertificateUrl(userId){try{const r=await axios.get(GOOGLE_SCRIPT_URL,{params:{mode:"get",userId},timeout:30000});const url=typeof r.data==="string"?r.data.trim():r.data?.url;return /^https:\/\//i.test(url||"")?url:null;}catch(e){console.error("Certificate error:",e.response?.data||e.message);return null;}}
-async function handleDownloadCertificate(event,userId){
-  const url=await getCertificateUrl(userId);
-  return url?reply(event,certificateFlex(url)):reply(event,textMessage(runtimeText(userId,"noCard")));
+async function getCertificateUrl(userId) {
+  try {
+    const response = await axios.get(GOOGLE_SCRIPT_URL, {
+      params: {
+        mode: "get",
+        userId,
+        latest: "1",
+        validYears: "1"
+      },
+      timeout: 30000
+    });
+
+    const rawData = response.data;
+
+    // รองรับ Apps Script เดิมที่ตอบ URL เป็นข้อความธรรมดา
+    if (typeof rawData === "string") {
+      const value = rawData.trim();
+
+      if (/^https:\/\//i.test(value)) {
+        return {
+          status: "ready",
+          url: value,
+          issuedAt: "",
+          expiresAt: "",
+          legacyResponse: true
+        };
+      }
+
+      try {
+        const parsed = JSON.parse(value);
+        return normalizeCertificateResponse(parsed);
+      } catch (_) {
+        return {
+          status: "not_found",
+          url: null,
+          issuedAt: "",
+          expiresAt: "",
+          message: value
+        };
+      }
+    }
+
+    return normalizeCertificateResponse(rawData);
+  } catch (error) {
+    console.error(
+      "Certificate lookup error:",
+      error.response?.data || error.stack || error.message
+    );
+
+    return {
+      status: "error",
+      url: null,
+      issuedAt: "",
+      expiresAt: "",
+      message: error.message
+    };
+  }
+}
+
+function normalizeCertificateResponse(data) {
+  const source = data && typeof data === "object" ? data : {};
+  const url = /^https:\/\//i.test(String(source.url || "").trim())
+    ? String(source.url).trim()
+    : null;
+
+  return {
+    status: String(source.status || (url ? "ready" : "not_found")),
+    url,
+    issuedAt: String(source.issuedAt || ""),
+    expiresAt: String(source.expiresAt || ""),
+    message: String(source.message || ""),
+    legacyResponse: false
+  };
+}
+
+function certificateStatusText(language, status, expiresAt = "") {
+  const text = {
+    processing: {
+      th: "⏳ ระบบได้รับผลสอบล่าสุดแล้ว และกำลังสร้างบัตรใบใหม่ กรุณาลองดาวน์โหลดอีกครั้งภายหลัง",
+      en: "⏳ Your latest exam result was received. The new card is being generated. Please try again later.",
+      ja: "⏳ 最新の試験結果を受け付けました。新しいカードを作成中です。後でもう一度お試しください。",
+      my: "⏳ နောက်ဆုံးစာမေးပွဲရလဒ်ကို လက်ခံပြီးပါပြီ။ ကတ်အသစ်ဖန်တီးနေပါသည်။ နောက်မှ ထပ်မံစမ်းကြည့်ပါ။",
+      zh: "⏳ 已收到最新考试结果，正在生成新卡。请稍后再试。"
+    },
+    expired: {
+      th: `⚠️ บัตรผู้รับเหมาล่าสุดหมดอายุแล้ว${expiresAt ? ` เมื่อวันที่ ${expiresAt}` : ""}\nกรุณาทำแบบทดสอบใหม่เพื่อออกบัตรใบใหม่`,
+      en: `⚠️ Your latest contractor card has expired${expiresAt ? ` on ${expiresAt}` : ""}.\nPlease complete the exam again to receive a new card.`,
+      ja: `⚠️ 最新の請負業者カードは${expiresAt ? ` ${expiresAt} に` : ""}有効期限が切れています。\n新しいカードを取得するには、もう一度試験を受けてください。`,
+      my: `⚠️ နောက်ဆုံးကန်ထရိုက်တာကတ်သည်${expiresAt ? ` ${expiresAt} တွင်` : ""} သက်တမ်းကုန်ပြီးပါပြီ။\nကတ်အသစ်ရယူရန် စာမေးပွဲကို ပြန်လည်ဖြေဆိုပါ။`,
+      zh: `⚠️ 最新的承包商卡${expiresAt ? `已于 ${expiresAt}` : "已经"}过期。\n请重新参加考试以获取新卡。`
+    },
+    invalid_url: {
+      th: "⚠️ พบข้อมูลบัตรล่าสุด แต่ลิงก์บัตรไม่ถูกต้อง กรุณาติดต่อทีม Safety",
+      en: "⚠️ The latest card record was found, but its link is invalid. Please contact Safety.",
+      ja: "⚠️ 最新のカード記録が見つかりましたが、リンクが無効です。Safetyへ連絡してください。",
+      my: "⚠️ နောက်ဆုံးကတ်မှတ်တမ်းကိုတွေ့ရှိသော်လည်း လင့်ခ်မမှန်ပါ။ Safety ကိုဆက်သွယ်ပါ။",
+      zh: "⚠️ 已找到最新卡片记录，但链接无效。请联系Safety团队。"
+    },
+    error: {
+      th: "⚠️ ไม่สามารถตรวจสอบบัตรได้ในขณะนี้ กรุณาลองใหม่หรือติดต่อทีม Safety",
+      en: "⚠️ The card cannot be checked right now. Please try again or contact Safety.",
+      ja: "⚠️ 現在カードを確認できません。もう一度試すかSafetyへ連絡してください。",
+      my: "⚠️ လက်ရှိကတ်ကိုစစ်ဆေး၍မရပါ။ ထပ်မံစမ်းကြည့်ပါ သို့မဟုတ် Safety ကိုဆက်သွယ်ပါ။",
+      zh: "⚠️ 目前无法检查卡片，请稍后重试或联系Safety团队。"
+    }
+  };
+
+  return text[status]?.[language] || text[status]?.th || "";
+}
+
+async function handleDownloadCertificate(event, userId) {
+  const card = await getCertificateUrl(userId);
+  const language = getUserLanguage(userId);
+
+  if (card.status === "ready" && card.url) {
+    return reply(event, certificateFlex(card.url));
+  }
+
+  if (["processing", "expired", "invalid_url", "error"].includes(card.status)) {
+    return reply(
+      event,
+      textMessage(
+        certificateStatusText(language, card.status, card.expiresAt)
+      )
+    );
+  }
+
+  return reply(
+    event,
+    textMessage(runtimeText(userId, "noCard"))
+  );
 }
 async function beginIssueReport(event,userId){
   clearUserState(userId);
