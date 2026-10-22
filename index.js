@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.11.0-all-cards-flex";
+const APP_VERSION = "4.12.0-all-matching-line-ids";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -662,43 +662,84 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
   }
 }
 async function getCertificateUrl(userId) {
-  try {
-    const response = await axios.get(GOOGLE_SCRIPT_URL, {
-      params: {
-        mode: "get_all",
-        userId,
-        all: "1",
-        includeExpired: "1",
-        cacheBust: Date.now().toString()
-      },
-      timeout: 30000
+  const requestVariants = [
+    { mode: "get_all", userId, all: "1", includeExpired: "1", limit: "1000" },
+    { mode: "list", userId, history: "1", includeExpired: "1", limit: "1000" },
+    { mode: "get", userId, all: "1", history: "1", limit: "1000" }
+  ];
+
+  const collected = [];
+  const messages = [];
+
+  for (const params of requestVariants) {
+    try {
+      const response = await axios.get(GOOGLE_SCRIPT_URL, {
+        params: { ...params, cacheBust: `${Date.now()}-${Math.random()}` },
+        timeout: 30000
+      });
+
+      const normalized = normalizeCertificatePayload(response.data);
+      collected.push(...normalized.cards);
+      if (normalized.message) messages.push(normalized.message);
+    } catch (error) {
+      console.error(
+        "Certificate lookup variant error:",
+        params.mode,
+        error.response?.data || error.stack || error.message
+      );
+    }
+  }
+
+  const seen = new Set();
+  const cards = collected
+    .filter(card => {
+      if (!card?.url || seen.has(card.url)) return false;
+      seen.add(card.url);
+      return true;
+    })
+    .sort((a, b) => {
+      const aTime = Date.parse(a.issuedAt || "");
+      const bTime = Date.parse(b.issuedAt || "");
+      if (Number.isFinite(aTime) && Number.isFinite(bTime)) return bTime - aTime;
+      if (Number.isFinite(aTime)) return -1;
+      if (Number.isFinite(bTime)) return 1;
+      return 0;
     });
 
-    const rawData = response.data;
-    let parsed = rawData;
+  console.log("Certificate lookup:", {
+    userId,
+    returnedCards: cards.length,
+    urls: cards.map(card => card.url)
+  });
 
-    if (typeof rawData === "string") {
-      const value = rawData.trim();
-      try {
-        parsed = JSON.parse(value);
-      } catch (_) {
-        const urls = value
-          .split(/[\r\n,]+/)
-          .map(item => item.trim())
-          .filter(item => /^https:\/\//i.test(item));
-        return {
-          status: urls.length ? "ready" : "not_found",
-          cards: urls.map(url => ({ url })),
-          message: urls.length ? "" : value
-        };
-      }
+  return {
+    status: cards.length ? "ready" : "not_found",
+    cards,
+    message: messages.filter(Boolean).join(" | ")
+  };
+}
+
+function normalizeCertificatePayload(rawData) {
+  let parsed = rawData;
+
+  if (typeof rawData === "string") {
+    const value = rawData.trim();
+    try {
+      parsed = JSON.parse(value);
+    } catch (_) {
+      const urls = value
+        .split(/[\r\n,]+/)
+        .map(item => item.trim())
+        .filter(item => /^https:\/\//i.test(item));
+      return {
+        cards: urls.map(url => ({ url, issuedAt: "", title: "" })),
+        message: urls.length ? "" : value
+      };
     }
-
-    return normalizeCertificateResponse(parsed);
-  } catch (error) {
-    console.error("Certificate lookup error:", error.response?.data || error.stack || error.message);
-    return { status: "error", cards: [], message: error.message };
   }
+
+  const normalized = normalizeCertificateResponse(parsed);
+  return { cards: normalized.cards, message: normalized.message };
 }
 function normalizeCertificateResponse(data) {
   const source = data && typeof data === "object" ? data : {};
