@@ -19,7 +19,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.4.0-language-gateway";
+const APP_VERSION = "4.5.0-stable-language-router";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -574,6 +574,30 @@ async function handleIssueReport(event,userId,text){
   return true;
 }
 
+function cloneSession(state) {
+  return JSON.parse(JSON.stringify(state));
+}
+
+function pauseCurrentSession(userId) {
+  const state = userState.get(userId);
+  if (!state) return false;
+
+  if (["language", "job", "form", "review", "exam"].includes(state.mode)) {
+    pausedSessions.set(userId, {
+      state: cloneSession(state),
+      pausedAt: Date.now()
+    });
+  }
+
+  clearUserState(userId);
+  return true;
+}
+
+function discardAllSessions(userId) {
+  clearUserState(userId);
+  pausedSessions.delete(userId);
+}
+
 function setPendingMenuAction(userId, action) {
   pendingMenuActions.set(userId, {
     action,
@@ -599,7 +623,7 @@ function renderSelectedMenu(action, language) {
 }
 
 async function openLanguageGateway(event, userId, action) {
-  // ออกจากขั้นตอนเดิม แต่ไม่ลบภาษาประจำผู้ใช้
+  // 3 Rich Menu หลักต้องเลือกภาษาก่อนเข้าฟังก์ชัน
   clearUserState(userId);
   pausedSessions.delete(userId);
   setPendingMenuAction(userId, action);
@@ -731,25 +755,24 @@ async function handleEvent(event) {
   const data = event.postback?.data || "";
 
   if (data === "pref_language=select") {
-    // ปุ่มเปลี่ยนภาษาจากเมนูทั่วไป จะกลับไปเมนูผู้รับเหมาเมื่อเลือกเสร็จ
     if (!pendingMenuActions.has(userId)) {
       setPendingMenuAction(userId, "contractor");
     }
     return reply(event, globalLanguageSelectFlex(getUserLanguage(userId)));
   }
+
   if (data.startsWith("pref_language=")) {
     const selected = setUserLanguage(userId, data.slice(14));
     const pending = pendingMenuActions.get(userId);
     clearPendingMenuAction(userId);
 
-    // ถ้าเปิดจาก Rich Menu ให้ไปยังฟังก์ชันที่เลือก หลังเลือกภาษาแล้ว
     if (pending?.action) {
       return reply(event, renderSelectedMenu(pending.action, selected));
     }
 
-    // ถ้าเปิดหน้าภาษาโดยพิมพ์คำสั่งเอง ให้กลับเมนูหลัก
     return reply(event, contractorMainMenuFlex(selected));
   }
+
   if (["ภาษา","language","言語","ဘာသာစကား","语言","中文"].some(word => msg === normalize(word))) {
     setPendingMenuAction(userId, "contractor");
     return reply(event, globalLanguageSelectFlex(getUserLanguage(userId)));
@@ -889,11 +912,11 @@ async function handleEvent(event) {
 
 app.get(["/","/webhook","/health"],(req,res)=>res.status(200).json({ok:true,service:"Sodick Safety Bot",version:APP_VERSION}));
 app.post("/webhook",line.middleware(config),async(req,res)=>{
-  try{
+  try {
     const events=Array.isArray(req.body.events)?req.body.events:[];
     await Promise.all(events.map(handleEvent));
     return res.status(200).end();
-  }catch(error){
+  } catch (error) {
     console.error("Webhook error status:",error.response?.status||"unknown");
     console.error("Webhook error data:",JSON.stringify(error.response?.data||null));
     console.error("Webhook error message:",error.stack||error.message);
