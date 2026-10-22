@@ -19,7 +19,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.5.0-stable-language-router";
+const APP_VERSION = "4.6.0-single-language-selection";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -130,6 +130,10 @@ const userPreferences = new Map();
 const pendingMenuActions = new Map();
 const pausedSessions = new Map();
 const inactivityTimers = new Map();
+function hasUserLanguage(userId) {
+  const lang = userPreferences.get(userId)?.language;
+  return Boolean(lang && I18N[lang]);
+}
 function getUserLanguage(userId) {
   const lang = userPreferences.get(userId)?.language;
   return I18N[lang] ? lang : "th";
@@ -622,12 +626,19 @@ function renderSelectedMenu(action, language) {
   }
 }
 
-async function openLanguageGateway(event, userId, action) {
-  // 3 Rich Menu หลักต้องเลือกภาษาก่อนเข้าฟังก์ชัน
+async function routeMainRichMenu(event, userId, action) {
+  // ถ้าเคยเลือกภาษาแล้ว ใช้ภาษาเดิมกับทุกฟังก์ชันทันที
+  if (hasUserLanguage(userId)) {
+    clearPendingMenuAction(userId);
+    await reply(event, renderSelectedMenu(action, getUserLanguage(userId)));
+    return true;
+  }
+
+  // เลือกภาษาเฉพาะครั้งแรกของ 3 Rich Menu หลัก
   clearUserState(userId);
   pausedSessions.delete(userId);
   setPendingMenuAction(userId, action);
-  await reply(event, globalLanguageSelectFlex(getUserLanguage(userId)));
+  await reply(event, globalLanguageSelectFlex("th"));
   return true;
 }
 
@@ -652,6 +663,24 @@ async function handleNavigationInterrupt(event, userId, msg) {
       await reply(event, resumePromptFlex(saved));
       return true;
     }
+    if (hasUserLanguage(userId)) {
+      const selected = getUserLanguage(userId);
+      const examState = {
+        mode: "job",
+        language: selected,
+        step: 0,
+        formData: {},
+        currentQuestion: 1,
+        score: 0,
+        answers: [],
+        locked: false
+      };
+      userState.set(userId, examState);
+      touchState(userId);
+      await reply(event, [pdpaFlex(examState), jobPositionFlex(examState)]);
+      return true;
+    }
+
     userState.set(userId, { mode:"language", language:null, step:0, formData:{}, currentQuestion:1, score:0, answers:[], locked:false });
     touchState(userId);
     await reply(event, languageSelectFlex());
@@ -698,7 +727,7 @@ async function handleNavigationInterrupt(event, userId, msg) {
   }
 
   if (msg.includes(normalize("ติดต่อทีมเซฟตี้"))) {
-    return openLanguageGateway(event, userId, "contact");
+    return routeMainRichMenu(event, userId, "contact");
   }
 
   if (
@@ -720,7 +749,7 @@ async function handleNavigationInterrupt(event, userId, msg) {
     msg.includes("location") ||
     msg.includes(normalize("โรงงานอยู่ไหน"))
   ) {
-    return openLanguageGateway(event, userId, "map");
+    return routeMainRichMenu(event, userId, "map");
   }
 
   if (
@@ -732,7 +761,7 @@ async function handleNavigationInterrupt(event, userId, msg) {
     msg === normalize("เริ่มต้น") ||
     msg === "start"
   ) {
-    return openLanguageGateway(event, userId, "contractor");
+    return routeMainRichMenu(event, userId, "contractor");
   }
 
   return false;
@@ -920,6 +949,7 @@ app.post("/webhook",line.middleware(config),async(req,res)=>{
     console.error("Webhook error status:",error.response?.status||"unknown");
     console.error("Webhook error data:",JSON.stringify(error.response?.data||null));
     console.error("Webhook error message:",error.stack||error.message);
+    console.error("Active version:",APP_VERSION);
     return res.status(200).end();
   }
 });
