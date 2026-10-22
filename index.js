@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.12.0-all-matching-line-ids";
+const APP_VERSION = "4.13.0-use-post-created-card";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -132,6 +132,7 @@ const pendingMenuActions = new Map();
 const pausedSessions = new Map();
 const inactivityTimers = new Map();
 const latestPassedExams = new Map();
+const recentCreatedCards = new Map();
 function hasUserLanguage(userId) {
   const lang = userPreferences.get(userId)?.language;
   return Boolean(lang && I18N[lang]);
@@ -654,6 +655,22 @@ async function sendToGoogleSheet(userId, passStatus, answers = []) {
         examCompletedAt,
         completedAtMs: Date.parse(examCompletedAt)
       });
+
+      const created = normalizeCertificatePayload(response.data);
+      if (created.cards.length) {
+        recentCreatedCards.set(userId, created.cards.map(card => ({
+          ...card,
+          issuedAt: card.issuedAt || examCompletedAt,
+          title: card.title || "บัตรจากผลสอบล่าสุด"
+        })));
+      }
+
+      console.log("Exam save response:", {
+        userId,
+        examAttemptId,
+        createdCards: created.cards.length,
+        urls: created.cards.map(card => card.url)
+      });
     }
     return saved;
   } catch (error) {
@@ -821,8 +838,24 @@ function certificateStatusText(language, status, expiresAt = "") {
 }
 
 async function handleDownloadCertificate(event, userId) {
+  const newlyCreated = recentCreatedCards.get(userId) || [];
   const result = await getCertificateUrl(userId);
-  const cards = Array.isArray(result.cards) ? result.cards : [];
+  const historical = Array.isArray(result.cards) ? result.cards : [];
+
+  const seen = new Set();
+  const cards = [...newlyCreated, ...historical].filter(card => {
+    const url = String(card?.url || "").trim();
+    if (!/^https:\/\//i.test(url) || seen.has(url)) return false;
+    seen.add(url);
+    return true;
+  });
+
+  console.log("Cards prepared for LINE:", {
+    userId,
+    newlyCreated: newlyCreated.length,
+    historical: historical.length,
+    total: cards.length
+  });
 
   if (cards.length) {
     latestPassedExams.delete(userId);
