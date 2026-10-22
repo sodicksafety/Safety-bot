@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.7.0-safe-latest-card-client";
+const APP_VERSION = "4.7.1-fixed-resume-detail";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -706,6 +706,225 @@ async function handleIssueReport(event,userId,text){
   return true;
 }
 
+
+function resumePromptFlex(saved) {
+  const state = saved?.state || saved || {};
+  const lang = getLanguage(state);
+  const completedCount = state.mode === "exam"
+    ? Math.max(0, Math.min(examQuestions.length, Number(state.currentQuestion || 1) - 1))
+    : 0;
+  const subtitle = state.mode === "exam"
+    ? `${completedCount}/${examQuestions.length} ${tr(state, "completed")}`
+    : tr(state, "resumeSub");
+
+  return {
+    type: "flex",
+    altText: tr(state, "resumeTitle"),
+    contents: {
+      type: "bubble",
+      size: "mega",
+      styles: {
+        body: { backgroundColor: THEME.canvas },
+        footer: { backgroundColor: THEME.canvas }
+      },
+      header: titleBlock(
+        "⏯️",
+        "SAVED PROGRESS",
+        tr(state, "resumeTitle"),
+        subtitle,
+        THEME.orange
+      ),
+      body: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "20px",
+        spacing: "md",
+        contents: [
+          {
+            type: "text",
+            text: tr(state, "resumeSub"),
+            size: "sm",
+            color: THEME.ink,
+            wrap: true,
+            align: "center"
+          },
+          state.mode === "exam"
+            ? {
+                type: "text",
+                text: `${tr(state, "progress")}: ${completedCount}/${examQuestions.length}`,
+                size: "xs",
+                weight: "bold",
+                color: THEME.blue,
+                align: "center"
+              }
+            : {
+                type: "text",
+                text: tr(state, "pausedNotice"),
+                size: "xs",
+                color: THEME.muted,
+                wrap: true,
+                align: "center"
+              }
+        ]
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "18px",
+        spacing: "sm",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: THEME.green,
+            action: {
+              type: "postback",
+              label: tr(state, "continueExam").slice(0, 20),
+              data: "resume=continue",
+              displayText: tr(state, "continueExam")
+            }
+          },
+          {
+            type: "button",
+            style: "secondary",
+            action: {
+              type: "postback",
+              label: tr(state, "startNew").slice(0, 20),
+              data: "resume=new",
+              displayText: tr(state, "startNew")
+            }
+          }
+        ]
+      }
+    }
+  };
+}
+
+async function renderSavedSession(event, userId, savedState) {
+  if (!savedState || !savedState.mode) {
+    discardAllSessions(userId);
+    return reply(event, languageSelectFlex());
+  }
+
+  const state = cloneSession(savedState);
+  state.language = I18N[state.language] ? state.language : getUserLanguage(userId);
+  state.locked = false;
+  userState.set(userId, state);
+  setUserLanguage(userId, state.language);
+  touchState(userId);
+
+  switch (state.mode) {
+    case "language":
+      return reply(event, languageSelectFlex());
+    case "job":
+      return reply(event, [pdpaFlex(state), jobPositionFlex(state)]);
+    case "form":
+      state.step = Math.max(0, Math.min(formQuestions.length - 1, Number(state.step || 0)));
+      return reply(event, formQuestionFlex(state));
+    case "review":
+      return reply(event, reviewFlex(state));
+    case "exam": {
+      const number = Math.max(1, Math.min(examQuestions.length, Number(state.currentQuestion || 1)));
+      state.currentQuestion = number;
+      return reply(event, examFlex(examQuestions[number - 1], number, state));
+    }
+    default:
+      discardAllSessions(userId);
+      return reply(event, languageSelectFlex());
+  }
+}
+
+function detailFlex(state, type = "exam") {
+  const lang = getLanguage(state);
+  const copy = {
+    th: {
+      title: "รายละเอียดแบบทดสอบ",
+      subtitle: "ข้อมูลก่อนเริ่มทำแบบทดสอบ",
+      lines: [
+        `จำนวนข้อ: ${examQuestions.length} ข้อ`,
+        `เกณฑ์ผ่าน: ${PASS_SCORE} คะแนน`,
+        "กรุณาเลือกคำตอบจากปุ่มในข้อความล่าสุด",
+        "หากออกไปใช้เมนูอื่น ระบบจะเก็บความคืบหน้าไว้ชั่วคราว"
+      ]
+    },
+    en: {
+      title: "Exam Details",
+      subtitle: "Information before starting",
+      lines: [
+        `Questions: ${examQuestions.length}`,
+        `Passing score: ${PASS_SCORE}`,
+        "Select an answer from the buttons in the latest message.",
+        "If you open another menu, your progress is temporarily saved."
+      ]
+    },
+    ja: {
+      title: "試験の詳細",
+      subtitle: "開始前のご案内",
+      lines: [
+        `問題数: ${examQuestions.length}問`,
+        `合格点: ${PASS_SCORE}点`,
+        "最新メッセージのボタンから回答してください。",
+        "別メニューを開くと、進捗は一時保存されます。"
+      ]
+    },
+    my: {
+      title: "စာမေးပွဲအသေးစိတ်",
+      subtitle: "မစတင်မီ အချက်အလက်",
+      lines: [
+        `မေးခွန်း: ${examQuestions.length}`, 
+        `အောင်မှတ်: ${PASS_SCORE}`,
+        "နောက်ဆုံးစာရှိ ခလုတ်များမှ အဖြေရွေးပါ။",
+        "အခြားမီနူးသို့သွားပါက တိုးတက်မှုကို ယာယီသိမ်းထားမည်။"
+      ]
+    },
+    zh: {
+      title: "考试详情",
+      subtitle: "开始前说明",
+      lines: [
+        `题目数量：${examQuestions.length}题`,
+        `及格分数：${PASS_SCORE}分`,
+        "请从最新消息中的按钮选择答案。",
+        "打开其他菜单时，系统会暂时保存考试进度。"
+      ]
+    }
+  }[lang] || null;
+
+  if (type !== "exam" || !copy) {
+    return fallbackFlex(lang);
+  }
+
+  return {
+    type: "flex",
+    altText: copy.title,
+    contents: {
+      type: "bubble",
+      size: "mega",
+      styles: { body: { backgroundColor: THEME.canvas } },
+      header: titleBlock("ℹ️", "EXAM INFORMATION", copy.title, copy.subtitle, THEME.blue),
+      body: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "20px",
+        spacing: "md",
+        contents: copy.lines.map((line, index) => ({
+          type: "box",
+          layout: "horizontal",
+          spacing: "sm",
+          paddingAll: "12px",
+          cornerRadius: "12px",
+          backgroundColor: THEME.white,
+          borderColor: THEME.line,
+          borderWidth: "1px",
+          contents: [
+            { type: "text", text: String(index + 1), flex: 0, weight: "bold", color: THEME.blue },
+            { type: "text", text: line, flex: 1, wrap: true, size: "sm", color: THEME.ink }
+          ]
+        }))
+      }
+    }
+  };
+}
+
 function cloneSession(state) {
   return JSON.parse(JSON.stringify(state));
 }
@@ -978,6 +1197,13 @@ async function handleEvent(event) {
 
   if (data === "resume=new") {
     discardAllSessions(userId);
+    if (hasUserLanguage(userId)) {
+      const selected = getUserLanguage(userId);
+      const examState = { mode:"job", language:selected, step:0, formData:{}, currentQuestion:1, score:0, answers:[], locked:false };
+      userState.set(userId, examState);
+      touchState(userId);
+      return reply(event, [pdpaFlex(examState), jobPositionFlex(examState)]);
+    }
     userState.set(userId, { mode:"language", language:null, step:0, formData:{}, currentQuestion:1, score:0, answers:[], locked:false });
     touchState(userId);
     return reply(event, languageSelectFlex());
