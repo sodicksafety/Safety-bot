@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.9.0-new-card-strict";
+const APP_VERSION = "4.10.0-card-direct-no-expiry-message";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -604,12 +604,10 @@ async function getCertificateUrl(userId) {
 
       if (/^https:\/\//i.test(value)) {
         return {
-          status: "unverified_legacy",
+          status: "ready",
           url: value,
           issuedAt: "",
           expiresAt: "",
-          examAttemptId: "",
-          message: "The certificate service returned only a URL, so the latest card cannot be verified.",
           legacyResponse: true
         };
       }
@@ -685,13 +683,6 @@ function certificateStatusText(language, status, expiresAt = "") {
       my: "⚠️ နောက်ဆုံးကတ်မှတ်တမ်းကိုတွေ့ရှိသော်လည်း လင့်ခ်မမှန်ပါ။ Safety ကိုဆက်သွယ်ပါ။",
       zh: "⚠️ 已找到最新卡片记录，但链接无效。请联系Safety团队。"
     },
-    unverified_legacy: {
-      th: "⏳ ระบบปลายทางยังส่งมาเฉพาะลิงก์ จึงตรวจไม่ได้ว่าเป็นบัตรใบใหม่หรือใบเก่า ระบบจะไม่เปิดบัตรเก่า กรุณารอการสร้างบัตรใหม่หรือติดต่อทีม Safety",
-      en: "⏳ The certificate service returned only a link, so the newest card cannot be verified. The old card will not be opened.",
-      ja: "⏳ 証明書サービスがリンクのみを返したため、最新カードを確認できません。古いカードは表示しません。",
-      my: "⏳ ကတ်ဝန်ဆောင်မှုမှ လင့်ခ်တစ်ခုသာ ပြန်ပေးသောကြောင့် ကတ်အသစ်ကို အတည်မပြုနိုင်ပါ။ ကတ်အဟောင်းကို ဖွင့်မည်မဟုတ်ပါ။",
-      zh: "⏳ 证件服务仅返回链接，无法确认是否为最新卡片。系统不会打开旧卡片。"
-    },
     error: {
       th: "⚠️ ไม่สามารถตรวจสอบบัตรได้ในขณะนี้ กรุณาลองใหม่หรือติดต่อทีม Safety",
       en: "⚠️ The card cannot be checked right now. Please try again or contact Safety.",
@@ -706,44 +697,18 @@ function certificateStatusText(language, status, expiresAt = "") {
 
 async function handleDownloadCertificate(event, userId) {
   const card = await getCertificateUrl(userId);
-  const language = getUserLanguage(userId);
 
-  const latestPass = latestPassedExams.get(userId);
-  if (latestPass) {
-    const issuedAtMs = Date.parse(card.issuedAt || "");
-    const sameAttempt = Boolean(
-      card.examAttemptId && card.examAttemptId === latestPass.examAttemptId
-    );
-    const issuedAfterLatestExam = Number.isFinite(issuedAtMs) &&
-      issuedAtMs >= latestPass.completedAtMs;
-
-    if (!sameAttempt && !issuedAfterLatestExam) {
-      return reply(
-        event,
-        textMessage(certificateStatusText(language, "processing"))
-      );
-    }
-  }
-
-  if (card.status === "ready" && card.url) {
+  // แสดงบัตรตามลิงก์ที่ระบบปลายทางส่งกลับมาโดยตรง
+  // ไม่ตรวจและไม่แจ้งสถานะหมดอายุ ให้ผู้ใช้ตรวจวันที่บนบัตรด้วยตนเอง
+  if (card.url) {
     latestPassedExams.delete(userId);
     return reply(event, certificateFlex(card.url));
   }
 
-  if (["processing", "expired", "invalid_url", "unverified_legacy", "error"].includes(card.status)) {
-    return reply(
-      event,
-      textMessage(
-        certificateStatusText(language, card.status, card.expiresAt)
-      )
-    );
-  }
-
-  return reply(
-    event,
-    textMessage(runtimeText(userId, "noCard"))
-  );
+  // หากยังไม่มีลิงก์บัตรจริง จึงแจ้งเพียงว่ายังไม่พบบัตร
+  return reply(event, textMessage(runtimeText(userId, "noCard")));
 }
+
 async function beginIssueReport(event,userId){
   clearUserState(userId);
   userState.set(userId,{mode:"report_issue",locked:false});
