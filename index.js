@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.7.1-fixed-resume-detail";
+const APP_VERSION = "4.8.0-latest-exam-card-guard";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -131,6 +131,7 @@ const userPreferences = new Map();
 const pendingMenuActions = new Map();
 const pausedSessions = new Map();
 const inactivityTimers = new Map();
+const latestPassedExams = new Map();
 function hasUserLanguage(userId) {
   const lang = userPreferences.get(userId)?.language;
   return Boolean(lang && I18N[lang]);
@@ -540,7 +541,46 @@ async function finishExam(event,userId){
   const state=userState.get(userId); if(!state)return reply(event,textMessage(I18N.th.expired)); const score=state.score,total=examQuestions.length,pass=score>=PASS_SCORE;
   const result=resultFlex(score,total,pass,state); if(pass){const saved=await sendToGoogleSheet(userId,"ผ่าน",state.answers);discardAllSessions(userId);if(!saved)return reply(event,[result,textMessage(state.language==="en"?"⚠️ The result could not be saved. Please contact Safety.":"⚠️ บันทึกผลไม่สำเร็จ กรุณาติดต่อทีม Safety")]);return reply(event,result);} discardAllSessions(userId);return reply(event,result);
 }
-async function sendToGoogleSheet(userId,passStatus,answers=[]){const state=userState.get(userId);if(!state)return false;const payload={userId,fullname:state.formData.fullname,position:state.formData.position,phone:state.formData.phone,idcard:state.formData.idcard,company:state.formData.company,score:state.score,result:passStatus,answers:Array.from({length:30},(_,i)=>answers[i]??"")};try{const r=await axios.post(GOOGLE_SCRIPT_URL,payload,{headers:{"Content-Type":"application/json"},timeout:30000});return r.status>=200&&r.status<300;}catch(e){console.error("Google Sheet error:",e.response?.data||e.message);return false;}}
+async function sendToGoogleSheet(userId, passStatus, answers = []) {
+  const state = userState.get(userId);
+  if (!state) return false;
+
+  const examCompletedAt = new Date().toISOString();
+  const examAttemptId = `${userId}-${Date.now()}`;
+  const payload = {
+    userId,
+    examAttemptId,
+    examCompletedAt,
+    fullname: state.formData.fullname,
+    position: state.formData.position,
+    phone: state.formData.phone,
+    idcard: state.formData.idcard,
+    company: state.formData.company,
+    score: state.score,
+    result: passStatus,
+    answers: Array.from({ length: 30 }, (_, i) => answers[i] ?? "")
+  };
+
+  try {
+    const response = await axios.post(GOOGLE_SCRIPT_URL, payload, {
+      headers: { "Content-Type": "application/json" },
+      timeout: 30000
+    });
+
+    const saved = response.status >= 200 && response.status < 300;
+    if (saved && passStatus === "ผ่าน") {
+      latestPassedExams.set(userId, {
+        examAttemptId,
+        examCompletedAt,
+        completedAtMs: Date.parse(examCompletedAt)
+      });
+    }
+    return saved;
+  } catch (error) {
+    console.error("Google Sheet error:", error.response?.data || error.message);
+    return false;
+  }
+}
 async function getCertificateUrl(userId) {
   try {
     const response = await axios.get(GOOGLE_SCRIPT_URL, {
@@ -548,7 +588,10 @@ async function getCertificateUrl(userId) {
         mode: "get",
         userId,
         latest: "1",
-        validYears: "1"
+        latestExamOnly: "1",
+        examAttemptId: latestPassedExams.get(userId)?.examAttemptId || "",
+        examCompletedAt: latestPassedExams.get(userId)?.examCompletedAt || "",
+        cacheBust: Date.now().toString()
       },
       timeout: 30000
     });
@@ -612,6 +655,7 @@ function normalizeCertificateResponse(data) {
     issuedAt: String(source.issuedAt || ""),
     expiresAt: String(source.expiresAt || ""),
     message: String(source.message || ""),
+    examAttemptId: String(source.examAttemptId || source.attemptId || ""),
     legacyResponse: false
   };
 }
@@ -655,7 +699,25 @@ async function handleDownloadCertificate(event, userId) {
   const card = await getCertificateUrl(userId);
   const language = getUserLanguage(userId);
 
+  const latestPass = latestPassedExams.get(userId);
+  if (latestPass) {
+    const issuedAtMs = Date.parse(card.issuedAt || "");
+    const sameAttempt = Boolean(
+      card.examAttemptId && card.examAttemptId === latestPass.examAttemptId
+    );
+    const issuedAfterLatestExam = Number.isFinite(issuedAtMs) &&
+      issuedAtMs >= latestPass.completedAtMs;
+
+    if (!sameAttempt && !issuedAfterLatestExam) {
+      return reply(
+        event,
+        textMessage(certificateStatusText(language, "processing"))
+      );
+    }
+  }
+
   if (card.status === "ready" && card.url) {
+    latestPassedExams.delete(userId);
     return reply(event, certificateFlex(card.url));
   }
 
