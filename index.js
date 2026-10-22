@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzM-aH9KjLB0xo5JiJBia09hCdWhCcusS2P4p3J_0swaH4QyZSpTCvpYlEqCTUMBjQi/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.10.0-card-direct-no-expiry-message";
+const APP_VERSION = "4.11.0-all-cards-flex";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -506,7 +506,87 @@ function contractorMainMenuFlex(lang="th"){return menuFlex(uiText(lang,"mainTitl
   {icon:"🛠️",title:uiText(lang,"vendor"),subtitle:uiText(lang,"vendorSub"),type:"message",value:"ผู้แก้ไขงาน",color:THEME.purple},
   {icon:"🎓",title:uiText(lang,"training"),subtitle:uiText(lang,"trainingSub"),type:"message",value:"สื่ออบรมผู้รับเหมา",color:THEME.green},
   {icon:"🪪",title:uiText(lang,"card"),subtitle:uiText(lang,"cardSub"),type:"message",value:"ดาวน์โหลดบัตร",color:THEME.orange}],THEME.navy,lang);}
-function certificateFlex(url){return{type:"flex",altText:"Contractor Card",contents:{type:"bubble",size:"mega",hero:{type:"image",url,size:"full",aspectRatio:"20:13",aspectMode:"cover"},body:{type:"box",layout:"vertical",paddingAll:"20px",contents:[{type:"text",text:"Contractor Safety Card",size:"lg",weight:"bold",color:THEME.navy,align:"center"}]},footer:{type:"box",layout:"vertical",paddingAll:"18px",contents:[{type:"button",style:"primary",color:THEME.green,action:{type:"uri",label:"Open / Download",uri:url}}]}}};}
+function certificateFlex(url){return allCertificatesFlex([{url}], "th");}
+
+function allCertificatesFlex(cards, lang = "th") {
+  const copy = {
+    th: { alt: "บัตรผู้รับเหมาทั้งหมด", title: "บัตรผู้รับเหมา", card: "บัตรใบที่", open: "เปิด / ดาวน์โหลด", count: "รายการ" },
+    en: { alt: "All Contractor Cards", title: "Contractor Cards", card: "Card", open: "Open / Download", count: "cards" },
+    ja: { alt: "請負業者カード一覧", title: "請負業者カード", card: "カード", open: "開く / ダウンロード", count: "件" },
+    my: { alt: "ကန်ထရိုက်တာကတ်အားလုံး", title: "ကန်ထရိုက်တာကတ်", card: "ကတ်", open: "ဖွင့် / ဒေါင်းလုပ်", count: "ကတ်" },
+    zh: { alt: "全部承包商卡", title: "承包商卡", card: "卡片", open: "打开 / 下载", count: "张" }
+  }[lang] || null;
+  const text = copy || {
+    alt: "All Contractor Cards", title: "Contractor Cards", card: "Card", open: "Open / Download", count: "cards"
+  };
+
+  const validCards = (Array.isArray(cards) ? cards : [])
+    .map((card, index) => ({
+      url: String(card?.url || card?.cardUrl || card?.certificateUrl || card?.link || "").trim(),
+      issuedAt: String(card?.issuedAt || card?.createdAt || card?.date || "").trim(),
+      title: String(card?.title || card?.name || "").trim(),
+      originalIndex: index
+    }))
+    .filter(card => /^https:\/\//i.test(card.url));
+
+  return {
+    type: "flex",
+    altText: `${text.alt} (${validCards.length})`,
+    contents: {
+      type: "carousel",
+      contents: validCards.map((card, index) => ({
+        type: "bubble",
+        size: "kilo",
+        styles: {
+          body: { backgroundColor: THEME.canvas },
+          footer: { backgroundColor: THEME.canvas }
+        },
+        header: titleBlock(
+          "🪪",
+          `CARD ${index + 1} OF ${validCards.length}`,
+          card.title || `${text.card} ${index + 1}`,
+          card.issuedAt || `${validCards.length} ${text.count}`,
+          index === 0 ? THEME.green : THEME.blue
+        ),
+        body: {
+          type: "box",
+          layout: "vertical",
+          paddingAll: "18px",
+          spacing: "md",
+          contents: [
+            {
+              type: "text",
+              text: card.title || text.title,
+              size: "md",
+              weight: "bold",
+              color: THEME.ink,
+              align: "center",
+              wrap: true
+            },
+            card.issuedAt
+              ? { type: "text", text: card.issuedAt, size: "xs", color: THEME.muted, align: "center", wrap: true }
+              : { type: "text", text: `${text.card} ${index + 1}`, size: "xs", color: THEME.muted, align: "center" }
+          ]
+        },
+        footer: {
+          type: "box",
+          layout: "vertical",
+          paddingAll: "18px",
+          contents: [{
+            type: "button",
+            style: "primary",
+            color: index === 0 ? THEME.green : THEME.blue,
+            action: {
+              type: "uri",
+              label: text.open.slice(0, 20),
+              uri: card.url
+            }
+          }]
+        }
+      }))
+    }
+  };
+}
 function contactMenuFlex(lang="th"){return menuFlex(uiText(lang,"contact"),uiText(lang,"contactSub"),"☎️",[{icon:"📞",title:uiText(lang,"hotline"),subtitle:uiText(lang,"hotlineSub"),type:"message",value:"Safety Hotline",color:THEME.blue},{icon:"📣",title:uiText(lang,"report"),subtitle:uiText(lang,"reportSub"),type:"message",value:"แจ้งปัญหา",color:THEME.orange}],THEME.navy,lang);}
 function hotlineFlex(lang="th"){return menuFlex(uiText(lang,"hotline"),uiText(lang,"hotlineSub"),"📞",[
   {icon:"☎",title:"Safety Manager",subtitle:"081-376-5583",type:"uri",value:"tel:0813765583",color:THEME.red},{icon:"☎",title:"Safety Factory 1",subtitle:"061-645-5095",type:"uri",value:"tel:0616455095",color:THEME.blue},{icon:"☎",title:"Safety Factory 2",subtitle:"083-237-4357",type:"uri",value:"tel:0832374357",color:THEME.purple},{icon:"☎",title:"Safety Factory 1",subtitle:"081-695-4474",type:"uri",value:"tel:0816954474",color:THEME.green},{icon:"☎",title:"Environment",subtitle:"094-938-0425",type:"uri",value:"tel:0949380425",color:THEME.orange}],THEME.red,lang);}
@@ -585,81 +665,85 @@ async function getCertificateUrl(userId) {
   try {
     const response = await axios.get(GOOGLE_SCRIPT_URL, {
       params: {
-        mode: "get",
+        mode: "get_all",
         userId,
-        latest: "1",
-        latestExamOnly: "1",
-        examAttemptId: latestPassedExams.get(userId)?.examAttemptId || "",
-        examCompletedAt: latestPassedExams.get(userId)?.examCompletedAt || "",
+        all: "1",
+        includeExpired: "1",
         cacheBust: Date.now().toString()
       },
       timeout: 30000
     });
 
     const rawData = response.data;
+    let parsed = rawData;
 
-    // รองรับ Apps Script เดิมที่ตอบ URL เป็นข้อความธรรมดา
     if (typeof rawData === "string") {
       const value = rawData.trim();
-
-      if (/^https:\/\//i.test(value)) {
-        return {
-          status: "ready",
-          url: value,
-          issuedAt: "",
-          expiresAt: "",
-          legacyResponse: true
-        };
-      }
-
       try {
-        const parsed = JSON.parse(value);
-        return normalizeCertificateResponse(parsed);
+        parsed = JSON.parse(value);
       } catch (_) {
+        const urls = value
+          .split(/[\r\n,]+/)
+          .map(item => item.trim())
+          .filter(item => /^https:\/\//i.test(item));
         return {
-          status: "not_found",
-          url: null,
-          issuedAt: "",
-          expiresAt: "",
-          message: value
+          status: urls.length ? "ready" : "not_found",
+          cards: urls.map(url => ({ url })),
+          message: urls.length ? "" : value
         };
       }
     }
 
-    return normalizeCertificateResponse(rawData);
+    return normalizeCertificateResponse(parsed);
   } catch (error) {
-    console.error(
-      "Certificate lookup error:",
-      error.response?.data || error.stack || error.message
-    );
-
-    return {
-      status: "error",
-      url: null,
-      issuedAt: "",
-      expiresAt: "",
-      message: error.message
-    };
+    console.error("Certificate lookup error:", error.response?.data || error.stack || error.message);
+    return { status: "error", cards: [], message: error.message };
   }
 }
-
 function normalizeCertificateResponse(data) {
   const source = data && typeof data === "object" ? data : {};
-  const url = /^https:\/\//i.test(String(source.url || "").trim())
-    ? String(source.url).trim()
-    : null;
+  const sourceCards = Array.isArray(source)
+    ? source
+    : Array.isArray(source.cards)
+      ? source.cards
+      : Array.isArray(source.certificates)
+        ? source.certificates
+        : Array.isArray(source.items)
+          ? source.items
+          : Array.isArray(source.data)
+            ? source.data
+            : source.url
+              ? [source]
+              : [];
+
+  const seen = new Set();
+  const cards = sourceCards
+    .map(card => typeof card === "string" ? { url: card } : card)
+    .map(card => ({
+      url: String(card?.url || card?.cardUrl || card?.certificateUrl || card?.link || "").trim(),
+      issuedAt: String(card?.issuedAt || card?.createdAt || card?.date || "").trim(),
+      title: String(card?.title || card?.name || "").trim()
+    }))
+    .filter(card => {
+      if (!/^https:\/\//i.test(card.url) || seen.has(card.url)) return false;
+      seen.add(card.url);
+      return true;
+    })
+    .sort((a, b) => {
+      const aTime = Date.parse(a.issuedAt || "");
+      const bTime = Date.parse(b.issuedAt || "");
+      if (Number.isFinite(aTime) && Number.isFinite(bTime)) return bTime - aTime;
+      if (Number.isFinite(aTime)) return -1;
+      if (Number.isFinite(bTime)) return 1;
+      return 0;
+    });
 
   return {
-    status: String(source.status || (url ? "ready" : "not_found")),
-    url,
-    issuedAt: String(source.issuedAt || ""),
-    expiresAt: String(source.expiresAt || ""),
-    message: String(source.message || ""),
-    examAttemptId: String(source.examAttemptId || source.attemptId || ""),
-    legacyResponse: false
+    status: String(source.status || (cards.length ? "ready" : "not_found")),
+    cards,
+    message: String(source.message || "")
   };
 }
-
 function certificateStatusText(language, status, expiresAt = "") {
   const text = {
     processing: {
@@ -696,16 +780,14 @@ function certificateStatusText(language, status, expiresAt = "") {
 }
 
 async function handleDownloadCertificate(event, userId) {
-  const card = await getCertificateUrl(userId);
+  const result = await getCertificateUrl(userId);
+  const cards = Array.isArray(result.cards) ? result.cards : [];
 
-  // แสดงบัตรตามลิงก์ที่ระบบปลายทางส่งกลับมาโดยตรง
-  // ไม่ตรวจและไม่แจ้งสถานะหมดอายุ ให้ผู้ใช้ตรวจวันที่บนบัตรด้วยตนเอง
-  if (card.url) {
+  if (cards.length) {
     latestPassedExams.delete(userId);
-    return reply(event, certificateFlex(card.url));
+    return reply(event, allCertificatesFlex(cards, getUserLanguage(userId)));
   }
 
-  // หากยังไม่มีลิงก์บัตรจริง จึงแจ้งเพียงว่ายังไม่พบบัตร
   return reply(event, textMessage(runtimeText(userId, "noCard")));
 }
 
