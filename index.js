@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbz2I9EJks1Epc3zXRN1l5JXYq0NnsMrWGZtNNJvshsvE0GEyx0yeZvX5Jfl31aVtdf6/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.19.0-issue-channel-choice";
+const APP_VERSION = "4.19.1-admin-line-add-friend";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -703,8 +703,8 @@ function issueChannelFlex(lang="th") {
       subtitle: "เลือกช่องทางที่ต้องการ",
       oaTitle: "แจ้งผ่านแอปพลิเคชัน LINE OA",
       oaSub: "กรอกรายละเอียดปัญหา ชื่อ บริษัท และเบอร์ติดต่อกลับ ระบบจะส่งเรื่องถึง Admin ผ่าน LINE OA",
-      directTitle: "ติดต่อ Admin โดยตรง",
-      directSub: "โทรหาพี่ไก่โดยตรง สำหรับเรื่องเร่งด่วน",
+      directTitle: "เพิ่มเพื่อน LINE Admin",
+      directSub: "แตะเพื่อเพิ่มเพื่อนและติดต่อ Admin ทาง LINE ส่วนตัว",
       note: "การแจ้งผ่าน LINE OA จะถูกส่งเป็นข้อความแจ้งเตือนไปยัง Admin"
     },
     en: {
@@ -712,8 +712,8 @@ function issueChannelFlex(lang="th") {
       subtitle: "Select a contact channel",
       oaTitle: "Report via LINE OA App",
       oaSub: "Enter issue details, name, company, and callback number. The report will be sent to Admin via LINE OA.",
-      directTitle: "Contact Admin Directly",
-      directSub: "Call Kai directly for urgent matters",
+      directTitle: "Add Admin on LINE",
+      directSub: "Tap to add and contact Admin on personal LINE",
       note: "Reports through LINE OA are delivered to Admin as an alert."
     },
     ja: {
@@ -721,8 +721,8 @@ function issueChannelFlex(lang="th") {
       subtitle: "連絡方法を選択してください",
       oaTitle: "LINE OAアプリから報告",
       oaSub: "問題の詳細、氏名、会社名、電話番号を入力すると、LINE OA経由でAdminへ送信されます。",
-      directTitle: "Adminへ直接連絡",
-      directSub: "緊急の場合はKaiへ直接電話",
+      directTitle: "AdminをLINEに追加",
+      directSub: "タップしてAdminを友だち追加し、LINEで連絡",
       note: "LINE OAからの報告はAdminへ通知されます。"
     },
     my: {
@@ -730,8 +730,8 @@ function issueChannelFlex(lang="th") {
       subtitle: "ဆက်သွယ်မည့်နည်းလမ်းကိုရွေးပါ",
       oaTitle: "LINE OA App မှတင်ပြမည်",
       oaSub: "ပြဿနာ၊ အမည်၊ ကုမ္ပဏီနှင့် ဖုန်းနံပါတ်ကိုဖြည့်ပါ။ Admin ထံ LINE OA မှပို့မည်။",
-      directTitle: "Admin ကိုတိုက်ရိုက်ဆက်သွယ်မည်",
-      directSub: "အရေးပေါ်ကိစ္စများအတွက် Kai ကိုဖုန်းခေါ်ပါ",
+      directTitle: "Admin LINE ကို Friend Add မည်",
+      directSub: "နှိပ်ပြီး Admin ကို Friend Add လုပ်ကာ LINE မှဆက်သွယ်ပါ",
       note: "LINE OA မှတင်ပြချက်ကို Admin ထံ အသိပေးမည်။"
     },
     zh: {
@@ -739,8 +739,8 @@ function issueChannelFlex(lang="th") {
       subtitle: "请选择联系渠道",
       oaTitle: "通过LINE OA应用报告",
       oaSub: "填写问题详情、姓名、公司和联系电话，系统将通过LINE OA发送给Admin。",
-      directTitle: "直接联系Admin",
-      directSub: "紧急事项可直接致电Kai",
+      directTitle: "添加Admin为LINE好友",
+      directSub: "点击添加好友并通过私人LINE联系Admin",
       note: "通过LINE OA提交的报告将通知Admin。"
     }
   }[lang] || null;
@@ -749,13 +749,8 @@ function issueChannelFlex(lang="th") {
     header:titleBlock("📣","REPORT AN ISSUE",t.title,t.subtitle,THEME.orange),
     body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[
       actionCard("📝",t.oaTitle,t.oaSub,{type:"postback",label:t.oaTitle.slice(0,20),data:"issue_channel=oa",displayText:t.oaTitle},THEME.orange),
-      actionCard("☎️",t.directTitle,t.directSub,{type:"uri",label:t.directTitle.slice(0,20),uri:"tel:0616455095"},THEME.green),
-      {type:"box",layout:"vertical",paddingAll:"12px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[
-        {type:"text",text:`ℹ️ ${t.note}`,size:"xxs",color:THEME.blue,wrap:true,align:"center"},
-        {type:"separator",margin:"md",color:THEME.line},
-        {type:"text",text:"Admin LINE User ID",size:"xxs",weight:"bold",color:THEME.blue,align:"center",margin:"md"},
-        {type:"text",text:ADMIN_USER_ID,size:"xxs",color:THEME.ink,wrap:true,align:"center",margin:"xs"}
-      ]}
+      actionCard("💚",t.directTitle,t.directSub,{type:"uri",label:t.directTitle.slice(0,20),uri:"https://line.me/ti/p/_T4H-3TKUa"},THEME.green),
+      {type:"box",layout:"vertical",paddingAll:"12px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[{type:"text",text:`ℹ️ ${t.note}`,size:"xxs",color:THEME.blue,wrap:true,align:"center"}]}
     ]},footer:languageFooter(lang)
   }};
 }
