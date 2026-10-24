@@ -750,7 +750,12 @@ function issueChannelFlex(lang="th") {
     body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[
       actionCard("📝",t.oaTitle,t.oaSub,{type:"postback",label:t.oaTitle.slice(0,20),data:"issue_channel=oa",displayText:t.oaTitle},THEME.orange),
       actionCard("☎️",t.directTitle,t.directSub,{type:"uri",label:t.directTitle.slice(0,20),uri:"tel:0616455095"},THEME.green),
-      {type:"box",layout:"vertical",paddingAll:"12px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[{type:"text",text:`ℹ️ ${t.note}`,size:"xxs",color:THEME.blue,wrap:true,align:"center"}]}
+      {type:"box",layout:"vertical",paddingAll:"12px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[
+        {type:"text",text:`ℹ️ ${t.note}`,size:"xxs",color:THEME.blue,wrap:true,align:"center"},
+        {type:"separator",margin:"md",color:THEME.line},
+        {type:"text",text:"Admin LINE User ID",size:"xxs",weight:"bold",color:THEME.blue,align:"center",margin:"md"},
+        {type:"text",text:ADMIN_USER_ID,size:"xxs",color:THEME.ink,wrap:true,align:"center",margin:"xs"}
+      ]}
     ]},footer:languageFooter(lang)
   }};
 }
