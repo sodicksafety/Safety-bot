@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbz2I9EJks1Epc3zXRN1l5JXYq0NnsMrWGZtNNJvshsvE0GEyx0yeZvX5Jfl31aVtdf6/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.18.0-language-hotline-factory";
+const APP_VERSION = "4.17.0-ui-only-stable-card";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -266,39 +266,30 @@ function qChoices(question, lang) {
 }
 
 function languageSelectFlex() {
-  const full = ["🇹🇭", "ภาษาไทย", "Thai", "th", THEME.blue, THEME.sky];
-  const others = [
-    ["🇬🇧", "English", "English", "en", THEME.purple, "#F3EEFB"],
-    ["🇯🇵", "日本語", "Japanese", "ja", THEME.red, THEME.redSoft],
-    ["🇲🇲", "မြန်မာဘာသာ", "Myanmar", "my", THEME.green, THEME.greenSoft],
-    ["🇨🇳", "简体中文", "Chinese", "zh", THEME.orange, THEME.orangeSoft]
+  const languages = [
+    ["🇹🇭", "ภาษาไทย", "Thai", "th", THEME.blue],
+    ["🇬🇧", "English", "English", "en", THEME.purple],
+    ["🇯🇵", "日本語", "Japanese", "ja", THEME.red],
+    ["🇲🇲", "မြန်မာဘာသာ", "Myanmar", "my", THEME.green],
+    ["🇨🇳", "简体中文", "Chinese", "zh", THEME.orange]
   ];
-  const langAction = (item, compact = false) => ({
-    type: "box", layout: compact ? "vertical" : "horizontal", flex: 1, paddingAll: "14px", cornerRadius: "18px",
-    backgroundColor: item[5], borderColor: THEME.line, borderWidth: "1px",
-    action: { type: "postback", label: item[1].slice(0,20), data: `language=${item[3]}`, displayText: item[1] },
-    contents: compact ? [
-      { type: "text", text: item[0], size: "xxl", align: "center" },
-      { type: "text", text: item[1], size: "sm", weight: "bold", color: THEME.ink, align: "center", wrap: true, margin: "sm", maxLines: 2 },
-      { type: "text", text: item[2], size: "xxs", color: THEME.muted, align: "center", margin: "xs" }
-    ] : [
-      { type: "box", layout: "vertical", width: "56px", height: "56px", cornerRadius: "18px", backgroundColor: item[4], justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: item[0], size: "xxl", align: "center" }] },
-      { type: "box", layout: "vertical", flex: 1, paddingStart: "14px", justifyContent: "center", contents: [
-        { type: "text", text: item[1], size: "md", weight: "bold", color: THEME.ink, wrap: true },
-        { type: "text", text: item[2], size: "xs", color: THEME.muted, margin: "xs" }
-      ]},
-      { type: "text", text: "›", size: "xl", color: item[4], weight: "bold", gravity: "center" }
-    ]
-  });
-  return { type: "flex", altText: "เลือกภาษา / Select Language", contents: {
-    type: "bubble", size: "giga", styles: { body: { backgroundColor: THEME.canvas } },
-    header: titleBlock("🌐", "5 LANGUAGES", "选择语言 / Select Language", "ไทย • English • 日本語 • မြန်မာ • 中文", THEME.navy),
-    body: { type: "box", layout: "vertical", paddingAll: "16px", spacing: "md", contents: [
-      langAction(full),
-      { type: "box", layout: "horizontal", spacing: "md", contents: [langAction(others[0], true), langAction(others[1], true)] },
-      { type: "box", layout: "horizontal", spacing: "md", contents: [langAction(others[2], true), langAction(others[3], true)] }
-    ]}
-  }};
+  return {
+    type: "flex",
+    altText: "เลือกภาษา / Select Language",
+    contents: {
+      type: "bubble", size: "mega",
+      styles: { body: { backgroundColor: THEME.canvas } },
+      header: titleBlock("🌐", "5 LANGUAGES", "选择语言 / Select Language", "ไทย • English • 日本語 • မြန်မာ • 中文", THEME.navy),
+      body: {
+        type: "box", layout: "vertical", paddingAll: "18px", spacing: "sm",
+        contents: languages.map(([icon,title,subtitle,key,color]) => actionCard(
+          icon, title, subtitle,
+          { type: "postback", label: title.slice(0,20), data: `language=${key}`, displayText: title },
+          color
+        ))
+      }
+    }
+  };
 }
 
 function pdpaFlex(state) {
@@ -502,36 +493,14 @@ function languageFooter(lang) {
 }
 
 function globalLanguageSelectFlex(lang="th") {
-  const full = ["🇹🇭", "ภาษาไทย", "Thai", "th", THEME.blue, THEME.sky];
-  const others = [
-    ["🇬🇧", "English", "English", "en", THEME.purple, "#F3EEFB"],
-    ["🇯🇵", "日本語", "Japanese", "ja", THEME.red, THEME.redSoft],
-    ["🇲🇲", "မြန်မာဘာသာ", "Myanmar", "my", THEME.green, THEME.greenSoft],
-    ["🇨🇳", "简体中文", "Chinese", "zh", THEME.orange, THEME.orangeSoft]
-  ];
-  const langTile = (item, compact = false) => ({
-    type: "box", layout: compact ? "vertical" : "horizontal", flex: 1, paddingAll: "14px", cornerRadius: "18px",
-    backgroundColor: item[5], borderColor: THEME.line, borderWidth: "1px",
-    action: { type: "postback", label: item[1].slice(0,20), data: `pref_language=${item[3]}`, displayText: item[1] },
-    contents: compact ? [
-      { type: "text", text: item[0], size: "xxl", align: "center" },
-      { type: "text", text: item[1], size: "sm", weight: "bold", color: THEME.ink, align: "center", wrap: true, margin: "sm", maxLines: 2 },
-      { type: "text", text: item[2], size: "xxs", color: THEME.muted, align: "center", margin: "xs" }
-    ] : [
-      { type: "box", layout: "vertical", width: "56px", height: "56px", cornerRadius: "18px", backgroundColor: item[4], justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: item[0], size: "xxl", align: "center" }] },
-      { type: "box", layout: "vertical", flex: 1, paddingStart: "14px", justifyContent: "center", contents: [
-        { type: "text", text: item[1], size: "md", weight: "bold", color: THEME.ink, wrap: true },
-        { type: "text", text: item[2], size: "xs", color: THEME.muted, margin: "xs" }
-      ]},
-      { type: "text", text: "›", size: "xl", color: item[4], weight: "bold", gravity: "center" }
-    ]
-  });
-  return { type:"flex", altText:uiText(lang,"selectLanguage"), contents:{ type:"bubble", size:"giga", styles:{body:{backgroundColor:THEME.canvas}},
+  return { type:"flex", altText:uiText(lang,"selectLanguage"), contents:{ type:"bubble", size:"mega", styles:{body:{backgroundColor:THEME.canvas}},
     header:titleBlock("🌐","GLOBAL LANGUAGE",uiText(lang,"selectLanguage"),uiText(lang,"selectLanguageSub"),THEME.navy),
-    body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[
-      langTile(full),
-      {type:"box",layout:"horizontal",spacing:"md",contents:[langTile(others[0],true),langTile(others[1],true)]},
-      {type:"box",layout:"horizontal",spacing:"md",contents:[langTile(others[2],true),langTile(others[3],true)]}
+    body:{type:"box",layout:"vertical",paddingAll:"18px",spacing:"sm",contents:[
+      actionCard("🇹🇭","ภาษาไทย","Thai",{type:"postback",label:"ภาษาไทย",data:"pref_language=th",displayText:"ภาษาไทย"},THEME.blue),
+      actionCard("🇬🇧","English","English",{type:"postback",label:"English",data:"pref_language=en",displayText:"English"},THEME.purple),
+      actionCard("🇯🇵","日本語","Japanese",{type:"postback",label:"日本語",data:"pref_language=ja",displayText:"日本語"},THEME.red),
+      actionCard("🇲🇲","မြန်မာဘာသာ","Myanmar",{type:"postback",label:"မြန်မာဘာသာ",data:"pref_language=my",displayText:"မြန်မာဘာသာ"},THEME.green),
+      actionCard("🇨🇳","简体中文","Chinese",{type:"postback",label:"简体中文",data:"pref_language=zh",displayText:"简体中文"},THEME.orange)
     ]}
   }};
 }
@@ -662,68 +631,12 @@ function allCertificatesFlex(cards, lang = "th") {
   };
 }
 function contactMenuFlex(lang="th"){return menuFlex(uiText(lang,"contact"),uiText(lang,"contactSub"),"☎️",[{icon:"📞",title:uiText(lang,"hotline"),subtitle:uiText(lang,"hotlineSub"),type:"message",value:"Safety Hotline",color:THEME.blue},{icon:"📣",title:uiText(lang,"report"),subtitle:uiText(lang,"reportSub"),type:"message",value:"แจ้งปัญหา",color:THEME.orange}],THEME.navy,lang);}
-function hotlineFlex(lang="th") {
-  const personTile = (icon, name, role, phone, color, soft) => ({
-    type:"box", layout:"vertical", flex:1, paddingAll:"14px", cornerRadius:"18px", backgroundColor:soft,
-    borderColor:THEME.line, borderWidth:"1px", action:{type:"uri",label:name.slice(0,20),uri:`tel:${phone}`}, contents:[
-      {type:"box",layout:"vertical",width:"50px",height:"50px",cornerRadius:"17px",backgroundColor:color,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:icon,size:"xl",align:"center"}]},
-      {type:"text",text:name,size:"sm",weight:"bold",color:THEME.ink,wrap:true,margin:"md",maxLines:2},
-      {type:"text",text:role,size:"xxs",color:THEME.muted,wrap:true,margin:"xs",maxLines:2},
-      {type:"text",text:phone.replace(/(\d{3})(\d{3})(\d{4})/,"$1-$2-$3"),size:"xs",weight:"bold",color:color,margin:"sm"}
-    ]
-  });
-  const manager={type:"box",layout:"horizontal",paddingAll:"18px",cornerRadius:"20px",backgroundColor:THEME.redSoft,borderColor:THEME.line,borderWidth:"1px",action:{type:"uri",label:"พี่ช้าง",uri:"tel:0813765583"},contents:[
-    {type:"box",layout:"vertical",width:"62px",height:"62px",cornerRadius:"21px",backgroundColor:THEME.red,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:"📞",size:"xxl",align:"center"}]},
-    {type:"box",layout:"vertical",flex:1,paddingStart:"16px",justifyContent:"center",contents:[
-      {type:"text",text:"พี่ช้าง",size:"lg",weight:"bold",color:THEME.ink},
-      {type:"text",text:"Safety Manager",size:"xs",color:THEME.muted,margin:"xs"},
-      {type:"text",text:"081-376-5583",size:"sm",weight:"bold",color:THEME.red,margin:"sm"}
-    ]},
-    {type:"text",text:"›",size:"xl",weight:"bold",color:THEME.red,gravity:"center"}
-  ]};
-  return {type:"flex",altText:uiText(lang,"hotline"),contents:{type:"bubble",size:"giga",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},
-    header:titleBlock("📞","SODICK SAFETY",uiText(lang,"hotline"),uiText(lang,"hotlineSub"),THEME.red),
-    body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[
-      manager,
-      {type:"box",layout:"horizontal",spacing:"md",contents:[
-        personTile("☎️","พี่ไก่","Safety Factory 1","0616455095",THEME.blue,THEME.sky),
-        personTile("☎️","น้องพิน","Safety Factory 2","0832374357",THEME.purple,"#F3EEFB")
-      ]},
-      {type:"box",layout:"horizontal",spacing:"md",contents:[
-        personTile("☎️","น้องดุจ","Safety Factory 1","0816954474",THEME.green,THEME.greenSoft),
-        personTile("☎️","น้องกี้","Environment","0949380425",THEME.orange,THEME.orangeSoft)
-      ]}
-    ]},footer:languageFooter(lang)
-  }};
-}
+function hotlineFlex(lang="th"){return menuFlex(uiText(lang,"hotline"),uiText(lang,"hotlineSub"),"📞",[
+  {icon:"☎",title:"Safety Manager",subtitle:"081-376-5583",type:"uri",value:"tel:0813765583",color:THEME.red},{icon:"☎",title:"Safety Factory 1",subtitle:"061-645-5095",type:"uri",value:"tel:0616455095",color:THEME.blue},{icon:"☎",title:"Safety Factory 2",subtitle:"083-237-4357",type:"uri",value:"tel:0832374357",color:THEME.purple},{icon:"☎",title:"Safety Factory 1",subtitle:"081-695-4474",type:"uri",value:"tel:0816954474",color:THEME.green},{icon:"☎",title:"Environment",subtitle:"094-938-0425",type:"uri",value:"tel:0949380425",color:THEME.orange}],THEME.red,lang);}
 function issueFormFlex(lang="th"){return{type:"flex",altText:uiText(lang,"issueTitle"),contents:{type:"bubble",size:"mega",styles:{footer:{backgroundColor:THEME.canvas}},header:titleBlock("📣","REPORT AN ISSUE",uiText(lang,"issueTitle"),uiText(lang,"reportSub"),THEME.orange),body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[{type:"text",text:uiText(lang,"issueHint"),wrap:true,size:"sm",color:THEME.ink},{type:"text",text:uiText(lang,"issuePrivacy"),wrap:true,size:"xs",color:THEME.muted,align:"center"}]},footer:{type:"box",layout:"vertical",paddingAll:"18px",contents:[{type:"button",style:"secondary",action:{type:"message",label:uiText(lang,"cancel").slice(0,20),text:"ยกเลิกการแจ้งปัญหา"}}]}}};}
 function issueAdminFlex(reportText,userId){return{type:"flex",altText:"New Safety Issue",contents:{type:"bubble",size:"mega",header:titleBlock("🔔","NEW ISSUE","แจ้งปัญหาใหม่","สถานะ: รอตรวจสอบ",THEME.red),body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[dataRow("รายละเอียด",safeText(reportText,1500)),{type:"text",text:`LINE User ID: ${userId}`,size:"xxs",color:THEME.muted,wrap:true}]}}};}
 function issueSuccessFlex(lang="th"){return{type:"flex",altText:uiText(lang,"issueSent"),contents:{type:"bubble",size:"mega",body:{type:"box",layout:"vertical",paddingAll:"24px",spacing:"lg",alignItems:"center",backgroundColor:THEME.greenSoft,contents:[{type:"text",text:"✅",size:"3xl"},{type:"text",text:uiText(lang,"issueSent"),size:"xl",weight:"bold",color:THEME.green,align:"center",wrap:true},{type:"text",text:uiText(lang,"issueSentSub"),size:"sm",color:THEME.ink,align:"center",wrap:true}]}}};}
 function fallbackFlex(lang="th"){return menuFlex(uiText(lang,"helpTitle"),uiText(lang,"helpSub"),"💬",[{icon:"🦺",title:uiText(lang,"mainTitle"),subtitle:uiText(lang,"mainSub"),type:"message",value:"เมนูผู้รับเหมา",color:THEME.blue},{icon:"☎️",title:uiText(lang,"contact"),subtitle:uiText(lang,"contactSub"),type:"message",value:"ติดต่อทีมเซฟตี้",color:THEME.green},{icon:"📍",title:uiText(lang,"map"),subtitle:uiText(lang,"mapSub"),type:"message",value:"แผนที่",color:THEME.orange}],THEME.navy,lang);}
-function factoryContactFlex(lang="th") {
-  const factoryBox = (number, title, phoneText, phoneUri, mapUrl, color, soft) => ({
-    type:"box",layout:"vertical",paddingAll:"16px",cornerRadius:"20px",backgroundColor:soft,borderColor:THEME.line,borderWidth:"1px",contents:[
-      {type:"box",layout:"horizontal",spacing:"md",contents:[
-        {type:"box",layout:"vertical",width:"54px",height:"54px",cornerRadius:"18px",backgroundColor:color,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:String(number),size:"xl",weight:"bold",color:THEME.white,align:"center"}]},
-        {type:"box",layout:"vertical",flex:1,justifyContent:"center",contents:[
-          {type:"text",text:title,size:"md",weight:"bold",color:THEME.ink},
-          {type:"text",text:phoneText,size:"xs",color:THEME.muted,wrap:true,margin:"xs",maxLines:2}
-        ]}
-      ]},
-      {type:"box",layout:"horizontal",spacing:"sm",margin:"md",contents:[
-        {type:"button",style:"primary",color:color,height:"sm",action:{type:"uri",label:"📍 Map",uri:mapUrl}},
-        {type:"button",style:"secondary",height:"sm",action:{type:"uri",label:"☎️ Call",uri:`tel:${phoneUri}`}}
-      ]}
-    ]
-  });
-  return {type:"flex",altText:`${uiText(lang,"map")} / ${uiText(lang,"phone")}`,contents:{type:"bubble",size:"giga",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},
-    header:titleBlock("🏭","FACTORY INFORMATION",uiText(lang,"map"),`${uiText(lang,"mapSub")} • ${uiText(lang,"phone")}`,THEME.blue),
-    body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[
-      factoryBox(1,uiText(lang,"factory1"),"02-529-2450-6 • 102 / 127 / 129","025292450","https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8",THEME.blue,THEME.sky),
-      factoryBox(2,uiText(lang,"factory2"),"02-529-3200-6 • 137","025293200","https://maps.app.goo.gl/keZxD798z9ZwKXE7A",THEME.green,THEME.greenSoft)
-    ]},footer:languageFooter(lang)
-  }};
-}
 function mapFlexFor(lang="th"){return menuFlex(uiText(lang,"map"),uiText(lang,"mapSub"),"📍",[{icon:"1",title:uiText(lang,"factory1"),subtitle:"Google Maps",type:"uri",value:"https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8",color:THEME.blue},{icon:"2",title:uiText(lang,"factory2"),subtitle:"Google Maps",type:"uri",value:"https://maps.app.goo.gl/keZxD798z9ZwKXE7A",color:THEME.green}],THEME.blue,lang);}
 function phoneFlexFor(lang="th"){return menuFlex(uiText(lang,"phone"),uiText(lang,"phoneSub"),"☎️",[{icon:"1",title:uiText(lang,"factory1"),subtitle:"02-529-2450-6 • 102 / 127 / 129",type:"uri",value:"tel:025292450",color:THEME.blue},{icon:"2",title:uiText(lang,"factory2"),subtitle:"02-529-3200-6 • 137",type:"uri",value:"tel:025293200",color:THEME.green}],THEME.green,lang);}
 
@@ -1286,7 +1199,7 @@ function renderSelectedMenu(action, language) {
     case "contractor":
       return contractorMainMenuFlex(language);
     case "map":
-      return factoryContactFlex(language);
+      return [mapFlexFor(language), phoneFlexFor(language)];
     case "contact":
       return contactMenuFlex(language);
     default:
