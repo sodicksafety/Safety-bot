@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbz2I9EJks1Epc3zXRN1l5JXYq0NnsMrWGZtNNJvshsvE0GEyx0yeZvX5Jfl31aVtdf6/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.14.0-smart-center-ui";
+const APP_VERSION = "4.14.1-smart-center-flex-fix";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -653,11 +653,10 @@ function smartSmallTile(icon, title, subtitle, action, color, softColor) {
     type: "box",
     layout: "vertical",
     flex: 1,
-    minHeight: "154px",
     paddingAll: "14px",
     cornerRadius: "20px",
     backgroundColor: softColor,
-    borderColor: `${color}33`,
+    borderColor: color,
     borderWidth: "1px",
     action,
     contents: [
