@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbz2I9EJks1Epc3zXRN1l5JXYq0NnsMrWGZtNNJvshsvE0GEyx0yeZvX5Jfl31aVtdf6/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.17.0-ui-only-stable-card";
+const APP_VERSION = "4.20.0-v417-ui-admin-channel";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -633,9 +633,45 @@ function allCertificatesFlex(cards, lang = "th") {
 function contactMenuFlex(lang="th"){return menuFlex(uiText(lang,"contact"),uiText(lang,"contactSub"),"☎️",[{icon:"📞",title:uiText(lang,"hotline"),subtitle:uiText(lang,"hotlineSub"),type:"message",value:"Safety Hotline",color:THEME.blue},{icon:"📣",title:uiText(lang,"report"),subtitle:uiText(lang,"reportSub"),type:"message",value:"แจ้งปัญหา",color:THEME.orange}],THEME.navy,lang);}
 function hotlineFlex(lang="th"){return menuFlex(uiText(lang,"hotline"),uiText(lang,"hotlineSub"),"📞",[
   {icon:"☎",title:"Safety Manager",subtitle:"081-376-5583",type:"uri",value:"tel:0813765583",color:THEME.red},{icon:"☎",title:"Safety Factory 1",subtitle:"061-645-5095",type:"uri",value:"tel:0616455095",color:THEME.blue},{icon:"☎",title:"Safety Factory 2",subtitle:"083-237-4357",type:"uri",value:"tel:0832374357",color:THEME.purple},{icon:"☎",title:"Safety Factory 1",subtitle:"081-695-4474",type:"uri",value:"tel:0816954474",color:THEME.green},{icon:"☎",title:"Environment",subtitle:"094-938-0425",type:"uri",value:"tel:0949380425",color:THEME.orange}],THEME.red,lang);}
-function issueFormFlex(lang="th"){return{type:"flex",altText:uiText(lang,"issueTitle"),contents:{type:"bubble",size:"mega",styles:{footer:{backgroundColor:THEME.canvas}},header:titleBlock("📣","REPORT AN ISSUE",uiText(lang,"issueTitle"),uiText(lang,"reportSub"),THEME.orange),body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[{type:"text",text:uiText(lang,"issueHint"),wrap:true,size:"sm",color:THEME.ink},{type:"text",text:uiText(lang,"issuePrivacy"),wrap:true,size:"xs",color:THEME.muted,align:"center"}]},footer:{type:"box",layout:"vertical",paddingAll:"18px",contents:[{type:"button",style:"secondary",action:{type:"message",label:uiText(lang,"cancel").slice(0,20),text:"ยกเลิกการแจ้งปัญหา"}}]}}};}
+function issueChannelFlex(lang="th") {
+  const copy = {
+    th:{title:"แจ้งปัญหา",sub:"เลือกช่องทางที่ต้องการ",oa:"แจ้งผ่านแอปพลิเคชัน LINE OA",oaSub:"กรอกรายละเอียด ชื่อ บริษัท และเบอร์ติดต่อ ระบบจะส่งถึง Admin ผ่าน LINE OA",admin:"ติดต่อ Admin โดยตรง",adminSub:"โทรหาพี่ไก่โดยตรง สำหรับกรณีเร่งด่วน",note:"ข้อความแจ้งผ่านระบบจะเข้าสู่กล่องข้อความ LINE OA ของ Admin"},
+    en:{title:"Report an Issue",sub:"Select a contact channel",oa:"Report via LINE OA App",oaSub:"Enter details, name, company, and callback number. The report is sent to Admin via LINE OA.",admin:"Contact Admin Directly",adminSub:"Call Kai directly for urgent matters",note:"System reports are delivered to the Admin LINE OA inbox."},
+    ja:{title:"問題を報告",sub:"連絡方法を選択",oa:"LINE OAアプリから報告",oaSub:"詳細、氏名、会社名、電話番号を入力するとLINE OA経由でAdminへ送信されます。",admin:"Adminへ直接連絡",adminSub:"緊急時はKaiへ直接電話",note:"報告はAdminのLINE OA受信箱へ届きます。"},
+    my:{title:"ပြဿနာတင်ပြမည်",sub:"ဆက်သွယ်မည့်နည်းလမ်းရွေးပါ",oa:"LINE OA App မှတင်ပြမည်",oaSub:"အသေးစိတ်၊ အမည်၊ ကုမ္ပဏီနှင့်ဖုန်းနံပါတ်ကိုဖြည့်ပါ။ Admin ထံ LINE OA မှပို့မည်။",admin:"Admin ကိုတိုက်ရိုက်ဆက်သွယ်မည်",adminSub:"အရေးပေါ်ကိစ္စအတွက် Kai ကိုဖုန်းခေါ်ပါ",note:"တင်ပြချက်သည် Admin ၏ LINE OA inbox သို့ရောက်မည်။"},
+    zh:{title:"报告问题",sub:"请选择联系渠道",oa:"通过LINE OA应用报告",oaSub:"填写详情、姓名、公司和联系电话，系统将通过LINE OA发送给Admin。",admin:"直接联系Admin",adminSub:"紧急事项可直接致电Kai",note:"系统报告会发送到Admin的LINE OA收件箱。"}
+  }[lang] || null;
+  const t=copy || copy.th;
+  return {type:"flex",altText:t.title,contents:{type:"bubble",size:"giga",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},
+    header:titleBlock("📣","SAFETY SUPPORT",t.title,t.sub,THEME.orange),
+    body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[
+      actionCard("📝",t.oa,t.oaSub,{type:"postback",label:t.oa.slice(0,20),data:"issue_channel=oa",displayText:t.oa},THEME.orange),
+      actionCard("☎️",t.admin,t.adminSub,{type:"uri",label:t.admin.slice(0,20),uri:"tel:0616455095"},THEME.green),
+      {type:"box",layout:"vertical",paddingAll:"12px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[{type:"text",text:`ℹ️ ${t.note}`,size:"xxs",color:THEME.blue,wrap:true,align:"center"}]}
+    ]},footer:languageFooter(lang)}};
+}
+function issueFormFlex(lang="th") {
+  const text={
+    th:{title:"แจ้งผ่านแอปพลิเคชัน LINE OA",hint:"กรุณาพิมพ์รายละเอียดปัญหา / ชื่อ / บริษัท / เบอร์ติดต่อกลับ",info:"ระบบจะส่งรายละเอียดถึง Admin ผ่านแอปพลิเคชัน LINE OA",cancel:"ยกเลิกการแจ้ง"},
+    en:{title:"Report via LINE OA App",hint:"Type issue details / name / company / callback number",info:"The details will be sent to Admin via LINE OA.",cancel:"Cancel Report"},
+    ja:{title:"LINE OAアプリから報告",hint:"問題の詳細 / 氏名 / 会社名 / 電話番号を入力してください",info:"LINE OA経由でAdminへ送信されます。",cancel:"報告を中止"},
+    my:{title:"LINE OA App မှတင်ပြမည်",hint:"ပြဿနာ / အမည် / ကုမ္ပဏီ / ဖုန်းနံပါတ်ကိုရိုက်ပါ",info:"LINE OA မှ Admin ထံပို့မည်။",cancel:"တင်ပြမှုဖျက်မည်"},
+    zh:{title:"通过LINE OA应用报告",hint:"请输入问题详情 / 姓名 / 公司 / 联系电话",info:"系统将通过LINE OA发送给Admin。",cancel:"取消报告"}
+  }[lang] || null;
+  const t=text || text.th;
+  return {type:"flex",altText:t.title,contents:{type:"bubble",size:"mega",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},
+    header:titleBlock("📣","LINE OA REPORT",t.title,uiText(lang,"reportSub"),THEME.orange),
+    body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[
+      {type:"text",text:t.hint,wrap:true,size:"sm",color:THEME.ink},
+      {type:"box",layout:"vertical",paddingAll:"14px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[{type:"text",text:`ℹ️ ${t.info}`,wrap:true,size:"xs",color:THEME.blue,align:"center"}]}
+    ]},footer:{type:"box",layout:"vertical",paddingAll:"18px",contents:[{type:"button",style:"secondary",action:{type:"message",label:t.cancel.slice(0,20),text:"ยกเลิกการแจ้งปัญหา"}}]}}};
+}
 function issueAdminFlex(reportText,userId){return{type:"flex",altText:"New Safety Issue",contents:{type:"bubble",size:"mega",header:titleBlock("🔔","NEW ISSUE","แจ้งปัญหาใหม่","สถานะ: รอตรวจสอบ",THEME.red),body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[dataRow("รายละเอียด",safeText(reportText,1500)),{type:"text",text:`LINE User ID: ${userId}`,size:"xxs",color:THEME.muted,wrap:true}]}}};}
-function issueSuccessFlex(lang="th"){return{type:"flex",altText:uiText(lang,"issueSent"),contents:{type:"bubble",size:"mega",body:{type:"box",layout:"vertical",paddingAll:"24px",spacing:"lg",alignItems:"center",backgroundColor:THEME.greenSoft,contents:[{type:"text",text:"✅",size:"3xl"},{type:"text",text:uiText(lang,"issueSent"),size:"xl",weight:"bold",color:THEME.green,align:"center",wrap:true},{type:"text",text:uiText(lang,"issueSentSub"),size:"sm",color:THEME.ink,align:"center",wrap:true}]}}};}
+function issueSuccessFlex(lang="th") {
+  const text={th:["รับแจ้งเรียบร้อยแล้ว","ระบบได้ส่งรายละเอียดถึง Admin ผ่านแอปพลิเคชัน LINE OA แล้ว"],en:["Report Received","The details were sent to Admin via LINE OA."],ja:["報告を受け付けました","LINE OA経由でAdminへ送信しました。"],my:["တင်ပြမှုလက်ခံပြီး","LINE OA မှ Admin ထံပို့ပြီးပါပြီ။"],zh:["报告已收到","系统已通过LINE OA发送给Admin。"]}[lang] || null;
+  const t=text || ["รับแจ้งเรียบร้อยแล้ว","ระบบได้ส่งรายละเอียดถึง Admin ผ่านแอปพลิเคชัน LINE OA แล้ว"];
+  return {type:"flex",altText:t[0],contents:{type:"bubble",size:"mega",body:{type:"box",layout:"vertical",paddingAll:"24px",spacing:"lg",alignItems:"center",backgroundColor:THEME.greenSoft,contents:[{type:"text",text:"✅",size:"3xl"},{type:"text",text:t[0],size:"xl",weight:"bold",color:THEME.green,align:"center",wrap:true},{type:"text",text:t[1],size:"sm",color:THEME.ink,align:"center",wrap:true}]}}};
+}
 function fallbackFlex(lang="th"){return menuFlex(uiText(lang,"helpTitle"),uiText(lang,"helpSub"),"💬",[{icon:"🦺",title:uiText(lang,"mainTitle"),subtitle:uiText(lang,"mainSub"),type:"message",value:"เมนูผู้รับเหมา",color:THEME.blue},{icon:"☎️",title:uiText(lang,"contact"),subtitle:uiText(lang,"contactSub"),type:"message",value:"ติดต่อทีมเซฟตี้",color:THEME.green},{icon:"📍",title:uiText(lang,"map"),subtitle:uiText(lang,"mapSub"),type:"message",value:"แผนที่",color:THEME.orange}],THEME.navy,lang);}
 function mapFlexFor(lang="th"){return menuFlex(uiText(lang,"map"),uiText(lang,"mapSub"),"📍",[{icon:"1",title:uiText(lang,"factory1"),subtitle:"Google Maps",type:"uri",value:"https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8",color:THEME.blue},{icon:"2",title:uiText(lang,"factory2"),subtitle:"Google Maps",type:"uri",value:"https://maps.app.goo.gl/keZxD798z9ZwKXE7A",color:THEME.green}],THEME.blue,lang);}
 function phoneFlexFor(lang="th"){return menuFlex(uiText(lang,"phone"),uiText(lang,"phoneSub"),"☎️",[{icon:"1",title:uiText(lang,"factory1"),subtitle:"02-529-2450-6 • 102 / 127 / 129",type:"uri",value:"tel:025292450",color:THEME.blue},{icon:"2",title:uiText(lang,"factory2"),subtitle:"02-529-3200-6 • 137",type:"uri",value:"tel:025293200",color:THEME.green}],THEME.green,lang);}
@@ -1320,7 +1356,7 @@ async function handleNavigationInterrupt(event, userId, msg) {
 
   if (msg.includes(normalize("แจ้งปัญหา"))) {
     pauseCurrentSession(userId);
-    await beginIssueReport(event, userId);
+    await reply(event, issueChannelFlex(getUserLanguage(userId)));
     return true;
   }
 
@@ -1422,6 +1458,9 @@ async function handleEvent(event) {
   );
   if (navigationHandled) return null;
 
+  if (data === "issue_channel=oa") {
+    return beginIssueReport(event, userId);
+  }
   if (data === "resume=continue") {
     const saved = pausedSessions.get(userId);
     if (!saved) return reply(event, languageSelectFlex());
