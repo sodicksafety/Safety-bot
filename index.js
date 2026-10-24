@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbz2I9EJks1Epc3zXRN1l5JXYq0NnsMrWGZtNNJvshsvE0GEyx0yeZvX5Jfl31aVtdf6/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.14.1-smart-center-flex-fix";
+const APP_VERSION = "4.16.0-premium-safe-ui";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -165,30 +165,54 @@ function reply(event, messages) { return client.replyMessage(event.replyToken, A
 function textMessage(text) { return { type: "text", text: safeText(text, 5000) }; }
 
 function titleBlock(icon, eyebrow, title, subtitle, color = THEME.navy) {
-  return { type: "box", layout: "horizontal", spacing: "md", paddingAll: "20px", background: { type: "linearGradient", angle: "125deg", startColor: color, endColor: "#1769AA" }, contents: [
-    { type: "box", layout: "vertical", width: "52px", height: "52px", cornerRadius: "18px", backgroundColor: THEME.white, justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "xl", align: "center" }] },
-    { type: "box", layout: "vertical", flex: 1, justifyContent: "center", contents: [
-      { type: "text", text: eyebrow, size: "xxs", weight: "bold", color: "#BFD8EA" },
-      { type: "text", text: title, size: "xl", weight: "bold", color: THEME.white, wrap: true, margin: "xs", maxLines: 2 },
-      { type: "text", text: subtitle, size: "xs", color: "#DCEAF4", wrap: true, margin: "xs", maxLines: 2 }
-    ]}
-  ]};
+  return {
+    type: "box", layout: "vertical", paddingAll: "20px",
+    background: { type: "linearGradient", angle: "125deg", startColor: color, endColor: "#1769AA" },
+    contents: [
+      { type: "box", layout: "horizontal", spacing: "md", contents: [
+        { type: "box", layout: "vertical", width: "58px", height: "58px", cornerRadius: "20px", backgroundColor: THEME.white,
+          justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "xxl", align: "center" }] },
+        { type: "box", layout: "vertical", flex: 1, justifyContent: "center", contents: [
+          { type: "text", text: eyebrow, size: "xxs", weight: "bold", color: "#BFD8EA" },
+          { type: "text", text: title, size: "xl", weight: "bold", color: THEME.white, wrap: true, margin: "xs", maxLines: 2 },
+          { type: "text", text: subtitle, size: "xs", color: "#DCEAF4", wrap: true, margin: "xs", maxLines: 2 }
+        ]}
+      ]},
+      { type: "box", layout: "horizontal", spacing: "xs", margin: "md", contents: [
+        { type: "box", layout: "vertical", flex: 2, height: "4px", cornerRadius: "2px", backgroundColor: THEME.gold, contents: [] },
+        { type: "box", layout: "vertical", flex: 5, height: "4px", cornerRadius: "2px", backgroundColor: "#8CB9D8", contents: [] }
+      ]}
+    ]
+  };
 }
 function actionCard(icon, title, subtitle, action, accent = THEME.blue) {
-  return { type: "box", layout: "horizontal", spacing: "md", paddingAll: "15px", margin: "sm", cornerRadius: "16px", backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px", action, contents: [
-    { type: "box", layout: "vertical", width: "44px", height: "44px", cornerRadius: "14px", backgroundColor: accent, justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "lg", align: "center" }] },
-    { type: "box", layout: "vertical", flex: 1, justifyContent: "center", contents: [
-      { type: "text", text: title, size: "sm", weight: "bold", color: THEME.ink, wrap: true, maxLines: 2 },
-      { type: "text", text: subtitle, size: "xxs", color: THEME.muted, wrap: true, margin: "xs", maxLines: 2 }
-    ]},
-    { type: "text", text: "›", size: "xl", weight: "bold", color: accent, flex: 0, gravity: "center" }
-  ]};
+  return {
+    type: "box", layout: "horizontal", spacing: "md", paddingAll: "16px", margin: "sm",
+    cornerRadius: "20px", backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px", action,
+    contents: [
+      { type: "box", layout: "vertical", width: "54px", height: "54px", cornerRadius: "18px", backgroundColor: accent,
+        justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "xl", align: "center" }] },
+      { type: "box", layout: "vertical", flex: 1, justifyContent: "center", contents: [
+        { type: "text", text: title, size: "sm", weight: "bold", color: THEME.ink, wrap: true, maxLines: 2 },
+        { type: "text", text: subtitle, size: "xxs", color: THEME.muted, wrap: true, margin: "xs", maxLines: 2 }
+      ]},
+      { type: "box", layout: "vertical", width: "30px", height: "30px", cornerRadius: "15px", backgroundColor: THEME.canvas,
+        justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: "›", size: "lg", weight: "bold", color: accent, align: "center" }] }
+    ]
+  };
 }
 function dataRow(label, value) {
-  return { type: "box", layout: "vertical", paddingAll: "12px", margin: "sm", cornerRadius: "12px", backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px", contents: [
-    { type: "text", text: label, size: "xxs", weight: "bold", color: THEME.muted },
-    { type: "text", text: safeText(value, 180), size: "sm", weight: "bold", color: THEME.ink, wrap: true, margin: "xs", maxLines: 3 }
-  ]};
+  return {
+    type: "box", layout: "horizontal", paddingAll: "14px", margin: "sm", cornerRadius: "16px",
+    backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px",
+    contents: [
+      { type: "box", layout: "vertical", width: "6px", cornerRadius: "3px", backgroundColor: THEME.blue, contents: [] },
+      { type: "box", layout: "vertical", flex: 1, paddingStart: "12px", contents: [
+        { type: "text", text: label, size: "xxs", weight: "bold", color: THEME.blue },
+        { type: "text", text: safeText(value, 180), size: "sm", weight: "bold", color: THEME.ink, wrap: true, margin: "xs", maxLines: 3 }
+      ]}
+    ]
+  };
 }
 
 const safetyQA = [
@@ -503,234 +527,26 @@ function trainingMenu(lang="th"){return menuFlex(uiText(lang,"training"),uiText(
   {icon:"04",title:uiText(lang,"driving"),subtitle:"Safe driving",type:"uri",value:"https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF",color:THEME.orange},
   {icon:"05",title:uiText(lang,"waste"),subtitle:"Waste segregation",type:"uri",value:"https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9",color:THEME.green}],THEME.green,lang);}
 function smartCenterCopy(lang = "th") {
-  const copy = {
-    th: {
-      eyebrow: "SODICK SMART SERVICES",
-      title: "ศูนย์บริการ Safety",
-      subtitle: "เลือกบริการที่ต้องการ",
-      training: "Training Center",
-      trainingSub: "สื่ออบรมและความรู้ด้านความปลอดภัย",
-      delivery: "ผู้รับ–ส่งสินค้า",
-      deliverySub: "บริการสำหรับผู้มาติดต่อส่งสินค้า",
-      vendor: "ผู้เข้ามาทำงาน",
-      vendorSub: "ผู้รับเหมาและผู้เข้ามาแก้ไขงาน",
-      card: "บัตรผู้รับเหมา",
-      cardSub: "เปิดและดาวน์โหลดบัตรย้อนหลัง",
-      hotline: "Safety Call Hub",
-      hotlineSub: "ติดต่อเจ้าหน้าที่ Safety",
-      map: "แผนที่โรงงาน",
-      mapSub: "เส้นทางโรงงาน 1 และโรงงาน 2",
-      report: "แจ้งปัญหา",
-      reportSub: "ส่งข้อมูลถึงทีม Safety"
-    },
-    en: {
-      eyebrow: "SODICK SMART SERVICES",
-      title: "Safety Service Center",
-      subtitle: "Select the service you need",
-      training: "Training Center",
-      trainingSub: "Safety training and learning media",
-      delivery: "Delivery Visitor",
-      deliverySub: "Services for delivery visitors",
-      vendor: "Contractor Service",
-      vendorSub: "Work and maintenance access",
-      card: "Contractor Card",
-      cardSub: "Open and download previous cards",
-      hotline: "Safety Call Hub",
-      hotlineSub: "Contact the Safety team",
-      map: "Factory Map",
-      mapSub: "Directions to Factory 1 and 2",
-      report: "Report an Issue",
-      reportSub: "Send details to the Safety team"
-    },
-    ja: {
-      eyebrow: "SODICK SMART SERVICES",
-      title: "Safetyサービスセンター",
-      subtitle: "必要なサービスを選択してください",
-      training: "Training Center",
-      trainingSub: "安全研修と学習資料",
-      delivery: "配送訪問者",
-      deliverySub: "納品・配送の訪問者向け",
-      vendor: "請負業者サービス",
-      vendorSub: "作業・修理の入場サービス",
-      card: "請負業者カード",
-      cardSub: "過去のカードを表示・ダウンロード",
-      hotline: "Safety Call Hub",
-      hotlineSub: "Safetyチームへ連絡",
-      map: "工場マップ",
-      mapSub: "第1工場・第2工場へのルート",
-      report: "問題を報告",
-      reportSub: "Safetyチームへ詳細を送信"
-    },
-    my: {
-      eyebrow: "SODICK SMART SERVICES",
-      title: "Safety ဝန်ဆောင်မှုစင်တာ",
-      subtitle: "လိုအပ်သောဝန်ဆောင်မှုကိုရွေးပါ",
-      training: "Training Center",
-      trainingSub: "လုံခြုံရေးသင်တန်းနှင့်လေ့လာရေး",
-      delivery: "ကုန်ပစ္စည်းပို့ဆောင်သူ",
-      deliverySub: "ပို့ဆောင်သူများအတွက်ဝန်ဆောင်မှု",
-      vendor: "ကန်ထရိုက်တာဝန်ဆောင်မှု",
-      vendorSub: "အလုပ်နှင့်ပြုပြင်ရေးဝင်ခွင့်",
-      card: "ကန်ထရိုက်တာကတ်",
-      cardSub: "ယခင်ကတ်များဖွင့်ပြီးဒေါင်းလုပ်လုပ်ပါ",
-      hotline: "Safety Call Hub",
-      hotlineSub: "Safety အဖွဲ့ကိုဆက်သွယ်ပါ",
-      map: "စက်ရုံမြေပုံ",
-      mapSub: "စက်ရုံ ၁ နှင့် ၂ လမ်းညွှန်",
-      report: "ပြဿနာတင်ပြမည်",
-      reportSub: "Safety အဖွဲ့သို့ပို့မည်"
-    },
-    zh: {
-      eyebrow: "SODICK SMART SERVICES",
-      title: "Safety服务中心",
-      subtitle: "请选择所需服务",
-      training: "Training Center",
-      trainingSub: "安全培训与学习资料",
-      delivery: "送货访客",
-      deliverySub: "送货人员服务",
-      vendor: "承包商服务",
-      vendorSub: "工作和维修入场服务",
-      card: "承包商卡",
-      cardSub: "打开并下载历史卡片",
-      hotline: "Safety Call Hub",
-      hotlineSub: "联系Safety团队",
-      map: "工厂地图",
-      mapSub: "第一工厂和第二工厂路线",
-      report: "报告问题",
-      reportSub: "发送给Safety团队"
-    }
+  const all = {
+    th:{title:"Sodick Safety Smart Center",sub:"เลือกบริการที่ต้องการ",training:"Training Center",trainingSub:"สื่ออบรมและความรู้ด้านความปลอดภัย",delivery:"ผู้รับ–ส่งสินค้า",deliverySub:"บริการผู้มาติดต่อส่งสินค้า",vendor:"ผู้เข้ามาทำงาน",vendorSub:"ผู้รับเหมาและผู้เข้ามาแก้ไขงาน",card:"บัตรผู้รับเหมา",cardSub:"เปิดและดาวน์โหลดบัตรย้อนหลัง",hotline:"Safety Call Hub",hotlineSub:"ติดต่อเจ้าหน้าที่ Safety",map:"แผนที่โรงงาน",mapSub:"โรงงาน 1 และโรงงาน 2",report:"แจ้งปัญหา",reportSub:"ส่งข้อมูลถึงทีม Safety"},
+    en:{title:"Sodick Safety Smart Center",sub:"Select the service you need",training:"Training Center",trainingSub:"Safety training and learning media",delivery:"Delivery Visitor",deliverySub:"Services for delivery visitors",vendor:"Contractor Service",vendorSub:"Work and maintenance access",card:"Contractor Card",cardSub:"Open and download previous cards",hotline:"Safety Call Hub",hotlineSub:"Contact the Safety team",map:"Factory Map",mapSub:"Factory 1 and Factory 2",report:"Report an Issue",reportSub:"Send details to the Safety team"},
+    ja:{title:"Sodick Safety Smart Center",sub:"必要なサービスを選択してください",training:"Training Center",trainingSub:"安全研修と学習資料",delivery:"配送訪問者",deliverySub:"納品・配送の訪問者向け",vendor:"請負業者サービス",vendorSub:"作業・修理の入場サービス",card:"請負業者カード",cardSub:"過去のカードを表示・保存",hotline:"Safety Call Hub",hotlineSub:"Safetyチームへ連絡",map:"工場マップ",mapSub:"第1工場・第2工場",report:"問題を報告",reportSub:"Safetyチームへ送信"},
+    my:{title:"Sodick Safety Smart Center",sub:"လိုအပ်သောဝန်ဆောင်မှုကိုရွေးပါ",training:"Training Center",trainingSub:"လုံခြုံရေးသင်တန်းနှင့်လေ့လာရေး",delivery:"ကုန်ပစ္စည်းပို့ဆောင်သူ",deliverySub:"ပို့ဆောင်သူဝန်ဆောင်မှု",vendor:"ကန်ထရိုက်တာဝန်ဆောင်မှု",vendorSub:"အလုပ်နှင့်ပြုပြင်ရေးဝင်ခွင့်",card:"ကန်ထရိုက်တာကတ်",cardSub:"ယခင်ကတ်များဖွင့်ပြီးဒေါင်းလုပ်",hotline:"Safety Call Hub",hotlineSub:"Safety အဖွဲ့ကိုဆက်သွယ်ပါ",map:"စက်ရုံမြေပုံ",mapSub:"စက်ရုံ ၁ နှင့် ၂",report:"ပြဿနာတင်ပြမည်",reportSub:"Safety အဖွဲ့သို့ပို့မည်"},
+    zh:{title:"Sodick Safety Smart Center",sub:"请选择所需服务",training:"Training Center",trainingSub:"安全培训与学习资料",delivery:"送货访客",deliverySub:"送货人员服务",vendor:"承包商服务",vendorSub:"工作和维修入场服务",card:"承包商卡",cardSub:"打开并下载历史卡片",hotline:"Safety Call Hub",hotlineSub:"联系Safety团队",map:"工厂地图",mapSub:"第一工厂和第二工厂",report:"报告问题",reportSub:"发送给Safety团队"}
   };
-  return copy[lang] || copy.th;
+  return all[lang] || all.th;
 }
-
-function smartMenuAction(label, text) {
-  return { type: "message", label: safeText(label, 20), text };
-}
-
-function smartLargeTile(icon, title, subtitle, action, startColor, endColor) {
-  return {
-    type: "box",
-    layout: "horizontal",
-    paddingAll: "20px",
-    cornerRadius: "22px",
-    background: {
-      type: "linearGradient",
-      angle: "120deg",
-      startColor,
-      endColor
-    },
-    action,
-    contents: [
-      {
-        type: "box",
-        layout: "vertical",
-        width: "72px",
-        height: "72px",
-        cornerRadius: "24px",
-        backgroundColor: "#FFFFFF",
-        justifyContent: "center",
-        alignItems: "center",
-        contents: [{ type: "text", text: icon, size: "3xl", align: "center" }]
-      },
-      {
-        type: "box",
-        layout: "vertical",
-        flex: 1,
-        paddingStart: "16px",
-        justifyContent: "center",
-        contents: [
-          { type: "text", text: title, size: "xl", weight: "bold", color: "#FFFFFF", wrap: true, maxLines: 2 },
-          { type: "text", text: subtitle, size: "xs", color: "#DCEEFF", wrap: true, margin: "sm", maxLines: 2 },
-          { type: "text", text: "TAP TO OPEN  ›", size: "xxs", weight: "bold", color: "#F2C14E", margin: "md" }
-        ]
-      }
-    ]
-  };
-}
-
-function smartSmallTile(icon, title, subtitle, action, color, softColor) {
-  return {
-    type: "box",
-    layout: "vertical",
-    flex: 1,
-    paddingAll: "14px",
-    cornerRadius: "20px",
-    backgroundColor: softColor,
-    borderColor: color,
-    borderWidth: "1px",
-    action,
-    contents: [
-      {
-        type: "box",
-        layout: "vertical",
-        width: "56px",
-        height: "56px",
-        cornerRadius: "19px",
-        backgroundColor: color,
-        justifyContent: "center",
-        alignItems: "center",
-        contents: [{ type: "text", text: icon, size: "xxl", align: "center" }]
-      },
-      { type: "text", text: title, size: "sm", weight: "bold", color: THEME.ink, wrap: true, margin: "md", maxLines: 2 },
-      { type: "text", text: subtitle, size: "xxs", color: THEME.muted, wrap: true, margin: "xs", maxLines: 2 },
-      { type: "text", text: "›", size: "xl", weight: "bold", color, align: "end", margin: "sm" }
-    ]
-  };
-}
-
-function contractorMainMenuFlex(lang = "th") {
-  const c = smartCenterCopy(lang);
-  const rows = [
-    [
-      smartSmallTile("📦", c.delivery, c.deliverySub, smartMenuAction(c.delivery, "ผู้รับส่งสินค้า"), THEME.blue, "#EAF5FD"),
-      smartSmallTile("🛠️", c.vendor, c.vendorSub, smartMenuAction(c.vendor, "ผู้แก้ไขงาน"), THEME.purple, "#F3EEFB")
-    ],
-    [
-      smartSmallTile("🪪", c.card, c.cardSub, smartMenuAction(c.card, "ดาวน์โหลดบัตร"), THEME.orange, "#FFF5E8"),
-      smartSmallTile("☎️", c.hotline, c.hotlineSub, smartMenuAction(c.hotline, "Safety Hotline"), THEME.red, "#FFF0F2")
-    ],
-    [
-      smartSmallTile("📍", c.map, c.mapSub, smartMenuAction(c.map, "แผนที่"), "#2878C8", "#EEF6FF"),
-      smartSmallTile("📣", c.report, c.reportSub, smartMenuAction(c.report, "แจ้งปัญหา"), THEME.green, "#E9F9F2")
-    ]
+function smartAction(label,text){return {type:"message",label:safeText(label,20),text};}
+function smartHero(icon,title,subtitle,action){return {type:"box",layout:"horizontal",spacing:"md",paddingAll:"20px",cornerRadius:"22px",background:{type:"linearGradient",angle:"120deg",startColor:"#083B66",endColor:"#1688C9"},action,contents:[{type:"box",layout:"vertical",width:"70px",height:"70px",cornerRadius:"23px",backgroundColor:THEME.white,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:icon,size:"3xl",align:"center"}]},{type:"box",layout:"vertical",flex:1,justifyContent:"center",contents:[{type:"text",text:title,size:"xl",weight:"bold",color:THEME.white,wrap:true,maxLines:2},{type:"text",text:subtitle,size:"xs",color:"#DCEAF4",wrap:true,margin:"sm",maxLines:2},{type:"text",text:"OPEN  ›",size:"xxs",weight:"bold",color:THEME.gold,margin:"md"}]}]};}
+function smartTile(icon,title,subtitle,action,color,soft){return {type:"box",layout:"vertical",flex:1,paddingAll:"14px",cornerRadius:"20px",backgroundColor:soft,borderColor:THEME.line,borderWidth:"1px",action,contents:[{type:"box",layout:"vertical",width:"54px",height:"54px",cornerRadius:"18px",backgroundColor:color,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:icon,size:"xxl",align:"center"}]},{type:"text",text:title,size:"sm",weight:"bold",color:THEME.ink,wrap:true,margin:"md",maxLines:2},{type:"text",text:subtitle,size:"xxs",color:THEME.muted,wrap:true,margin:"xs",maxLines:2},{type:"text",text:"›",size:"xl",weight:"bold",color:color,align:"end",margin:"sm"}]};}
+function contractorMainMenuFlex(lang="th"){
+  const c=smartCenterCopy(lang);
+  const cells=[
+    [smartTile("📦",c.delivery,c.deliverySub,smartAction(c.delivery,"ผู้รับส่งสินค้า"),THEME.blue,THEME.sky),smartTile("🛠️",c.vendor,c.vendorSub,smartAction(c.vendor,"ผู้แก้ไขงาน"),THEME.purple,"#F3EEFB")],
+    [smartTile("🪪",c.card,c.cardSub,smartAction(c.card,"ดาวน์โหลดบัตร"),THEME.orange,THEME.orangeSoft),smartTile("☎️",c.hotline,c.hotlineSub,smartAction(c.hotline,"Safety Hotline"),THEME.red,THEME.redSoft)],
+    [smartTile("📍",c.map,c.mapSub,smartAction(c.map,"แผนที่"),"#2878C8","#EEF6FF"),smartTile("📣",c.report,c.reportSub,smartAction(c.report,"แจ้งปัญหา"),THEME.green,THEME.greenSoft)]
   ];
-
-  return {
-    type: "flex",
-    altText: c.title,
-    contents: {
-      type: "bubble",
-      size: "giga",
-      styles: {
-        body: { backgroundColor: THEME.canvas },
-        footer: { backgroundColor: THEME.canvas }
-      },
-      header: titleBlock("🦺", c.eyebrow, c.title, c.subtitle, THEME.navy),
-      body: {
-        type: "box",
-        layout: "vertical",
-        paddingAll: "16px",
-        spacing: "md",
-        contents: [
-          smartLargeTile(
-            "🎓",
-            c.training,
-            c.trainingSub,
-            smartMenuAction(c.training, "สื่ออบรมผู้รับเหมา"),
-            "#083B66",
-            "#1688C9"
-          ),
-          ...rows.map(row => ({
-            type: "box",
-            layout: "horizontal",
-            spacing: "md",
-            contents: row
-          }))
-        ]
-      },
-      footer: languageFooter(lang)
-    }
-  };
+  return {type:"flex",altText:c.title,contents:{type:"bubble",size:"giga",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},header:titleBlock("🦺","SODICK SMART SERVICES",c.title,c.sub,THEME.navy),body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[smartHero("🎓",c.training,c.trainingSub,smartAction(c.training,"สื่ออบรมผู้รับเหมา")),...cells.map(x=>({type:"box",layout:"horizontal",spacing:"md",contents:x}))]},footer:languageFooter(lang)}};
 }
 function contactMenuFlex(lang="th"){return menuFlex(uiText(lang,"contact"),uiText(lang,"contactSub"),"☎️",[{icon:"📞",title:uiText(lang,"hotline"),subtitle:uiText(lang,"hotlineSub"),type:"message",value:"Safety Hotline",color:THEME.blue},{icon:"📣",title:uiText(lang,"report"),subtitle:uiText(lang,"reportSub"),type:"message",value:"แจ้งปัญหา",color:THEME.orange}],THEME.navy,lang);}
 function hotlineFlex(lang="th"){return menuFlex(uiText(lang,"hotline"),uiText(lang,"hotlineSub"),"📞",[
