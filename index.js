@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbz2I9EJks1Epc3zXRN1l5JXYq0NnsMrWGZtNNJvshsvE0GEyx0yeZvX5Jfl31aVtdf6/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.20.0-v417-ui-admin-channel";
+const APP_VERSION = "4.16.0-premium-safe-ui";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -170,7 +170,8 @@ function titleBlock(icon, eyebrow, title, subtitle, color = THEME.navy) {
     background: { type: "linearGradient", angle: "125deg", startColor: color, endColor: "#1769AA" },
     contents: [
       { type: "box", layout: "horizontal", spacing: "md", contents: [
-        { type: "box", layout: "vertical", width: "56px", height: "56px", cornerRadius: "20px", backgroundColor: THEME.white, justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "xxl", align: "center" }] },
+        { type: "box", layout: "vertical", width: "58px", height: "58px", cornerRadius: "20px", backgroundColor: THEME.white,
+          justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "xxl", align: "center" }] },
         { type: "box", layout: "vertical", flex: 1, justifyContent: "center", contents: [
           { type: "text", text: eyebrow, size: "xxs", weight: "bold", color: "#BFD8EA" },
           { type: "text", text: title, size: "xl", weight: "bold", color: THEME.white, wrap: true, margin: "xs", maxLines: 2 },
@@ -186,21 +187,24 @@ function titleBlock(icon, eyebrow, title, subtitle, color = THEME.navy) {
 }
 function actionCard(icon, title, subtitle, action, accent = THEME.blue) {
   return {
-    type: "box", layout: "horizontal", spacing: "md", paddingAll: "16px", margin: "sm", cornerRadius: "20px",
-    backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px", action,
+    type: "box", layout: "horizontal", spacing: "md", paddingAll: "16px", margin: "sm",
+    cornerRadius: "20px", backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px", action,
     contents: [
-      { type: "box", layout: "vertical", width: "52px", height: "52px", cornerRadius: "18px", backgroundColor: accent, justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "xl", align: "center" }] },
+      { type: "box", layout: "vertical", width: "54px", height: "54px", cornerRadius: "18px", backgroundColor: accent,
+        justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: icon, size: "xl", align: "center" }] },
       { type: "box", layout: "vertical", flex: 1, justifyContent: "center", contents: [
         { type: "text", text: title, size: "sm", weight: "bold", color: THEME.ink, wrap: true, maxLines: 2 },
         { type: "text", text: subtitle, size: "xxs", color: THEME.muted, wrap: true, margin: "xs", maxLines: 2 }
       ]},
-      { type: "box", layout: "vertical", width: "30px", height: "30px", cornerRadius: "15px", backgroundColor: THEME.canvas, justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: "›", size: "lg", weight: "bold", color: accent, align: "center" }] }
+      { type: "box", layout: "vertical", width: "30px", height: "30px", cornerRadius: "15px", backgroundColor: THEME.canvas,
+        justifyContent: "center", alignItems: "center", contents: [{ type: "text", text: "›", size: "lg", weight: "bold", color: accent, align: "center" }] }
     ]
   };
 }
 function dataRow(label, value) {
   return {
-    type: "box", layout: "horizontal", paddingAll: "14px", margin: "sm", cornerRadius: "16px", backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px",
+    type: "box", layout: "horizontal", paddingAll: "14px", margin: "sm", cornerRadius: "16px",
+    backgroundColor: THEME.white, borderColor: THEME.line, borderWidth: "1px",
     contents: [
       { type: "box", layout: "vertical", width: "6px", cornerRadius: "3px", backgroundColor: THEME.blue, contents: [] },
       { type: "box", layout: "vertical", flex: 1, paddingStart: "12px", contents: [
@@ -522,156 +526,34 @@ function trainingMenu(lang="th"){return menuFlex(uiText(lang,"training"),uiText(
   {icon:"03",title:uiText(lang,"fireExt"),subtitle:"Fire extinguisher",type:"uri",value:"https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f",color:THEME.red},
   {icon:"04",title:uiText(lang,"driving"),subtitle:"Safe driving",type:"uri",value:"https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF",color:THEME.orange},
   {icon:"05",title:uiText(lang,"waste"),subtitle:"Waste segregation",type:"uri",value:"https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9",color:THEME.green}],THEME.green,lang);}
-function contractorMainMenuFlex(lang="th"){
-  const hero = {
-    type:"box", layout:"horizontal", spacing:"md", paddingAll:"20px", cornerRadius:"22px",
-    background:{type:"linearGradient",angle:"120deg",startColor:"#083B66",endColor:"#1688C9"},
-    action:{type:"message",label:uiText(lang,"training").slice(0,20),text:"สื่ออบรมผู้รับเหมา"},
-    contents:[
-      {type:"box",layout:"vertical",width:"70px",height:"70px",cornerRadius:"23px",backgroundColor:THEME.white,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:"🎓",size:"3xl",align:"center"}]},
-      {type:"box",layout:"vertical",flex:1,justifyContent:"center",contents:[
-        {type:"text",text:uiText(lang,"training"),size:"xl",weight:"bold",color:THEME.white,wrap:true,maxLines:2},
-        {type:"text",text:uiText(lang,"trainingSub"),size:"xs",color:"#DCEAF4",wrap:true,margin:"sm",maxLines:2},
-        {type:"text",text:"OPEN  ›",size:"xxs",weight:"bold",color:THEME.gold,margin:"md"}
-      ]}
-    ]
+function smartCenterCopy(lang = "th") {
+  const all = {
+    th:{title:"Sodick Safety Smart Center",sub:"เลือกบริการที่ต้องการ",training:"Training Center",trainingSub:"สื่ออบรมและความรู้ด้านความปลอดภัย",delivery:"ผู้รับ–ส่งสินค้า",deliverySub:"บริการผู้มาติดต่อส่งสินค้า",vendor:"ผู้เข้ามาทำงาน",vendorSub:"ผู้รับเหมาและผู้เข้ามาแก้ไขงาน",card:"บัตรผู้รับเหมา",cardSub:"เปิดและดาวน์โหลดบัตรย้อนหลัง",hotline:"Safety Call Hub",hotlineSub:"ติดต่อเจ้าหน้าที่ Safety",map:"แผนที่โรงงาน",mapSub:"โรงงาน 1 และโรงงาน 2",report:"แจ้งปัญหา",reportSub:"ส่งข้อมูลถึงทีม Safety"},
+    en:{title:"Sodick Safety Smart Center",sub:"Select the service you need",training:"Training Center",trainingSub:"Safety training and learning media",delivery:"Delivery Visitor",deliverySub:"Services for delivery visitors",vendor:"Contractor Service",vendorSub:"Work and maintenance access",card:"Contractor Card",cardSub:"Open and download previous cards",hotline:"Safety Call Hub",hotlineSub:"Contact the Safety team",map:"Factory Map",mapSub:"Factory 1 and Factory 2",report:"Report an Issue",reportSub:"Send details to the Safety team"},
+    ja:{title:"Sodick Safety Smart Center",sub:"必要なサービスを選択してください",training:"Training Center",trainingSub:"安全研修と学習資料",delivery:"配送訪問者",deliverySub:"納品・配送の訪問者向け",vendor:"請負業者サービス",vendorSub:"作業・修理の入場サービス",card:"請負業者カード",cardSub:"過去のカードを表示・保存",hotline:"Safety Call Hub",hotlineSub:"Safetyチームへ連絡",map:"工場マップ",mapSub:"第1工場・第2工場",report:"問題を報告",reportSub:"Safetyチームへ送信"},
+    my:{title:"Sodick Safety Smart Center",sub:"လိုအပ်သောဝန်ဆောင်မှုကိုရွေးပါ",training:"Training Center",trainingSub:"လုံခြုံရေးသင်တန်းနှင့်လေ့လာရေး",delivery:"ကုန်ပစ္စည်းပို့ဆောင်သူ",deliverySub:"ပို့ဆောင်သူဝန်ဆောင်မှု",vendor:"ကန်ထရိုက်တာဝန်ဆောင်မှု",vendorSub:"အလုပ်နှင့်ပြုပြင်ရေးဝင်ခွင့်",card:"ကန်ထရိုက်တာကတ်",cardSub:"ယခင်ကတ်များဖွင့်ပြီးဒေါင်းလုပ်",hotline:"Safety Call Hub",hotlineSub:"Safety အဖွဲ့ကိုဆက်သွယ်ပါ",map:"စက်ရုံမြေပုံ",mapSub:"စက်ရုံ ၁ နှင့် ၂",report:"ပြဿနာတင်ပြမည်",reportSub:"Safety အဖွဲ့သို့ပို့မည်"},
+    zh:{title:"Sodick Safety Smart Center",sub:"请选择所需服务",training:"Training Center",trainingSub:"安全培训与学习资料",delivery:"送货访客",deliverySub:"送货人员服务",vendor:"承包商服务",vendorSub:"工作和维修入场服务",card:"承包商卡",cardSub:"打开并下载历史卡片",hotline:"Safety Call Hub",hotlineSub:"联系Safety团队",map:"工厂地图",mapSub:"第一工厂和第二工厂",report:"报告问题",reportSub:"发送给Safety团队"}
   };
-  const tile=(icon,title,sub,text,color,soft)=>({type:"box",layout:"vertical",flex:1,paddingAll:"14px",cornerRadius:"20px",backgroundColor:soft,borderColor:THEME.line,borderWidth:"1px",action:{type:"message",label:title.slice(0,20),text},contents:[
-    {type:"box",layout:"vertical",width:"54px",height:"54px",cornerRadius:"18px",backgroundColor:color,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:icon,size:"xxl",align:"center"}]},
-    {type:"text",text:title,size:"sm",weight:"bold",color:THEME.ink,wrap:true,margin:"md",maxLines:2},
-    {type:"text",text:sub,size:"xxs",color:THEME.muted,wrap:true,margin:"xs",maxLines:2},
-    {type:"text",text:"›",size:"xl",weight:"bold",color,align:"end",margin:"sm"}
-  ]});
-  const rows=[
-    [tile("📦",uiText(lang,"delivery"),uiText(lang,"deliverySub"),"ผู้รับส่งสินค้า",THEME.blue,THEME.sky),tile("🛠️",uiText(lang,"vendor"),uiText(lang,"vendorSub"),"ผู้แก้ไขงาน",THEME.purple,"#F3EEFB")],
-    [tile("🪪",uiText(lang,"card"),uiText(lang,"cardSub"),"ดาวน์โหลดบัตร",THEME.orange,THEME.orangeSoft),tile("☎️",uiText(lang,"hotline"),uiText(lang,"hotlineSub"),"Safety Hotline",THEME.red,THEME.redSoft)],
-    [tile("📍",uiText(lang,"map"),uiText(lang,"mapSub"),"แผนที่",THEME.blue,THEME.sky),tile("📣",uiText(lang,"report"),uiText(lang,"reportSub"),"แจ้งปัญหา",THEME.green,THEME.greenSoft)]
-  ];
-  return {type:"flex",altText:uiText(lang,"mainTitle"),contents:{type:"bubble",size:"giga",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},header:titleBlock("🦺","SODICK SMART SERVICES",uiText(lang,"mainTitle"),uiText(lang,"mainSub"),THEME.navy),body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[hero,...rows.map(contents=>({type:"box",layout:"horizontal",spacing:"md",contents}))]},footer:languageFooter(lang)}};
+  return all[lang] || all.th;
 }
-function certificateFlex(url){return allCertificatesFlex([{url}], "th");}
-
-function allCertificatesFlex(cards, lang = "th") {
-  const copy = {
-    th: { alt: "บัตรผู้รับเหมาทั้งหมด", title: "บัตรผู้รับเหมา", card: "บัตรใบที่", open: "เปิด / ดาวน์โหลด", count: "รายการ" },
-    en: { alt: "All Contractor Cards", title: "Contractor Cards", card: "Card", open: "Open / Download", count: "cards" },
-    ja: { alt: "請負業者カード一覧", title: "請負業者カード", card: "カード", open: "開く / ダウンロード", count: "件" },
-    my: { alt: "ကန်ထရိုက်တာကတ်အားလုံး", title: "ကန်ထရိုက်တာကတ်", card: "ကတ်", open: "ဖွင့် / ဒေါင်းလုပ်", count: "ကတ်" },
-    zh: { alt: "全部承包商卡", title: "承包商卡", card: "卡片", open: "打开 / 下载", count: "张" }
-  }[lang] || null;
-  const text = copy || {
-    alt: "All Contractor Cards", title: "Contractor Cards", card: "Card", open: "Open / Download", count: "cards"
-  };
-
-  const validCards = (Array.isArray(cards) ? cards : [])
-    .map((card, index) => ({
-      url: String(card?.url || card?.cardUrl || card?.certificateUrl || card?.link || "").trim(),
-      issuedAt: String(card?.issuedAt || card?.createdAt || card?.date || "").trim(),
-      title: String(card?.title || card?.name || "").trim(),
-      originalIndex: index
-    }))
-    .filter(card => /^https:\/\//i.test(card.url));
-
-  return {
-    type: "flex",
-    altText: `${text.alt} (${validCards.length})`,
-    contents: {
-      type: "carousel",
-      contents: validCards.map((card, index) => ({
-        type: "bubble",
-        size: "kilo",
-        styles: {
-          body: { backgroundColor: THEME.canvas },
-          footer: { backgroundColor: THEME.canvas }
-        },
-        header: titleBlock(
-          "🪪",
-          `CARD ${index + 1} OF ${validCards.length}`,
-          card.title || `${text.card} ${index + 1}`,
-          card.issuedAt || `${validCards.length} ${text.count}`,
-          index === 0 ? THEME.green : THEME.blue
-        ),
-        body: {
-          type: "box",
-          layout: "vertical",
-          paddingAll: "18px",
-          spacing: "md",
-          contents: [
-            {
-              type: "text",
-              text: card.title || text.title,
-              size: "md",
-              weight: "bold",
-              color: THEME.ink,
-              align: "center",
-              wrap: true
-            },
-            card.issuedAt
-              ? { type: "text", text: card.issuedAt, size: "xs", color: THEME.muted, align: "center", wrap: true }
-              : { type: "text", text: `${text.card} ${index + 1}`, size: "xs", color: THEME.muted, align: "center" }
-          ]
-        },
-        footer: {
-          type: "box",
-          layout: "vertical",
-          paddingAll: "18px",
-          contents: [{
-            type: "button",
-            style: "primary",
-            color: index === 0 ? THEME.green : THEME.blue,
-            action: {
-              type: "uri",
-              label: text.open.slice(0, 20),
-              uri: card.url
-            }
-          }]
-        }
-      }))
-    }
-  };
+function smartAction(label,text){return {type:"message",label:safeText(label,20),text};}
+function smartHero(icon,title,subtitle,action){return {type:"box",layout:"horizontal",spacing:"md",paddingAll:"20px",cornerRadius:"22px",background:{type:"linearGradient",angle:"120deg",startColor:"#083B66",endColor:"#1688C9"},action,contents:[{type:"box",layout:"vertical",width:"70px",height:"70px",cornerRadius:"23px",backgroundColor:THEME.white,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:icon,size:"3xl",align:"center"}]},{type:"box",layout:"vertical",flex:1,justifyContent:"center",contents:[{type:"text",text:title,size:"xl",weight:"bold",color:THEME.white,wrap:true,maxLines:2},{type:"text",text:subtitle,size:"xs",color:"#DCEAF4",wrap:true,margin:"sm",maxLines:2},{type:"text",text:"OPEN  ›",size:"xxs",weight:"bold",color:THEME.gold,margin:"md"}]}]};}
+function smartTile(icon,title,subtitle,action,color,soft){return {type:"box",layout:"vertical",flex:1,paddingAll:"14px",cornerRadius:"20px",backgroundColor:soft,borderColor:THEME.line,borderWidth:"1px",action,contents:[{type:"box",layout:"vertical",width:"54px",height:"54px",cornerRadius:"18px",backgroundColor:color,justifyContent:"center",alignItems:"center",contents:[{type:"text",text:icon,size:"xxl",align:"center"}]},{type:"text",text:title,size:"sm",weight:"bold",color:THEME.ink,wrap:true,margin:"md",maxLines:2},{type:"text",text:subtitle,size:"xxs",color:THEME.muted,wrap:true,margin:"xs",maxLines:2},{type:"text",text:"›",size:"xl",weight:"bold",color:color,align:"end",margin:"sm"}]};}
+function contractorMainMenuFlex(lang="th"){
+  const c=smartCenterCopy(lang);
+  const cells=[
+    [smartTile("📦",c.delivery,c.deliverySub,smartAction(c.delivery,"ผู้รับส่งสินค้า"),THEME.blue,THEME.sky),smartTile("🛠️",c.vendor,c.vendorSub,smartAction(c.vendor,"ผู้แก้ไขงาน"),THEME.purple,"#F3EEFB")],
+    [smartTile("🪪",c.card,c.cardSub,smartAction(c.card,"ดาวน์โหลดบัตร"),THEME.orange,THEME.orangeSoft),smartTile("☎️",c.hotline,c.hotlineSub,smartAction(c.hotline,"Safety Hotline"),THEME.red,THEME.redSoft)],
+    [smartTile("📍",c.map,c.mapSub,smartAction(c.map,"แผนที่"),"#2878C8","#EEF6FF"),smartTile("📣",c.report,c.reportSub,smartAction(c.report,"แจ้งปัญหา"),THEME.green,THEME.greenSoft)]
+  ];
+  return {type:"flex",altText:c.title,contents:{type:"bubble",size:"giga",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},header:titleBlock("🦺","SODICK SMART SERVICES",c.title,c.sub,THEME.navy),body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[smartHero("🎓",c.training,c.trainingSub,smartAction(c.training,"สื่ออบรมผู้รับเหมา")),...cells.map(x=>({type:"box",layout:"horizontal",spacing:"md",contents:x}))]},footer:languageFooter(lang)}};
 }
 function contactMenuFlex(lang="th"){return menuFlex(uiText(lang,"contact"),uiText(lang,"contactSub"),"☎️",[{icon:"📞",title:uiText(lang,"hotline"),subtitle:uiText(lang,"hotlineSub"),type:"message",value:"Safety Hotline",color:THEME.blue},{icon:"📣",title:uiText(lang,"report"),subtitle:uiText(lang,"reportSub"),type:"message",value:"แจ้งปัญหา",color:THEME.orange}],THEME.navy,lang);}
 function hotlineFlex(lang="th"){return menuFlex(uiText(lang,"hotline"),uiText(lang,"hotlineSub"),"📞",[
   {icon:"☎",title:"Safety Manager",subtitle:"081-376-5583",type:"uri",value:"tel:0813765583",color:THEME.red},{icon:"☎",title:"Safety Factory 1",subtitle:"061-645-5095",type:"uri",value:"tel:0616455095",color:THEME.blue},{icon:"☎",title:"Safety Factory 2",subtitle:"083-237-4357",type:"uri",value:"tel:0832374357",color:THEME.purple},{icon:"☎",title:"Safety Factory 1",subtitle:"081-695-4474",type:"uri",value:"tel:0816954474",color:THEME.green},{icon:"☎",title:"Environment",subtitle:"094-938-0425",type:"uri",value:"tel:0949380425",color:THEME.orange}],THEME.red,lang);}
-function issueChannelFlex(lang="th") {
-  const copy = {
-    th:{title:"แจ้งปัญหา",sub:"เลือกช่องทางที่ต้องการ",oa:"แจ้งผ่านแอปพลิเคชัน LINE OA",oaSub:"กรอกรายละเอียด ชื่อ บริษัท และเบอร์ติดต่อ ระบบจะส่งถึง Admin ผ่าน LINE OA",admin:"ติดต่อ Admin โดยตรง",adminSub:"โทรหาพี่ไก่โดยตรง สำหรับกรณีเร่งด่วน",note:"ข้อความแจ้งผ่านระบบจะเข้าสู่กล่องข้อความ LINE OA ของ Admin"},
-    en:{title:"Report an Issue",sub:"Select a contact channel",oa:"Report via LINE OA App",oaSub:"Enter details, name, company, and callback number. The report is sent to Admin via LINE OA.",admin:"Contact Admin Directly",adminSub:"Call Kai directly for urgent matters",note:"System reports are delivered to the Admin LINE OA inbox."},
-    ja:{title:"問題を報告",sub:"連絡方法を選択",oa:"LINE OAアプリから報告",oaSub:"詳細、氏名、会社名、電話番号を入力するとLINE OA経由でAdminへ送信されます。",admin:"Adminへ直接連絡",adminSub:"緊急時はKaiへ直接電話",note:"報告はAdminのLINE OA受信箱へ届きます。"},
-    my:{title:"ပြဿနာတင်ပြမည်",sub:"ဆက်သွယ်မည့်နည်းလမ်းရွေးပါ",oa:"LINE OA App မှတင်ပြမည်",oaSub:"အသေးစိတ်၊ အမည်၊ ကုမ္ပဏီနှင့်ဖုန်းနံပါတ်ကိုဖြည့်ပါ။ Admin ထံ LINE OA မှပို့မည်။",admin:"Admin ကိုတိုက်ရိုက်ဆက်သွယ်မည်",adminSub:"အရေးပေါ်ကိစ္စအတွက် Kai ကိုဖုန်းခေါ်ပါ",note:"တင်ပြချက်သည် Admin ၏ LINE OA inbox သို့ရောက်မည်။"},
-    zh:{title:"报告问题",sub:"请选择联系渠道",oa:"通过LINE OA应用报告",oaSub:"填写详情、姓名、公司和联系电话，系统将通过LINE OA发送给Admin。",admin:"直接联系Admin",adminSub:"紧急事项可直接致电Kai",note:"系统报告会发送到Admin的LINE OA收件箱。"}
-  }[lang] || null;
-  const t=copy || copy.th;
-  return {type:"flex",altText:t.title,contents:{type:"bubble",size:"giga",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},
-    header:titleBlock("📣","SAFETY SUPPORT",t.title,t.sub,THEME.orange),
-    body:{type:"box",layout:"vertical",paddingAll:"16px",spacing:"md",contents:[
-      actionCard("📝",t.oa,t.oaSub,{type:"postback",label:t.oa.slice(0,20),data:"issue_channel=oa",displayText:t.oa},THEME.orange),
-      actionCard("☎️",t.admin,t.adminSub,{type:"uri",label:t.admin.slice(0,20),uri:"tel:0616455095"},THEME.green),
-      {type:"box",layout:"vertical",paddingAll:"12px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[{type:"text",text:`ℹ️ ${t.note}`,size:"xxs",color:THEME.blue,wrap:true,align:"center"}]}
-    ]},footer:languageFooter(lang)}};
-}
-function issueFormFlex(lang="th") {
-  const text={
-    th:{title:"แจ้งผ่านแอปพลิเคชัน LINE OA",hint:"กรุณาพิมพ์รายละเอียดปัญหา / ชื่อ / บริษัท / เบอร์ติดต่อกลับ",info:"ระบบจะส่งรายละเอียดถึง Admin ผ่านแอปพลิเคชัน LINE OA",cancel:"ยกเลิกการแจ้ง"},
-    en:{title:"Report via LINE OA App",hint:"Type issue details / name / company / callback number",info:"The details will be sent to Admin via LINE OA.",cancel:"Cancel Report"},
-    ja:{title:"LINE OAアプリから報告",hint:"問題の詳細 / 氏名 / 会社名 / 電話番号を入力してください",info:"LINE OA経由でAdminへ送信されます。",cancel:"報告を中止"},
-    my:{title:"LINE OA App မှတင်ပြမည်",hint:"ပြဿနာ / အမည် / ကုမ္ပဏီ / ဖုန်းနံပါတ်ကိုရိုက်ပါ",info:"LINE OA မှ Admin ထံပို့မည်။",cancel:"တင်ပြမှုဖျက်မည်"},
-    zh:{title:"通过LINE OA应用报告",hint:"请输入问题详情 / 姓名 / 公司 / 联系电话",info:"系统将通过LINE OA发送给Admin。",cancel:"取消报告"}
-  }[lang] || null;
-  const t=text || text.th;
-  return {type:"flex",altText:t.title,contents:{type:"bubble",size:"mega",styles:{body:{backgroundColor:THEME.canvas},footer:{backgroundColor:THEME.canvas}},
-    header:titleBlock("📣","LINE OA REPORT",t.title,uiText(lang,"reportSub"),THEME.orange),
-    body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[
-      {type:"text",text:t.hint,wrap:true,size:"sm",color:THEME.ink},
-      {type:"box",layout:"vertical",paddingAll:"14px",cornerRadius:"14px",backgroundColor:THEME.sky,contents:[{type:"text",text:`ℹ️ ${t.info}`,wrap:true,size:"xs",color:THEME.blue,align:"center"}]}
-    ]},footer:{type:"box",layout:"vertical",paddingAll:"18px",contents:[{type:"button",style:"secondary",action:{type:"message",label:t.cancel.slice(0,20),text:"ยกเลิกการแจ้งปัญหา"}}]}}};
-}
+function issueFormFlex(lang="th"){return{type:"flex",altText:uiText(lang,"issueTitle"),contents:{type:"bubble",size:"mega",styles:{footer:{backgroundColor:THEME.canvas}},header:titleBlock("📣","REPORT AN ISSUE",uiText(lang,"issueTitle"),uiText(lang,"reportSub"),THEME.orange),body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[{type:"text",text:uiText(lang,"issueHint"),wrap:true,size:"sm",color:THEME.ink},{type:"text",text:uiText(lang,"issuePrivacy"),wrap:true,size:"xs",color:THEME.muted,align:"center"}]},footer:{type:"box",layout:"vertical",paddingAll:"18px",contents:[{type:"button",style:"secondary",action:{type:"message",label:uiText(lang,"cancel").slice(0,20),text:"ยกเลิกการแจ้งปัญหา"}}]}}};}
 function issueAdminFlex(reportText,userId){return{type:"flex",altText:"New Safety Issue",contents:{type:"bubble",size:"mega",header:titleBlock("🔔","NEW ISSUE","แจ้งปัญหาใหม่","สถานะ: รอตรวจสอบ",THEME.red),body:{type:"box",layout:"vertical",paddingAll:"20px",spacing:"lg",contents:[dataRow("รายละเอียด",safeText(reportText,1500)),{type:"text",text:`LINE User ID: ${userId}`,size:"xxs",color:THEME.muted,wrap:true}]}}};}
-function issueSuccessFlex(lang="th") {
-  const text={th:["รับแจ้งเรียบร้อยแล้ว","ระบบได้ส่งรายละเอียดถึง Admin ผ่านแอปพลิเคชัน LINE OA แล้ว"],en:["Report Received","The details were sent to Admin via LINE OA."],ja:["報告を受け付けました","LINE OA経由でAdminへ送信しました。"],my:["တင်ပြမှုလက်ခံပြီး","LINE OA မှ Admin ထံပို့ပြီးပါပြီ။"],zh:["报告已收到","系统已通过LINE OA发送给Admin。"]}[lang] || null;
-  const t=text || ["รับแจ้งเรียบร้อยแล้ว","ระบบได้ส่งรายละเอียดถึง Admin ผ่านแอปพลิเคชัน LINE OA แล้ว"];
-  return {type:"flex",altText:t[0],contents:{type:"bubble",size:"mega",body:{type:"box",layout:"vertical",paddingAll:"24px",spacing:"lg",alignItems:"center",backgroundColor:THEME.greenSoft,contents:[{type:"text",text:"✅",size:"3xl"},{type:"text",text:t[0],size:"xl",weight:"bold",color:THEME.green,align:"center",wrap:true},{type:"text",text:t[1],size:"sm",color:THEME.ink,align:"center",wrap:true}]}}};
-}
+function issueSuccessFlex(lang="th"){return{type:"flex",altText:uiText(lang,"issueSent"),contents:{type:"bubble",size:"mega",body:{type:"box",layout:"vertical",paddingAll:"24px",spacing:"lg",alignItems:"center",backgroundColor:THEME.greenSoft,contents:[{type:"text",text:"✅",size:"3xl"},{type:"text",text:uiText(lang,"issueSent"),size:"xl",weight:"bold",color:THEME.green,align:"center",wrap:true},{type:"text",text:uiText(lang,"issueSentSub"),size:"sm",color:THEME.ink,align:"center",wrap:true}]}}};}
 function fallbackFlex(lang="th"){return menuFlex(uiText(lang,"helpTitle"),uiText(lang,"helpSub"),"💬",[{icon:"🦺",title:uiText(lang,"mainTitle"),subtitle:uiText(lang,"mainSub"),type:"message",value:"เมนูผู้รับเหมา",color:THEME.blue},{icon:"☎️",title:uiText(lang,"contact"),subtitle:uiText(lang,"contactSub"),type:"message",value:"ติดต่อทีมเซฟตี้",color:THEME.green},{icon:"📍",title:uiText(lang,"map"),subtitle:uiText(lang,"mapSub"),type:"message",value:"แผนที่",color:THEME.orange}],THEME.navy,lang);}
 function mapFlexFor(lang="th"){return menuFlex(uiText(lang,"map"),uiText(lang,"mapSub"),"📍",[{icon:"1",title:uiText(lang,"factory1"),subtitle:"Google Maps",type:"uri",value:"https://maps.app.goo.gl/ycBgWvYA8ze8L6Hj8",color:THEME.blue},{icon:"2",title:uiText(lang,"factory2"),subtitle:"Google Maps",type:"uri",value:"https://maps.app.goo.gl/keZxD798z9ZwKXE7A",color:THEME.green}],THEME.blue,lang);}
 function phoneFlexFor(lang="th"){return menuFlex(uiText(lang,"phone"),uiText(lang,"phoneSub"),"☎️",[{icon:"1",title:uiText(lang,"factory1"),subtitle:"02-529-2450-6 • 102 / 127 / 129",type:"uri",value:"tel:025292450",color:THEME.blue},{icon:"2",title:uiText(lang,"factory2"),subtitle:"02-529-3200-6 • 137",type:"uri",value:"tel:025293200",color:THEME.green}],THEME.green,lang);}
@@ -1356,7 +1238,7 @@ async function handleNavigationInterrupt(event, userId, msg) {
 
   if (msg.includes(normalize("แจ้งปัญหา"))) {
     pauseCurrentSession(userId);
-    await reply(event, issueChannelFlex(getUserLanguage(userId)));
+    await beginIssueReport(event, userId);
     return true;
   }
 
@@ -1458,9 +1340,6 @@ async function handleEvent(event) {
   );
   if (navigationHandled) return null;
 
-  if (data === "issue_channel=oa") {
-    return beginIssueReport(event, userId);
-  }
   if (data === "resume=continue") {
     const saved = pausedSessions.get(userId);
     if (!saved) return reply(event, languageSelectFlex());
