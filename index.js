@@ -20,7 +20,7 @@ const ADMIN_USER_ID = process.env.ADMIN_USER_ID || "U4a74c3933c0ecf9d2062768696b
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbz2I9EJks1Epc3zXRN1l5JXYq0NnsMrWGZtNNJvshsvE0GEyx0yeZvX5Jfl31aVtdf6/exec";
 const PASS_SCORE = 24;
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000;
-const APP_VERSION = "4.13.0-use-post-created-card";
+const APP_VERSION = "4.14.0-smart-center-ui";
 
 const THEME = {
   navy: "#092F55", blue: "#1769AA", sky: "#EAF5FD", gold: "#F2C14E",
@@ -502,89 +502,234 @@ function trainingMenu(lang="th"){return menuFlex(uiText(lang,"training"),uiText(
   {icon:"03",title:uiText(lang,"fireExt"),subtitle:"Fire extinguisher",type:"uri",value:"https://youtu.be/54FuqMUGlOQ?si=4-9RT_1fmtGnMg0f",color:THEME.red},
   {icon:"04",title:uiText(lang,"driving"),subtitle:"Safe driving",type:"uri",value:"https://youtu.be/jUPDb2aHWSM?si=x2wPrp2DGoluXvuF",color:THEME.orange},
   {icon:"05",title:uiText(lang,"waste"),subtitle:"Waste segregation",type:"uri",value:"https://youtu.be/5HI55e0oL_M?si=Hg5EdfhXNIaeKlP9",color:THEME.green}],THEME.green,lang);}
-function contractorMainMenuFlex(lang="th"){return menuFlex(uiText(lang,"mainTitle"),uiText(lang,"mainSub"),"🦺",[
-  {icon:"📦",title:uiText(lang,"delivery"),subtitle:uiText(lang,"deliverySub"),type:"message",value:"ผู้รับส่งสินค้า",color:THEME.blue},
-  {icon:"🛠️",title:uiText(lang,"vendor"),subtitle:uiText(lang,"vendorSub"),type:"message",value:"ผู้แก้ไขงาน",color:THEME.purple},
-  {icon:"🎓",title:uiText(lang,"training"),subtitle:uiText(lang,"trainingSub"),type:"message",value:"สื่ออบรมผู้รับเหมา",color:THEME.green},
-  {icon:"🪪",title:uiText(lang,"card"),subtitle:uiText(lang,"cardSub"),type:"message",value:"ดาวน์โหลดบัตร",color:THEME.orange}],THEME.navy,lang);}
-function certificateFlex(url){return allCertificatesFlex([{url}], "th");}
-
-function allCertificatesFlex(cards, lang = "th") {
+function smartCenterCopy(lang = "th") {
   const copy = {
-    th: { alt: "บัตรผู้รับเหมาทั้งหมด", title: "บัตรผู้รับเหมา", card: "บัตรใบที่", open: "เปิด / ดาวน์โหลด", count: "รายการ" },
-    en: { alt: "All Contractor Cards", title: "Contractor Cards", card: "Card", open: "Open / Download", count: "cards" },
-    ja: { alt: "請負業者カード一覧", title: "請負業者カード", card: "カード", open: "開く / ダウンロード", count: "件" },
-    my: { alt: "ကန်ထရိုက်တာကတ်အားလုံး", title: "ကန်ထရိုက်တာကတ်", card: "ကတ်", open: "ဖွင့် / ဒေါင်းလုပ်", count: "ကတ်" },
-    zh: { alt: "全部承包商卡", title: "承包商卡", card: "卡片", open: "打开 / 下载", count: "张" }
-  }[lang] || null;
-  const text = copy || {
-    alt: "All Contractor Cards", title: "Contractor Cards", card: "Card", open: "Open / Download", count: "cards"
+    th: {
+      eyebrow: "SODICK SMART SERVICES",
+      title: "ศูนย์บริการ Safety",
+      subtitle: "เลือกบริการที่ต้องการ",
+      training: "Training Center",
+      trainingSub: "สื่ออบรมและความรู้ด้านความปลอดภัย",
+      delivery: "ผู้รับ–ส่งสินค้า",
+      deliverySub: "บริการสำหรับผู้มาติดต่อส่งสินค้า",
+      vendor: "ผู้เข้ามาทำงาน",
+      vendorSub: "ผู้รับเหมาและผู้เข้ามาแก้ไขงาน",
+      card: "บัตรผู้รับเหมา",
+      cardSub: "เปิดและดาวน์โหลดบัตรย้อนหลัง",
+      hotline: "Safety Call Hub",
+      hotlineSub: "ติดต่อเจ้าหน้าที่ Safety",
+      map: "แผนที่โรงงาน",
+      mapSub: "เส้นทางโรงงาน 1 และโรงงาน 2",
+      report: "แจ้งปัญหา",
+      reportSub: "ส่งข้อมูลถึงทีม Safety"
+    },
+    en: {
+      eyebrow: "SODICK SMART SERVICES",
+      title: "Safety Service Center",
+      subtitle: "Select the service you need",
+      training: "Training Center",
+      trainingSub: "Safety training and learning media",
+      delivery: "Delivery Visitor",
+      deliverySub: "Services for delivery visitors",
+      vendor: "Contractor Service",
+      vendorSub: "Work and maintenance access",
+      card: "Contractor Card",
+      cardSub: "Open and download previous cards",
+      hotline: "Safety Call Hub",
+      hotlineSub: "Contact the Safety team",
+      map: "Factory Map",
+      mapSub: "Directions to Factory 1 and 2",
+      report: "Report an Issue",
+      reportSub: "Send details to the Safety team"
+    },
+    ja: {
+      eyebrow: "SODICK SMART SERVICES",
+      title: "Safetyサービスセンター",
+      subtitle: "必要なサービスを選択してください",
+      training: "Training Center",
+      trainingSub: "安全研修と学習資料",
+      delivery: "配送訪問者",
+      deliverySub: "納品・配送の訪問者向け",
+      vendor: "請負業者サービス",
+      vendorSub: "作業・修理の入場サービス",
+      card: "請負業者カード",
+      cardSub: "過去のカードを表示・ダウンロード",
+      hotline: "Safety Call Hub",
+      hotlineSub: "Safetyチームへ連絡",
+      map: "工場マップ",
+      mapSub: "第1工場・第2工場へのルート",
+      report: "問題を報告",
+      reportSub: "Safetyチームへ詳細を送信"
+    },
+    my: {
+      eyebrow: "SODICK SMART SERVICES",
+      title: "Safety ဝန်ဆောင်မှုစင်တာ",
+      subtitle: "လိုအပ်သောဝန်ဆောင်မှုကိုရွေးပါ",
+      training: "Training Center",
+      trainingSub: "လုံခြုံရေးသင်တန်းနှင့်လေ့လာရေး",
+      delivery: "ကုန်ပစ္စည်းပို့ဆောင်သူ",
+      deliverySub: "ပို့ဆောင်သူများအတွက်ဝန်ဆောင်မှု",
+      vendor: "ကန်ထရိုက်တာဝန်ဆောင်မှု",
+      vendorSub: "အလုပ်နှင့်ပြုပြင်ရေးဝင်ခွင့်",
+      card: "ကန်ထရိုက်တာကတ်",
+      cardSub: "ယခင်ကတ်များဖွင့်ပြီးဒေါင်းလုပ်လုပ်ပါ",
+      hotline: "Safety Call Hub",
+      hotlineSub: "Safety အဖွဲ့ကိုဆက်သွယ်ပါ",
+      map: "စက်ရုံမြေပုံ",
+      mapSub: "စက်ရုံ ၁ နှင့် ၂ လမ်းညွှန်",
+      report: "ပြဿနာတင်ပြမည်",
+      reportSub: "Safety အဖွဲ့သို့ပို့မည်"
+    },
+    zh: {
+      eyebrow: "SODICK SMART SERVICES",
+      title: "Safety服务中心",
+      subtitle: "请选择所需服务",
+      training: "Training Center",
+      trainingSub: "安全培训与学习资料",
+      delivery: "送货访客",
+      deliverySub: "送货人员服务",
+      vendor: "承包商服务",
+      vendorSub: "工作和维修入场服务",
+      card: "承包商卡",
+      cardSub: "打开并下载历史卡片",
+      hotline: "Safety Call Hub",
+      hotlineSub: "联系Safety团队",
+      map: "工厂地图",
+      mapSub: "第一工厂和第二工厂路线",
+      report: "报告问题",
+      reportSub: "发送给Safety团队"
+    }
   };
+  return copy[lang] || copy.th;
+}
 
-  const validCards = (Array.isArray(cards) ? cards : [])
-    .map((card, index) => ({
-      url: String(card?.url || card?.cardUrl || card?.certificateUrl || card?.link || "").trim(),
-      issuedAt: String(card?.issuedAt || card?.createdAt || card?.date || "").trim(),
-      title: String(card?.title || card?.name || "").trim(),
-      originalIndex: index
-    }))
-    .filter(card => /^https:\/\//i.test(card.url));
+function smartMenuAction(label, text) {
+  return { type: "message", label: safeText(label, 20), text };
+}
+
+function smartLargeTile(icon, title, subtitle, action, startColor, endColor) {
+  return {
+    type: "box",
+    layout: "horizontal",
+    paddingAll: "20px",
+    cornerRadius: "22px",
+    background: {
+      type: "linearGradient",
+      angle: "120deg",
+      startColor,
+      endColor
+    },
+    action,
+    contents: [
+      {
+        type: "box",
+        layout: "vertical",
+        width: "72px",
+        height: "72px",
+        cornerRadius: "24px",
+        backgroundColor: "#FFFFFF",
+        justifyContent: "center",
+        alignItems: "center",
+        contents: [{ type: "text", text: icon, size: "3xl", align: "center" }]
+      },
+      {
+        type: "box",
+        layout: "vertical",
+        flex: 1,
+        paddingStart: "16px",
+        justifyContent: "center",
+        contents: [
+          { type: "text", text: title, size: "xl", weight: "bold", color: "#FFFFFF", wrap: true, maxLines: 2 },
+          { type: "text", text: subtitle, size: "xs", color: "#DCEEFF", wrap: true, margin: "sm", maxLines: 2 },
+          { type: "text", text: "TAP TO OPEN  ›", size: "xxs", weight: "bold", color: "#F2C14E", margin: "md" }
+        ]
+      }
+    ]
+  };
+}
+
+function smartSmallTile(icon, title, subtitle, action, color, softColor) {
+  return {
+    type: "box",
+    layout: "vertical",
+    flex: 1,
+    minHeight: "154px",
+    paddingAll: "14px",
+    cornerRadius: "20px",
+    backgroundColor: softColor,
+    borderColor: `${color}33`,
+    borderWidth: "1px",
+    action,
+    contents: [
+      {
+        type: "box",
+        layout: "vertical",
+        width: "56px",
+        height: "56px",
+        cornerRadius: "19px",
+        backgroundColor: color,
+        justifyContent: "center",
+        alignItems: "center",
+        contents: [{ type: "text", text: icon, size: "xxl", align: "center" }]
+      },
+      { type: "text", text: title, size: "sm", weight: "bold", color: THEME.ink, wrap: true, margin: "md", maxLines: 2 },
+      { type: "text", text: subtitle, size: "xxs", color: THEME.muted, wrap: true, margin: "xs", maxLines: 2 },
+      { type: "text", text: "›", size: "xl", weight: "bold", color, align: "end", margin: "sm" }
+    ]
+  };
+}
+
+function contractorMainMenuFlex(lang = "th") {
+  const c = smartCenterCopy(lang);
+  const rows = [
+    [
+      smartSmallTile("📦", c.delivery, c.deliverySub, smartMenuAction(c.delivery, "ผู้รับส่งสินค้า"), THEME.blue, "#EAF5FD"),
+      smartSmallTile("🛠️", c.vendor, c.vendorSub, smartMenuAction(c.vendor, "ผู้แก้ไขงาน"), THEME.purple, "#F3EEFB")
+    ],
+    [
+      smartSmallTile("🪪", c.card, c.cardSub, smartMenuAction(c.card, "ดาวน์โหลดบัตร"), THEME.orange, "#FFF5E8"),
+      smartSmallTile("☎️", c.hotline, c.hotlineSub, smartMenuAction(c.hotline, "Safety Hotline"), THEME.red, "#FFF0F2")
+    ],
+    [
+      smartSmallTile("📍", c.map, c.mapSub, smartMenuAction(c.map, "แผนที่"), "#2878C8", "#EEF6FF"),
+      smartSmallTile("📣", c.report, c.reportSub, smartMenuAction(c.report, "แจ้งปัญหา"), THEME.green, "#E9F9F2")
+    ]
+  ];
 
   return {
     type: "flex",
-    altText: `${text.alt} (${validCards.length})`,
+    altText: c.title,
     contents: {
-      type: "carousel",
-      contents: validCards.map((card, index) => ({
-        type: "bubble",
-        size: "kilo",
-        styles: {
-          body: { backgroundColor: THEME.canvas },
-          footer: { backgroundColor: THEME.canvas }
-        },
-        header: titleBlock(
-          "🪪",
-          `CARD ${index + 1} OF ${validCards.length}`,
-          card.title || `${text.card} ${index + 1}`,
-          card.issuedAt || `${validCards.length} ${text.count}`,
-          index === 0 ? THEME.green : THEME.blue
-        ),
-        body: {
-          type: "box",
-          layout: "vertical",
-          paddingAll: "18px",
-          spacing: "md",
-          contents: [
-            {
-              type: "text",
-              text: card.title || text.title,
-              size: "md",
-              weight: "bold",
-              color: THEME.ink,
-              align: "center",
-              wrap: true
-            },
-            card.issuedAt
-              ? { type: "text", text: card.issuedAt, size: "xs", color: THEME.muted, align: "center", wrap: true }
-              : { type: "text", text: `${text.card} ${index + 1}`, size: "xs", color: THEME.muted, align: "center" }
-          ]
-        },
-        footer: {
-          type: "box",
-          layout: "vertical",
-          paddingAll: "18px",
-          contents: [{
-            type: "button",
-            style: "primary",
-            color: index === 0 ? THEME.green : THEME.blue,
-            action: {
-              type: "uri",
-              label: text.open.slice(0, 20),
-              uri: card.url
-            }
-          }]
-        }
-      }))
+      type: "bubble",
+      size: "giga",
+      styles: {
+        body: { backgroundColor: THEME.canvas },
+        footer: { backgroundColor: THEME.canvas }
+      },
+      header: titleBlock("🦺", c.eyebrow, c.title, c.subtitle, THEME.navy),
+      body: {
+        type: "box",
+        layout: "vertical",
+        paddingAll: "16px",
+        spacing: "md",
+        contents: [
+          smartLargeTile(
+            "🎓",
+            c.training,
+            c.trainingSub,
+            smartMenuAction(c.training, "สื่ออบรมผู้รับเหมา"),
+            "#083B66",
+            "#1688C9"
+          ),
+          ...rows.map(row => ({
+            type: "box",
+            layout: "horizontal",
+            spacing: "md",
+            contents: row
+          }))
+        ]
+      },
+      footer: languageFooter(lang)
     }
   };
 }
